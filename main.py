@@ -1,16 +1,42 @@
-# This is a sample Python script.
+# Initial python script for optimization final project
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+import math
+import matplotlib.pyplot as plt
+from scipy.optimize import minimize
+import numpy as np
+
+sideLength = 1
+
+def plotCurrentGrid(squareGridOrder):
+    plt.axes()
+    circleCenter = (sideLength*0.5*squareGridOrder, sideLength*0.5*squareGridOrder)
+    circleRadius = sideLength*0.5*squareGridOrder
+    squareValidColor = (199/255, 201/255, 199/255, 1)
+    squareValidBorderColor = (0/255, 46/255, 96/255, 1)
+    squareInvalidColor = (209/255, 65/255, 36/255, 1)
+    circleColor = (158/255, 42/255, 43/255, 0.5)
+
+    for i in range(squareGridOrder):
+        for j in range(squareGridOrder):
+
+            #find if square is within circle
+            
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+            rectangle = plt.Rectangle((i*sideLength, j*sideLength), sideLength, sideLength, fc=squareValidColor, ec=squareValidBorderColor)
+            plt.gca().add_patch(rectangle)
+            plt.axis('scaled')
+
+    circle = plt.Circle(circleCenter, circleRadius, color=circleColor)
+    plt.gca().add_patch(circle)
+    plt.axis('scaled')
+    plt.axis('off')
+    plt.show()
+
+# for k in range(3):
+#     plotCurrentGrid(k+1)
+
+plotCurrentGrid(7)
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+# plt.show()
