@@ -21,51 +21,36 @@ def plotCurrentGrid(squareGridOrder):
 
     for i in range(squareGridOrder):
         for j in range(squareGridOrder):
-            # northwest = False
-            # northeast = False
-            # southwest = False
-            # southeast = False
             checkPoint = (0,0)
-
             squareCenter = ((i*sideLength)+0.5, (j*sideLength)+0.5)
+
             #find if square is within circle
             if(squareCenter[0] < circleCenter[0]):
                 if(squareCenter[1] < circleCenter[1]):
-                    # southwest = True
                     checkPoint = (squareCenter[0] + 0.5*sideLength, squareCenter[1] + 0.5*sideLength)
                 elif (squareCenter[1] == circleCenter[1]):
                     checkPoint = (squareCenter[0] + 0.5*sideLength, squareCenter[1])
                 else:
-                    # northwest = True
-                    # checkPoint = squareCenter + (0.5*sideLength, -0.5*sideLength)
                     checkPoint = (squareCenter[0] + 0.5*sideLength, squareCenter[1] - 0.5*sideLength)
+
             elif (squareCenter[0] == circleCenter[0]):
                 if (squareCenter[1] < circleCenter[1]):
-                    # southwest = True
                     checkPoint = (squareCenter[0], squareCenter[1] + 0.5 * sideLength)
                 elif (squareCenter[1] == circleCenter[1]):
                     checkPoint = (squareCenter[0], squareCenter[1])
                     print("center square found")
                 else:
-                    # northwest = True
-                    # checkPoint = squareCenter + (0.5*sideLength, -0.5*sideLength)
                     checkPoint = (squareCenter[0], squareCenter[1] - 0.5 * sideLength)
 
             else:
                 if(squareCenter[1] < circleCenter[1]):
-                    # northeast = True
-                    # checkPoint = squareCenter + (-0.5*sideLength, -0.5*sideLength)
+
                     checkPoint = (squareCenter[0] - 0.5*sideLength, squareCenter[1] + 0.5*sideLength)
                 elif (squareCenter[1] == circleCenter[1]):
                     checkPoint = (squareCenter[0] - 0.5 * sideLength, squareCenter[1])
                 else:
-                    # southeast = True
-                    # checkPoint = squareCenter + (-0.5*sideLength, 0.5*sideLength)
+
                     checkPoint = (squareCenter[0] - 0.5*sideLength, squareCenter[1] - 0.5*sideLength)
-
-
-            print("Distance between ", checkPoint, " and ", circleCenter, " is ", checkDistance(checkPoint, circleCenter))
-            print("Circle radius is ", circleRadius)
 
             if checkDistance(checkPoint, circleCenter) <= circleRadius:
                 rectangle = plt.Rectangle((i * sideLength, j * sideLength), sideLength, sideLength, fc=squareValidColor,ec=squareValidBorderColor)
@@ -74,9 +59,10 @@ def plotCurrentGrid(squareGridOrder):
 
             plt.gca().add_patch(rectangle)
 
+            # print("Distance between ", checkPoint, " and ", circleCenter, " is ", checkDistance(checkPoint, circleCenter))
+            # print("Circle radius is ", circleRadius)
             # circle = plt.Circle(checkPoint, .1, color='green')
             # circle = plt.Circle(squareCenter, .1, color='green')
-
             # plt.gca().add_patch(circle)
 
             plt.axis('scaled')
@@ -87,15 +73,8 @@ def plotCurrentGrid(squareGridOrder):
     plt.axis('off')
     plt.show()
 
+
 # for k in range(3):
-#     plotCurrentGrid(k+1)
+#     plotCurrentGrid(k+6)
 
 plotCurrentGrid(11)
-
-# testPoint1 = (0,0)
-# testPoint2 = (5,5)
-
-# print("Distance between ", testPoint1, " and ", testPoint2, " is ", checkDistance(testPoint1, testPoint2))
-
-
-# plt.show()
