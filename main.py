@@ -13,13 +13,8 @@ class point:
         return f"x:{self.x} y:{self.y}"
 
 class line:
-    # points = [point(0,0), point(1,1)]
     def __init__(self, firstInitialPointForLine, secondInitialPointForLine):
-        self.points = []
-        # self.points[0] = firstInitialPointForLine
-        # self.points[1] = secondInitialPointForLine
-        self.points.append(firstInitialPointForLine)
-        self.points.append(secondInitialPointForLine)
+        self.points = [firstInitialPointForLine, secondInitialPointForLine]
 
     def __str__(self):
         return f"({self.points[0].x},{self.points[0].y}), ({self.points[1].x},{self.points[1].y})"
@@ -33,11 +28,11 @@ def is_between_points(a,b,c):
 def is_on_line(line,point):
     return distance(line.points[0],point) + distance(point,line.points[1]) == distance(line.points[0],line.points[1])
 
-def constraint1(guessPoint):
+def is_on_any_line(guessPoint):
     trueStatements = [is_on_line(i, guessPoint) for i in polygonLines]
-    return any(trueStatements)-1
+    return any(trueStatements)
 
-con1 = {'type': 'eq', 'fun': constraint1}
+con1 = {'type': 'eq', 'fun': is_on_any_line}
 cons = [con1]
 
 
@@ -63,12 +58,12 @@ point6 = point(0.5,0)
 # print("Point 5 is on line 4:", is_on_line(line4, point5), ". This should be False.")
 # print("Point 6 is on line 4:", is_on_line(line4, point6), ". This should be True.")
 
-# print("Point 1 is on any line", constraint1(point1), ". This should be True.")
-# print("Point 2 is on any line", constraint1(point2), ". This should be True.")
-# print("Point 3 is on any line", constraint1(point3), ". This should be True.")
-# print("Point 4 is on any line", constraint1(point4), ". This should be True.")
-# print("Point 5 is on any line", constraint1(point5), ". This should be False.")
-# print("Point 6 is on any line", constraint1(point6), ". This should be True.")
+# print("Point 1 is on any line", is_on_any_line(point1), ". This should be True.")
+# print("Point 2 is on any line", is_on_any_line(point2), ". This should be True.")
+# print("Point 3 is on any line", is_on_any_line(point3), ". This should be True.")
+# print("Point 4 is on any line", is_on_any_line(point4), ". This should be True.")
+# print("Point 5 is on any line", is_on_any_line(point5), ". This should be False.")
+# print("Point 6 is on any line", is_on_any_line(point6), ". This should be True.")
 
 # print(line1)
 # print(line2)
