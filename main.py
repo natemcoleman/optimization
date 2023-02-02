@@ -160,6 +160,7 @@ def plotShape(linesToPlot,  numberOfPolygonLines):
     plt.plot(xValuesToPlotPath, yValuesToPlotPath, 'g-')
 
     # plt.plot(xGuessPoints, yGuessPoints, 'c.')
+    # plt.plot(xGuessPoints, yGuessPoints, 'm')
 
     ax = plt.gca()
     ax.set_aspect(1)
@@ -198,107 +199,162 @@ def GetPointDistanceFromLine(middlePoint, polygonLine):
     return np.cross(p2 - p1, p3 - p1) / LA.norm(p2 - p1)
 
 
-def constraint1(optimalPoints):
-    returnVec = []
-
-    # for distanceIndex in range(len(polygonLines)):
-    #     returnVec.append(GetPointDistanceFromLine(currPoint5, polygonLines[distanceIndex])-minDistanceFromLine)
-
-    returnVec.append(GetPointDistanceFromLine(point(optimalPoints[0], optimalPoints[1]), polygonLines[2])
-                     - minDistanceFromLine)
-
-    return returnVec
-
-
-def constraint2(optimalPoints):
-    point6ThatShouldBeOnLine = point(optimalPoints[2], optimalPoints[3])
-    return distance(line1.points[0], point6ThatShouldBeOnLine) + distance(point6ThatShouldBeOnLine, line1.points[1]) - distance(line1.points[0], line1.points[1])
-
-
-def constraint3(optimalPoints):
-    point7ThatShouldBeOnLine = point(optimalPoints[4], optimalPoints[5])
-    return distance(line2.points[0], point7ThatShouldBeOnLine) + distance(point7ThatShouldBeOnLine, line2.points[1]) - distance(line2.points[0], line2.points[1])
-
-
-def constraint4(optimalPoints):
-    point8ThatShouldBeOnLine = point(optimalPoints[6], optimalPoints[7])
-    return distance(line3.points[0], point8ThatShouldBeOnLine) + distance(point8ThatShouldBeOnLine, line3.points[1]) - distance(line3.points[0], line3.points[1])
-
-
-def constraint5(optimalPoints):
-    point9ThatShouldBeOnLine = point(optimalPoints[8], optimalPoints[9])
-    return distance(line4.points[0], point9ThatShouldBeOnLine) + distance(point9ThatShouldBeOnLine, line4.points[1]) - distance(line4.points[0], line4.points[1])
-
+# def constraint1(optimalPoints):
+#     returnVec = []
+#
+#     # for distanceIndex in range(len(polygonLines)):
+#     #     returnVec.append(GetPointDistanceFromLine(currPoint5, polygonLines[distanceIndex])-minDistanceFromLine)
+#
+#     returnVec.append(GetPointDistanceFromLine(point(optimalPoints[0], optimalPoints[1]), polygonLines[2])
+#                      - minDistanceFromLine)
+#
+#     return returnVec
+#
+#
+# def constraint2(optimalPoints):
+#     point6ThatShouldBeOnLine = point(optimalPoints[2], optimalPoints[3])
+#     return distance(line1.points[0], point6ThatShouldBeOnLine) + distance(point6ThatShouldBeOnLine, line1.points[1]) \
+#         - distance(line1.points[0], line1.points[1])
+#
+#
+# def constraint3(optimalPoints):
+#     point7ThatShouldBeOnLine = point(optimalPoints[4], optimalPoints[5])
+#     return distance(line2.points[0], point7ThatShouldBeOnLine) + distance(point7ThatShouldBeOnLine, line2.points[1]) \
+#         - distance(line2.points[0], line2.points[1])
+#
+#
+# def constraint4(optimalPoints):
+#     point8ThatShouldBeOnLine = point(optimalPoints[6], optimalPoints[7])
+#     return distance(line3.points[0], point8ThatShouldBeOnLine) + distance(point8ThatShouldBeOnLine, line3.points[1]) \
+#         - distance(line3.points[0], line3.points[1])
+#
+#
+# def constraint5(optimalPoints):
+#     point9ThatShouldBeOnLine = point(optimalPoints[8], optimalPoints[9])
+#     return distance(line4.points[0], point9ThatShouldBeOnLine) + distance(point9ThatShouldBeOnLine, line4.points[1]) \
+#         - distance(line4.points[0], line4.points[1])
+#
 
 def constraint6(optimalPoints):
     distanceBetweenPoints = []
+    currentPoint5 = point(optimalPoints[0], optimalPoints[1])
     currentPoint6 = point(optimalPoints[2], optimalPoints[3])
     currentPoint7 = point(optimalPoints[4], optimalPoints[5])
     currentPoint8 = point(optimalPoints[6], optimalPoints[7])
     currentPoint9 = point(optimalPoints[8], optimalPoints[9])
 
     distanceBetweenPoints.append(distance(currentPoint6, currentPoint7) - minDistanceBetweenPathNodes)
-    distanceBetweenPoints.append(distance(currentPoint8, currentPoint7) - minDistanceBetweenPathNodes)
+    distanceBetweenPoints.append(distance(currentPoint7, currentPoint8) - minDistanceBetweenPathNodes)
     distanceBetweenPoints.append(distance(currentPoint8, currentPoint9) - minDistanceBetweenPathNodes)
-    distanceBetweenPoints.append(distance(currentPoint6, currentPoint9) - minDistanceBetweenPathNodes)
+    distanceBetweenPoints.append(distance(currentPoint9, currentPoint6) - minDistanceBetweenPathNodes)
+
+    distanceBetweenPoints.append(distance(currentPoint6, currentPoint5) - minDistanceBetweenPathNodes)
+    distanceBetweenPoints.append(distance(currentPoint7, currentPoint5) - minDistanceBetweenPathNodes)
+    distanceBetweenPoints.append(distance(currentPoint8, currentPoint5) - minDistanceBetweenPathNodes)
+    distanceBetweenPoints.append(distance(currentPoint9, currentPoint5) - minDistanceBetweenPathNodes)
 
     return distanceBetweenPoints
+#
+# def constraint7(optimalPoints):
+#     returnVec = []
+#
+#     minXCon, maxXCon, minYCon, maxYCon = FindAxisLimits([point1, point2, point3, point4])
+#
+#     returnVec.append(optimalPoints[0] - minXCon)
+#     returnVec.append(maxXCon - optimalPoints[0])
+#     returnVec.append(optimalPoints[1] - minYCon)
+#     returnVec.append(maxYCon - optimalPoints[1])
+#
+#     return returnVec
+#
+#
+# def constraint8(optimalPoints):
+#     yOfLine2 = line2.points[1].y + (((line2.points[0].y - line2.points[1].y)/(line2.points[0].x - line2.points[1].x))
+#                                     *(optimalPoints[0] - line2.points[1].x))
+#
+#     return yOfLine2 - optimalPoints[1]
+#
+#
+# def constraint9(optimalPoints):
+#     yOfLine4 = line4.points[1].y + (((line4.points[0].y - line4.points[1].y)/(line4.points[0].x - line4.points[1].x))
+#                                     *(optimalPoints[0] - line4.points[1].x))
+#
+#     return optimalPoints[1] - yOfLine4
+#
+#
+# def constraint10(optimalPoints):
+#     xOfLine1 = line1.points[1].x + (((line1.points[1].x - line1.points[0].x) / (line1.points[1].y - line1.points[0].y))
+#                                     * (optimalPoints[1] - line1.points[1].y))
+#
+#     return optimalPoints[0] - xOfLine1
+#
+#
+# def constraint11(optimalPoints):
+#     xOfLine3 = line3.points[1].x + (((line3.points[1].x - line3.points[0].x) / (line3.points[1].y - line3.points[0].y))
+#                                     * (optimalPoints[1] - line3.points[1].y))
+#
+#     # print("point5 is to the left of", xOfLine3 - optimalPoints[0])
+#     return xOfLine3 - optimalPoints[0]
+#
 
-def constraint7(optimalPoints):
+def PointIsBoundedInPolygonConstraint(optimalPoints):
+    returnVec = []
+    yOfLine2 = line2.points[1].y + (((line2.points[0].y - line2.points[1].y) / (line2.points[0].x - line2.points[1].x))
+                                    * (optimalPoints[0] - line2.points[1].x))
+
+    yOfLine4 = line4.points[1].y + (((line4.points[0].y - line4.points[1].y) / (line4.points[0].x - line4.points[1].x))
+                                    * (optimalPoints[0] - line4.points[1].x))
+
+    xOfLine1 = line1.points[1].x + (((line1.points[1].x - line1.points[0].x) / (line1.points[1].y - line1.points[0].y))
+                                    * (optimalPoints[1] - line1.points[1].y))
+
+    xOfLine3 = line3.points[1].x + (((line3.points[1].x - line3.points[0].x) / (line3.points[1].y - line3.points[0].y))
+                                    * (optimalPoints[1] - line3.points[1].y))
+
+    returnVec.append(yOfLine2 - optimalPoints[1])
+    returnVec.append(optimalPoints[1] - yOfLine4)
+    returnVec.append(optimalPoints[0] - xOfLine1)
+    returnVec.append(xOfLine3 - optimalPoints[0])
+
+    return returnVec
+
+def PathStartPointsFallOnLines(optimalPoints):
     returnVec = []
 
-    minXCon, maxXCon, minYCon, maxYCon = FindAxisLimits([point1, point2, point3, point4])
+    point6ThatShouldBeOnLine = point(optimalPoints[2], optimalPoints[3])
+    returnVec.append(distance(line1.points[0], point6ThatShouldBeOnLine) + distance(point6ThatShouldBeOnLine, line1.points[1]) \
+            - distance(line1.points[0], line1.points[1]))
 
-    returnVec.append(optimalPoints[0] - minXCon)
-    returnVec.append(maxXCon - optimalPoints[0])
-    returnVec.append(optimalPoints[1] - minYCon)
-    returnVec.append(maxYCon - optimalPoints[1])
+    point7ThatShouldBeOnLine = point(optimalPoints[4], optimalPoints[5])
+    returnVec.append(distance(line2.points[0], point7ThatShouldBeOnLine) + distance(point7ThatShouldBeOnLine, line2.points[1]) \
+            - distance(line2.points[0], line2.points[1]))
+
+    point8ThatShouldBeOnLine = point(optimalPoints[6], optimalPoints[7])
+    returnVec.append(distance(line3.points[0], point8ThatShouldBeOnLine) + distance(point8ThatShouldBeOnLine, line3.points[1]) \
+            - distance(line3.points[0], line3.points[1]))
+
+    point9ThatShouldBeOnLine = point(optimalPoints[8], optimalPoints[9])
+    returnVec.append(distance(line4.points[0], point9ThatShouldBeOnLine) + distance(point9ThatShouldBeOnLine, line4.points[1]) \
+            - distance(line4.points[0], line4.points[1]))
 
     return returnVec
 
 
-def constraint8(optimalPoints):
-    # # v1 = {line1.points[1].x - line1.points[0].x, line1.points[1].y - line1.points[0].y}  # Vector 1
-    # # v2 = {optimalPoints[0] - line1.points[0].x, optimalPoints[1] - line1.points[0].y}  # Vector 2
-    #
-    # v1 = [line3.points[1].x - line3.points[0].x, line3.points[1].y - line3.points[0].y]  # Vector 1
-    # v2 = [optimalPoints[0] - line3.points[0].x, optimalPoints[1] - line3.points[0].y]  # Vector 2
-    #
-    # cross_product = v1[0] * v2[1] - v1[1] * v2[0]
-    # # if cross_product > 0:
-    # #     print('point5 is on the positive side of line3')
-    # # elif cross_product < 0:
-    # #     print('point5 is on the negative side of line3')
-    # # else:
-    # #     print('point5 is exactly on the line3')
-    # # print(cross_product)
-    # return cross_product
-    equal_y_line3 = line3.points[1].y + (line3.points[1].y - line3.points[0].y)/(line3.points[1].x - line3.points[0].x)*(optimalPoints[0] - line3.points[0].x)
+# con1 = {'type': 'ineq', 'fun': constraint1}  # Point is a minimum distance from line
+# con2 = {'type': 'eq', 'fun': constraint2}  # 2-5, starts on lines
+# con3 = {'type': 'eq', 'fun': constraint3}
+# con4 = {'type': 'eq', 'fun': constraint4}
+# con5 = {'type': 'eq', 'fun': constraint5}
+con6 = {'type': 'ineq', 'fun': constraint6}  # Minimum distance between path nodes, not on top of each other
+# con7 = {'type': 'ineq', 'fun': constraint7}  # Point is within bounding limits, replaced with polygon bounds
+# con8 = {'type': 'ineq', 'fun': constraint8}  # 8-11, is within polygon
+# con9 = {'type': 'ineq', 'fun': constraint9}
+# con10 = {'type': 'ineq', 'fun': constraint10}
+# con11 = {'type': 'ineq', 'fun': constraint11}
+con12 = {'type': 'ineq', 'fun': PointIsBoundedInPolygonConstraint}
+con13 = {'type': 'eq', 'fun': PathStartPointsFallOnLines}
 
-    # print(line3)
-    # print(optimalPoints[0], optimalPoints[1])
-    print(-(optimalPoints[1]-equal_y_line3))
-
-    return -(optimalPoints[1]-equal_y_line3)
-
-
-
-
-
-con1 = {'type': 'ineq', 'fun': constraint1}
-con2 = {'type': 'eq', 'fun': constraint2}
-con3 = {'type': 'eq', 'fun': constraint3}
-con4 = {'type': 'eq', 'fun': constraint4}
-con5 = {'type': 'eq', 'fun': constraint5}
-con6 = {'type': 'ineq', 'fun': constraint6}
-con7 = {'type': 'ineq', 'fun': constraint7}
-con8 = {'type': 'ineq', 'fun': constraint8}
-
-
-cons = [con1, con2, con3, con4, con5, con6, con7, con8]
-# cons = [con2, con3, con4, con5, con6, con7]
-# cons = [con1, con2, con3, con4, con5, con6]
-
+cons = [con6, con12, con13]
 
 
 def functionToMinimize(optimalPoints):
@@ -319,10 +375,11 @@ def functionToMinimize(optimalPoints):
     return GetMassOfAllLines(pathLinesNew)
 
 
-point1 = point(0,0)
-point2 = point(-1,1)
-point3 = point(4,0.75)
-point4 = point(2,-1)
+# ##DEFINE PANEL POLYGON## #
+point1 = point(0, 0)
+point2 = point(0, 1)
+point3 = point(3, 0.75)
+point4 = point(2, 0.25)
 
 minX, maxX, minY, maxY = FindAxisLimits([point1, point2, point3, point4])
 
@@ -349,9 +406,9 @@ point9InitialGuess = [(0.5, 0)]
 initialPointsGuesses = [point5InitialGuess, point6InitialGuess, point7InitialGuess, point8InitialGuess, point9InitialGuess]
 
 
-minDistance = 0.1
-minDistanceBetweenPathNodes = 1
-minDistanceFromLine = 0.25
+# minDistance = 0.1
+minDistanceBetweenPathNodes = 0.5
+# minDistanceFromLine = 0.25
 xGuessPoints = []
 yGuessPoints = []
 
@@ -372,8 +429,10 @@ point9 = point(result.x[8], result.x[9])
 # print("Point 8:", point8)
 # print("Point 9:", point9)
 
-for w in range(len(polygonLines)):
-    print(GetPointDistanceFromLine(point5, polygonLines[w]))
+# for w in range(len(polygonLines)):
+#     print(GetPointDistanceFromLine(point5, polygonLines[w]))
+
+# xOfLine3 = line3.points[1].x + (((line3.points[1].x - line3.points[0].x)/(line3.points[1].y - line3.points[0].y))*(point5.y - line3.points[1].y))
 
 line5 = line(point6, point5)
 line6 = line(point7, point5)
@@ -385,7 +444,7 @@ pathLines = [line5, line6, line7, line8]
 plotLines = polygonLines.copy()
 plotLines.extend(pathLines)
 
-# PrintMassOfAllLines(pathLines)
+PrintMassOfAllLines(pathLines)
 plotShape(plotLines, len(polygonLines))
 
 
