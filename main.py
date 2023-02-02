@@ -13,7 +13,7 @@ shapeBaseLength = 0.05  # meters, if square or rectangle
 shapeBaseHeight = 0.05  # meters, if rectangle
 shapeBaseDiameter = 0.05  # meters, if circle
 
-plotPointGuesses = False
+plotPointGuesses = True
 
 
 def GetMaterialProperties(materialType):
@@ -255,6 +255,19 @@ def GetPointDistanceFromLine(middlePoint, polygonLine):
 #     return distance(line4.points[0], point9ThatShouldBeOnLine) + distance(point9ThatShouldBeOnLine, line4.points[1]) \
 #         - distance(line4.points[0], line4.points[1])
 #
+def KeepMiddleNodeMinDistanceFromCornersConstraint(optimalPoints):
+    distanceBetweenPoints = []
+    currentPoint5 = ClassPoint(optimalPoints[0], optimalPoints[1])
+
+    distanceBetweenPoints.append(distance(point1, currentPoint5) - minDistanceFromCorners)
+    distanceBetweenPoints.append(distance(point2, currentPoint5) - minDistanceFromCorners)
+    distanceBetweenPoints.append(distance(point3, currentPoint5) - minDistanceFromCorners)
+    distanceBetweenPoints.append(distance(point4, currentPoint5) - minDistanceFromCorners)
+
+    return distanceBetweenPoints
+
+
+
 
 def KeepGuessPointsMinDistanceApartConstraint(optimalPoints):
     distanceBetweenPoints = []
@@ -383,7 +396,7 @@ def PathStartPointsFallOnLines(optimalPoints):
     returnVec.append(optimalPoints[2] - xOfLine1)
     returnVec.append(xOfLine3 - optimalPoints[6])
 
-    print("optimal9:", optimalPoints[9], " yOfLine4:", yOfLine4)
+    # print("optimal9:", optimalPoints[9], " yOfLine4:", yOfLine4)
 
     # for x in range(len(returnVec)):
     #     print(returnVec[x])
@@ -422,7 +435,10 @@ con6 = {'type': 'ineq', 'fun': KeepGuessPointsMinDistanceApartConstraint}
 con12 = {'type': 'ineq', 'fun': PointIsBoundedInPolygonConstraint}
 con13 = {'type': 'eq', 'fun': PathStartPointsFallOnLines}
 con14 = {'type': 'ineq', 'fun': StartPointsDoNotGoBeyondLineConstraint}
-cons = [con6, con12, con13, con14]
+con15 = {'type': 'ineq', 'fun': KeepMiddleNodeMinDistanceFromCornersConstraint}
+
+# cons = [con6, con12, con13, con14]
+cons = [con6, con12, con13, con14, con15]
 
 
 def functionToMinimize(optimalPoints):
@@ -449,7 +465,7 @@ def functionToMinimize(optimalPoints):
     line8Opt = ClassLine(point9New, point5New)
     pathLinesNew = [line5Opt, line6Opt, line7Opt, line8Opt]
 
-    return GetMassOfAllLines(pathLinesNew)
+    return -GetMassOfAllLines(pathLinesNew)
 
 
 # ##DEFINE PANEL POLYGON## #
@@ -466,6 +482,7 @@ point4 = ClassPoint(1.8958, 0.5398)
 
 minDistanceBetweenPathNodes = 0.25
 # minDistanceBetweenPathNodes = 0.0
+minDistanceFromCorners = 0.1
 
 
 minX, maxX, minY, maxY = FindAxisLimits([point1, point2, point3, point4])
@@ -508,11 +525,11 @@ point7 = ClassPoint(result.x[4], result.x[5])
 point8 = ClassPoint(result.x[6], result.x[7])
 point9 = ClassPoint(result.x[8], result.x[9])
 
-print("Point 5:", point5)
-print("Point 6:", point6)
-print("Point 7:", point7)
-print("Point 8:", point8)
-print("Point 9:", point9)
+# print("Point 5:", point5)
+# print("Point 6:", point6)
+# print("Point 7:", point7)
+# print("Point 8:", point8)
+# print("Point 9:", point9)
 
 
 line5 = ClassLine(point6, point5)
@@ -525,7 +542,7 @@ pathLines = [line5, line6, line7, line8]
 plotLines = polygonLines.copy()
 plotLines.extend(pathLines)
 
-PrintMassOfAllLines(pathLines)
+# PrintMassOfAllLines(pathLines)
 plotShape(plotLines, len(polygonLines))
 
 # print("point 5 is between:", is_between_points(point1, point2,point5), ". This should be False.")
