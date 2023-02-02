@@ -15,6 +15,8 @@ shapeBaseLength = 0.05  # meters, if square or rectangle
 shapeBaseHeight = 0.05  # meters, if rectangle
 shapeBaseDiameter = 0.05  # meters, if circle
 
+plotPointGuesses = True
+
 def GetMaterialProperties(materialType):
     if materialType == "Aluminum":
         rho = 2800  # kg/m3
@@ -159,8 +161,13 @@ def plotShape(linesToPlot,  numberOfPolygonLines):
     plt.plot(xValuesToPlotShape, yValuesToPlotShape, 'b--')
     plt.plot(xValuesToPlotPath, yValuesToPlotPath, 'g-')
 
-    plt.plot(xGuessPoints, yGuessPoints, 'c.')
-    plt.plot(xGuessPoints, yGuessPoints, 'm')
+    if plotPointGuesses:
+        plt.plot(x5GuessPoints, y5GuessPoints, 'c.')
+        plt.plot(x6GuessPoints, y6GuessPoints, 'm.')
+        plt.plot(x7GuessPoints, y7GuessPoints, 'y.')
+        plt.plot(x8GuessPoints, y8GuessPoints, 'm.')
+        plt.plot(x9GuessPoints, y9GuessPoints, 'y.')
+        # plt.plot(xGuessPoints, yGuessPoints, 'm')
 
     ax = plt.gca()
     ax.set_aspect(1)
@@ -189,6 +196,10 @@ def FindAxisLimits(arrayOfPoints):
             minYAxis = arrayOfPoints[q].y
 
     return minXAxis, maxXAxis, minYAxis, maxYAxis
+
+
+def GetMidpointOfLine(currLine):
+    return [(((currLine.points[0].x + currLine.points[1].x)/2), ((currLine.points[0].y + currLine.points[1].y)/2))]
 
 
 def GetPointDistanceFromLine(middlePoint, polygonLine):
@@ -297,6 +308,7 @@ def constraint6(optimalPoints):
 #     return xOfLine3 - optimalPoints[0]
 #
 
+
 def PointIsBoundedInPolygonConstraint(optimalPoints):
     returnVec = []
     yOfLine2 = line2.points[1].y + (((line2.points[0].y - line2.points[1].y) / (line2.points[0].x - line2.points[1].x))
@@ -318,25 +330,57 @@ def PointIsBoundedInPolygonConstraint(optimalPoints):
 
     return returnVec
 
+
 def PathStartPointsFallOnLines(optimalPoints):
     returnVec = []
 
     point6ThatShouldBeOnLine = point(optimalPoints[2], optimalPoints[3])
-    returnVec.append(distance(line1.points[0], point6ThatShouldBeOnLine) + distance(point6ThatShouldBeOnLine, line1.points[1]) \
-            - distance(line1.points[0], line1.points[1]))
+    # returnVec.append(distance(line1.points[0], point6ThatShouldBeOnLine) + distance(point6ThatShouldBeOnLine, line1.points[1]) \
+    #         - distance(line1.points[0], line1.points[1]))
 
     point7ThatShouldBeOnLine = point(optimalPoints[4], optimalPoints[5])
-    returnVec.append(distance(line2.points[0], point7ThatShouldBeOnLine) + distance(point7ThatShouldBeOnLine, line2.points[1]) \
-            - distance(line2.points[0], line2.points[1]))
+    # returnVec.append(distance(line2.points[0], point7ThatShouldBeOnLine) + distance(point7ThatShouldBeOnLine, line2.points[1]) \
+    #         - distance(line2.points[0], line2.points[1]))
 
     point8ThatShouldBeOnLine = point(optimalPoints[6], optimalPoints[7])
-    returnVec.append(distance(line3.points[0], point8ThatShouldBeOnLine) + distance(point8ThatShouldBeOnLine, line3.points[1]) \
-            - distance(line3.points[0], line3.points[1]))
+    # returnVec.append(distance(line3.points[0], point8ThatShouldBeOnLine) + distance(point8ThatShouldBeOnLine, line3.points[1]) \
+    #         - distance(line3.points[0], line3.points[1]))
 
     point9ThatShouldBeOnLine = point(optimalPoints[8], optimalPoints[9])
-    returnVec.append(distance(line4.points[0], point9ThatShouldBeOnLine) + distance(point9ThatShouldBeOnLine, line4.points[1]) \
-            - distance(line4.points[0], line4.points[1]))
+    # returnVec.append(distance(line4.points[0], point9ThatShouldBeOnLine) + distance(point9ThatShouldBeOnLine, line4.points[1]) \
+    #         - distance(line4.points[0], line4.points[1]))
 
+    yOfLine2 = line2.points[1].y + (((line2.points[0].y - line2.points[1].y) / (line2.points[0].x - line2.points[1].x))
+                                    * (optimalPoints[0] - line2.points[1].x))
+
+    yOfLine4 = line4.points[1].y + (((line4.points[0].y - line4.points[1].y) / (line4.points[0].x - line4.points[1].x))
+                                    * (optimalPoints[0] - line4.points[1].x))
+
+    xOfLine1 = line1.points[1].x + (((line1.points[1].x - line1.points[0].x) / (line1.points[1].y - line1.points[0].y))
+                                    * (optimalPoints[1] - line1.points[1].y))
+
+    xOfLine3 = line3.points[1].x + (((line3.points[1].x - line3.points[0].x) / (line3.points[1].y - line3.points[0].y))
+                                    * (optimalPoints[1] - line3.points[1].y))
+
+    returnVec.append(yOfLine2 - optimalPoints[5])
+    returnVec.append(optimalPoints[9] - yOfLine4)
+    returnVec.append(optimalPoints[2] - xOfLine1)
+    returnVec.append(xOfLine3 - optimalPoints[6])
+
+    return returnVec
+
+
+def StartPointsDoNotGoBeyondLineConstraint(optimalPoints):
+    returnVec = []
+
+    returnVec.append(line1.points[1].y - optimalPoints[3])
+    returnVec.append(optimalPoints[3] - line1.points[0].y)
+    returnVec.append(line3.points[0].y - optimalPoints[7])
+    returnVec.append(optimalPoints[7] - line3.points[1].y)
+    returnVec.append(line2.points[1].x - optimalPoints[4])
+    returnVec.append(optimalPoints[4] - line2.points[0].x)
+    returnVec.append(line4.points[1].x - optimalPoints[8])
+    returnVec.append(optimalPoints[8] - line4.points[0].x)
     return returnVec
 
 
@@ -352,9 +396,13 @@ con6 = {'type': 'ineq', 'fun': constraint6}  # Minimum distance between path nod
 # con10 = {'type': 'ineq', 'fun': constraint10}
 # con11 = {'type': 'ineq', 'fun': constraint11}
 con12 = {'type': 'ineq', 'fun': PointIsBoundedInPolygonConstraint}
+# con13 = {'type': 'eq', 'fun': PathStartPointsFallOnLines}
 con13 = {'type': 'eq', 'fun': PathStartPointsFallOnLines}
+con14 = {'type': 'ineq', 'fun': StartPointsDoNotGoBeyondLineConstraint}
 
-cons = [con6, con12, con13]
+cons = [con6, con12, con13, con14]
+# cons = [con6, con12, con13]
+# cons = [con6, con12]
 
 
 def functionToMinimize(optimalPoints):
@@ -363,8 +411,16 @@ def functionToMinimize(optimalPoints):
     point7New = point(optimalPoints[4], optimalPoints[5])
     point8New = point(optimalPoints[6], optimalPoints[7])
     point9New = point(optimalPoints[8], optimalPoints[9])
-    xGuessPoints.append(optimalPoints[0])
-    yGuessPoints.append(optimalPoints[1])
+    x5GuessPoints.append(optimalPoints[0])
+    y5GuessPoints.append(optimalPoints[1])
+    x6GuessPoints.append(optimalPoints[2])
+    y6GuessPoints.append(optimalPoints[3])
+    x7GuessPoints.append(optimalPoints[4])
+    y7GuessPoints.append(optimalPoints[5])
+    x8GuessPoints.append(optimalPoints[6])
+    y8GuessPoints.append(optimalPoints[7])
+    x9GuessPoints.append(optimalPoints[8])
+    y9GuessPoints.append(optimalPoints[9])
 
     line5Opt = line(point6New, point5New)
     line6Opt = line(point7New, point5New)
@@ -377,9 +433,9 @@ def functionToMinimize(optimalPoints):
 
 # ##DEFINE PANEL POLYGON## #
 point1 = point(0, 0)
-point2 = point(0, 1.5)
-point3 = point(3, 0.75)
-point4 = point(2, 0.25)
+point2 = point(-1, 2)
+point3 = point(3, 2.5)
+point4 = point(2, 0)
 
 minX, maxX, minY, maxY = FindAxisLimits([point1, point2, point3, point4])
 
@@ -391,17 +447,11 @@ line4 = line(point1, point4)
 polygonLines = [line1, line2, line3, line4]
 
 
-# point5InitialGuess = [(0.25, 0.375)]
-# point6InitialGuess = [(0, 0.375)]
-# point7InitialGuess = [(0.375, 1)]
-# point8InitialGuess = [(1, 0.375)]
-# point9InitialGuess = [(0.75, 0)]
-
-point5InitialGuess = [((minX+maxX)/2, (minY+maxY)/2)]
-point6InitialGuess = [(0, 0.5)]
-point7InitialGuess = [(0.5, 1)]
-point8InitialGuess = [(1, 0.5)]
-point9InitialGuess = [(0.5, 0)]
+point5InitialGuess = [((minX+maxX)/2, (minY+maxY)/2)]  # First guess is in middle of bounds
+point6InitialGuess = GetMidpointOfLine(line1)
+point7InitialGuess = GetMidpointOfLine(line2)
+point8InitialGuess = GetMidpointOfLine(line3)
+point9InitialGuess = GetMidpointOfLine(line4)
 
 initialPointsGuesses = [point5InitialGuess, point6InitialGuess, point7InitialGuess, point8InitialGuess, point9InitialGuess]
 
@@ -409,9 +459,16 @@ initialPointsGuesses = [point5InitialGuess, point6InitialGuess, point7InitialGue
 # minDistance = 0.1
 minDistanceBetweenPathNodes = 0.5
 # minDistanceFromLine = 0.25
-xGuessPoints = []
-yGuessPoints = []
-
+x5GuessPoints = []
+y5GuessPoints = []
+x6GuessPoints = []
+y6GuessPoints = []
+x7GuessPoints = []
+y7GuessPoints = []
+x8GuessPoints = []
+y8GuessPoints = []
+x9GuessPoints = []
+y9GuessPoints = []
 
 opt = {'maxiter': 1000}
 result = minimize(functionToMinimize, initialPointsGuesses, constraints=cons, options=opt)
