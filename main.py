@@ -13,7 +13,7 @@ shapeBaseLength = 0.05  # meters, if square or rectangle
 shapeBaseHeight = 0.05  # meters, if rectangle
 shapeBaseDiameter = 0.05  # meters, if circle
 
-plotPointGuesses = True
+plotPointGuesses = False
 
 
 def GetMaterialProperties(materialType):
@@ -362,22 +362,31 @@ def PathStartPointsFallOnLines(optimalPoints):
     # returnVec.append(distance(line4.points[0], point9ThatShouldBeOnLine) +
     # distance(point9ThatShouldBeOnLine, line4.points[1]) - distance(line4.points[0], line4.points[1]))
 
-    yOfLine2 = line2.points[1].y + (((line2.points[0].y - line2.points[1].y) / (line2.points[0].x - line2.points[1].x))
-                                    * (optimalPoints[0] - line2.points[1].x))
+    # yOfLine2 = line2.points[1].y + (((line2.points[0].y - line2.points[1].y) / (line2.points[0].x - line2.points[1].x))
+    #                                 * (optimalPoints[0] - line2.points[1].x))
+    yOfLine2 = line2.points[1].y + (((line2.points[1].y - line2.points[0].y) / (line2.points[1].x - line2.points[0].x))
+                                    * (optimalPoints[4] - line2.points[1].x))
 
     yOfLine4 = line4.points[1].y + (((line4.points[0].y - line4.points[1].y) / (line4.points[0].x - line4.points[1].x))
-                                    * (optimalPoints[0] - line4.points[1].x))
+                                    * (optimalPoints[8] - line4.points[1].x))
 
+    # xOfLine1 = line1.points[1].x + (((line1.points[1].x - line1.points[0].x) / (line1.points[1].y - line1.points[0].y))
+    #                                 * (optimalPoints[1] - line1.points[1].y))
     xOfLine1 = line1.points[1].x + (((line1.points[1].x - line1.points[0].x) / (line1.points[1].y - line1.points[0].y))
-                                    * (optimalPoints[1] - line1.points[1].y))
+                                    * (optimalPoints[3] - line1.points[1].y))
 
-    xOfLine3 = line3.points[1].x + (((line3.points[1].x - line3.points[0].x) / (line3.points[1].y - line3.points[0].y))
-                                    * (optimalPoints[1] - line3.points[1].y))
+    xOfLine3 = line3.points[0].x + (((line3.points[1].x - line3.points[0].x) / (line3.points[1].y - line3.points[0].y))
+                                    * (optimalPoints[7] - line3.points[0].y))
 
     returnVec.append(yOfLine2 - optimalPoints[5])
     returnVec.append(optimalPoints[9] - yOfLine4)
     returnVec.append(optimalPoints[2] - xOfLine1)
     returnVec.append(xOfLine3 - optimalPoints[6])
+
+    print("optimal9:", optimalPoints[9], " yOfLine4:", yOfLine4)
+
+    # for x in range(len(returnVec)):
+    #     print(returnVec[x])
 
     return returnVec
 
@@ -413,7 +422,6 @@ con6 = {'type': 'ineq', 'fun': KeepGuessPointsMinDistanceApartConstraint}
 con12 = {'type': 'ineq', 'fun': PointIsBoundedInPolygonConstraint}
 con13 = {'type': 'eq', 'fun': PathStartPointsFallOnLines}
 con14 = {'type': 'ineq', 'fun': StartPointsDoNotGoBeyondLineConstraint}
-
 cons = [con6, con12, con13, con14]
 
 
@@ -445,10 +453,20 @@ def functionToMinimize(optimalPoints):
 
 
 # ##DEFINE PANEL POLYGON## #
-point1 = ClassPoint(0, 0)
-point2 = ClassPoint(-1, 2)
-point3 = ClassPoint(3, 2.5)
-point4 = ClassPoint(2, 0)
+point1 = ClassPoint(0.3125, 0.497)
+point2 = ClassPoint(0.08333, 1.6287)
+point3 = ClassPoint(1.875, 1.7126)
+point4 = ClassPoint(1.8958, 0.5398)
+
+# Flasher panel
+# point1 = ClassPoint(0.3125, 0.497)
+# point2 = ClassPoint(0.08333, 1.6287)
+# point3 = ClassPoint(1.875, 1.7126)
+# point4 = ClassPoint(1.8958, 0.5398)
+
+minDistanceBetweenPathNodes = 0.25
+# minDistanceBetweenPathNodes = 0.0
+
 
 minX, maxX, minY, maxY = FindAxisLimits([point1, point2, point3, point4])
 
@@ -467,7 +485,6 @@ initialPointsGuesses = [point5InitialGuess, point6InitialGuess, point7InitialGue
                         point9InitialGuess]
 
 # minDistance = 0.1
-minDistanceBetweenPathNodes = 0.25
 # minDistanceFromLine = 0.25
 if plotPointGuesses:
     x5GuessPoints = []
@@ -491,11 +508,11 @@ point7 = ClassPoint(result.x[4], result.x[5])
 point8 = ClassPoint(result.x[6], result.x[7])
 point9 = ClassPoint(result.x[8], result.x[9])
 
-# print("Point 5:", point5)
-# print("Point 6:", point6)
-# print("Point 7:", point7)
-# print("Point 8:", point8)
-# print("Point 9:", point9)
+print("Point 5:", point5)
+print("Point 6:", point6)
+print("Point 7:", point7)
+print("Point 8:", point8)
+print("Point 9:", point9)
 
 
 line5 = ClassLine(point6, point5)
