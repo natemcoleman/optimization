@@ -159,8 +159,8 @@ def plotShape(linesToPlot,  numberOfPolygonLines):
     plt.plot(xValuesToPlotShape, yValuesToPlotShape, 'b--')
     plt.plot(xValuesToPlotPath, yValuesToPlotPath, 'g-')
 
-    # plt.plot(xGuessPoints, yGuessPoints, 'c.')
-    # plt.plot(xGuessPoints, yGuessPoints, 'm')
+    plt.plot(xGuessPoints, yGuessPoints, 'c.')
+    plt.plot(xGuessPoints, yGuessPoints, 'm')
 
     ax = plt.gca()
     ax.set_aspect(1)
@@ -377,7 +377,7 @@ def functionToMinimize(optimalPoints):
 
 # ##DEFINE PANEL POLYGON## #
 point1 = point(0, 0)
-point2 = point(0, 1)
+point2 = point(0, 1.5)
 point3 = point(3, 0.75)
 point4 = point(2, 0.25)
 
