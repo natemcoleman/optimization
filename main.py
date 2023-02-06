@@ -1,4 +1,8 @@
 # Initial python script for optimization final project
+#Things to work on:
+# -Lines can end on any other line
+# -Ibeam optimized cross section?
+# -Stiffness calculations
 
 from math import sqrt, pi
 import matplotlib.pyplot as plt
@@ -6,14 +10,18 @@ from scipy.optimize import minimize
 import numpy as np
 from numpy import linalg as la
 
-materials = ["Aluminum", "Steel", "ABS"]
-crossSectionShapes = ["Square", "Round", "Rectangle"]
+
+plotPointGuesses = True
+allowSelectBeginPoint = True
 
 shapeBaseLength = 0.05  # meters, if square or rectangle
 shapeBaseHeight = 0.05  # meters, if rectangle
 shapeBaseDiameter = 0.05  # meters, if circle
 
-plotPointGuesses = True
+materials = ["Aluminum", "Steel", "ABS"]
+crossSectionShapes = ["Square", "Round", "Rectangle"]
+material = materials[0]
+crossSection = crossSectionShapes[0]
 
 
 def GetMaterialProperties(materialType):
@@ -78,8 +86,8 @@ def GetLengthOfLine(lineToGetLength):
 
 
 def GetMassOfLine(lineToCalcMass):
-    A, Ix, Iy = GetPropertiesOfSections("Square")
-    rho, E, Sy, Su = GetMaterialProperties("Aluminum")
+    A, Ix, Iy = GetPropertiesOfSections(crossSection)
+    rho, E, Sy, Su = GetMaterialProperties(material)
     massOfLine = GetLengthOfLine(lineToCalcMass) * A * rho  # mass in kilograms
 
     return massOfLine
@@ -99,6 +107,23 @@ def PrintMassOfAllLines(linesToGetMass):
         totalMass += GetMassOfLine(linesToGetMass[m])
         print("Mass of line ", m, ":", GetMassOfLine(linesToGetMass[m]), "kg")
     print("Total mass:", totalMass, "kg")
+
+
+def onclick(event):
+    global ix, iy
+    ix, iy = event.xdata, event.ydata
+
+    # assign global variable to access outside of function
+    global coords
+    coords.append((ix, iy))
+
+    # Disconnect after 2 clicks
+    if len(coords) == 1:
+        fig.canvas.mpl_disconnect(cid)
+        plt.close(1)
+    # print("Coords:", coords[range(len(coords)-1)])
+    # x0 = [ix,iy]
+    return
 
 
 class ClassPoint:
@@ -142,7 +167,6 @@ def is_on_any_line(guessPoint):
 
 
 def plotShape(linesToPlot, numberOfPolygonLines):
-    # plt.axis('off')
     xValuesToPlotShape = []
     yValuesToPlotShape = []
     xValuesToPlotPath = []
@@ -184,7 +208,40 @@ def plotShape(linesToPlot, numberOfPolygonLines):
 
     plt.xlabel('Y')
     plt.ylabel('X')
+
+    xAxisBuffer = abs(maxX - minX)*0.05
+    yAxisBuffer = abs(maxY - minY)*0.05
+
+    plt.xlim([minX-xAxisBuffer, maxX+xAxisBuffer])
+    plt.ylim([minY-yAxisBuffer, maxY+yAxisBuffer])
+
     plt.show()
+
+
+def TempStiffnessCalc(allLines):
+    stiffness = 0
+    kx = 0
+    ky = 0
+    A, Ix, Iy = GetPropertiesOfSections("Square")
+    rho, E, Sy, Su = GetMaterialProperties("Aluminum")
+    gamma = 0.8517
+    xLengths = []
+    yLengths = []
+
+    for stiffnessIndex in range(len(allLines)):
+        xLengths.append(abs(allLines[stiffnessIndex].points[0].x - allLines[stiffnessIndex].points[1].x))
+        yLengths.append(abs(allLines[stiffnessIndex].points[0].y - allLines[stiffnessIndex].points[1].y))
+
+    for stiffnessIndex in range(len(xLengths)):
+        # kx += ((xLengths[stiffnessIndex]**3)/(48*E*Ix))
+        # ky += ((yLengths[stiffnessIndex]**3)/(48*E*Iy))
+        kx += (pi*(gamma**2)*E*Ix) / (xLengths[stiffnessIndex])
+        ky += (pi*(gamma**2)*E*Iy) / (yLengths[stiffnessIndex])
+
+    stiffness = kx
+    stiffness += ky
+
+    return stiffness
 
 
 def FindAxisLimits(arrayOfPoints):
@@ -198,11 +255,11 @@ def FindAxisLimits(arrayOfPoints):
     for q in range(numberOfPointsNotOnEdge):
         if arrayOfPoints[q].x > maxXAxis:
             maxXAxis = arrayOfPoints[q].x
-        elif arrayOfPoints[q].x < minXAxis:
+        if arrayOfPoints[q].x < minXAxis:
             minXAxis = arrayOfPoints[q].x
         if arrayOfPoints[q].y > maxYAxis:
             maxYAxis = arrayOfPoints[q].y
-        elif arrayOfPoints[q].y < minYAxis:
+        if arrayOfPoints[q].y < minYAxis:
             minYAxis = arrayOfPoints[q].y
 
     return minXAxis, maxXAxis, minYAxis, maxYAxis
@@ -220,41 +277,18 @@ def GetPointDistanceFromLine(middlePoint, polygonLine):
     return np.cross(p2 - p1, p3 - p1) / la.norm(p2 - p1)
 
 
-# def constraint1(optimalPoints):
-#     returnVec = []
-#
-#     # for distanceIndex in range(len(polygonLines)):
-#     #     returnVec.append(GetPointDistanceFromLine(currPoint5, polygonLines[distanceIndex])-minDistanceFromLine)
-#
-#     returnVec.append(GetPointDistanceFromLine(point(optimalPoints[0], optimalPoints[1]), polygonLines[2])
-#                      - minDistanceFromLine)
-#
-#     return returnVec
-#
-#
-# def constraint2(optimalPoints):
-#     point6ThatShouldBeOnLine = point(optimalPoints[2], optimalPoints[3])
-#     return distance(line1.points[0], point6ThatShouldBeOnLine) + distance(point6ThatShouldBeOnLine, line1.points[1]) \
-#         - distance(line1.points[0], line1.points[1])
-#
-#
-# def constraint3(optimalPoints):
-#     point7ThatShouldBeOnLine = point(optimalPoints[4], optimalPoints[5])
-#     return distance(line2.points[0], point7ThatShouldBeOnLine) + distance(point7ThatShouldBeOnLine, line2.points[1]) \
-#         - distance(line2.points[0], line2.points[1])
-#
-#
-# def constraint4(optimalPoints):
-#     point8ThatShouldBeOnLine = point(optimalPoints[6], optimalPoints[7])
-#     return distance(line3.points[0], point8ThatShouldBeOnLine) + distance(point8ThatShouldBeOnLine, line3.points[1]) \
-#         - distance(line3.points[0], line3.points[1])
-#
-#
-# def constraint5(optimalPoints):
-#     point9ThatShouldBeOnLine = point(optimalPoints[8], optimalPoints[9])
-#     return distance(line4.points[0], point9ThatShouldBeOnLine) + distance(point9ThatShouldBeOnLine, line4.points[1]) \
-#         - distance(line4.points[0], line4.points[1])
-#
+def constraint1(optimalPoints):
+    returnVec = []
+
+    # for distanceIndex in range(len(polygonLines)):
+    #     returnVec.append(GetPointDistanceFromLine(currPoint5, polygonLines[distanceIndex])-minDistanceFromLine)
+
+    returnVec.append(GetPointDistanceFromLine(ClassPoint(optimalPoints[0], optimalPoints[1]), polygonLines[2])
+                     - minDistanceFromLine)
+
+    return returnVec
+
+
 def KeepMiddleNodeMinDistanceFromCornersConstraint(optimalPoints):
     distanceBetweenPoints = []
     currentPoint5 = ClassPoint(optimalPoints[0], optimalPoints[1])
@@ -265,8 +299,6 @@ def KeepMiddleNodeMinDistanceFromCornersConstraint(optimalPoints):
     distanceBetweenPoints.append(distance(point4, currentPoint5) - minDistanceFromCorners)
 
     return distanceBetweenPoints
-
-
 
 
 def KeepGuessPointsMinDistanceApartConstraint(optimalPoints):
@@ -288,50 +320,6 @@ def KeepGuessPointsMinDistanceApartConstraint(optimalPoints):
     distanceBetweenPoints.append(distance(currentPoint9, currentPoint5) - minDistanceBetweenPathNodes)
 
     return distanceBetweenPoints
-
-
-#
-# def constraint7(optimalPoints):
-#     returnVec = []
-#
-#     minXCon, maxXCon, minYCon, maxYCon = FindAxisLimits([point1, point2, point3, point4])
-#
-#     returnVec.append(optimalPoints[0] - minXCon)
-#     returnVec.append(maxXCon - optimalPoints[0])
-#     returnVec.append(optimalPoints[1] - minYCon)
-#     returnVec.append(maxYCon - optimalPoints[1])
-#
-#     return returnVec
-#
-#
-# def constraint8(optimalPoints):
-#     yOfLine2 = line2.points[1].y + (((line2.points[0].y - line2.points[1].y)/(line2.points[0].x - line2.points[1].x))
-#                                     *(optimalPoints[0] - line2.points[1].x))
-#
-#     return yOfLine2 - optimalPoints[1]
-#
-#
-# def constraint9(optimalPoints):
-#     yOfLine4 = line4.points[1].y + (((line4.points[0].y - line4.points[1].y)/(line4.points[0].x - line4.points[1].x))
-#                                     *(optimalPoints[0] - line4.points[1].x))
-#
-#     return optimalPoints[1] - yOfLine4
-#
-#
-# def constraint10(optimalPoints):
-#     xOfLine1 = line1.points[1].x + (((line1.points[1].x - line1.points[0].x) /
-#     (line1.points[1].y - line1.points[0].y)) * (optimalPoints[1] - line1.points[1].y))
-#
-#     return optimalPoints[0] - xOfLine1
-#
-#
-# def constraint11(optimalPoints):
-#     xOfLine3 = line3.points[1].x + (((line3.points[1].x - line3.points[0].x) /
-#     (line3.points[1].y - line3.points[0].y)) * (optimalPoints[1] - line3.points[1].y))
-#
-#     # print("point5 is to the left of", xOfLine3 - optimalPoints[0])
-#     return xOfLine3 - optimalPoints[0]
-#
 
 
 def PointIsBoundedInPolygonConstraint(optimalPoints):
@@ -419,26 +407,15 @@ def StartPointsDoNotGoBeyondLineConstraint(optimalPoints):
     return returnVec
 
 
-# con1 = {'type': 'ineq', 'fun': constraint1}  # Point is a minimum distance from line
-# con2 = {'type': 'eq', 'fun': constraint2}  # 2-5, starts on lines
-# con3 = {'type': 'eq', 'fun': constraint3}
-# con4 = {'type': 'eq', 'fun': constraint4}
-# con5 = {'type': 'eq', 'fun': constraint5}
-# con7 = {'type': 'ineq', 'fun': constraint7}  # Point is within bounding limits, replaced with polygon bounds
-# con8 = {'type': 'ineq', 'fun': constraint8}  # 8-11, is within polygon
-# con9 = {'type': 'ineq', 'fun': constraint9}
-# con10 = {'type': 'ineq', 'fun': constraint10}
-# con11 = {'type': 'ineq', 'fun': constraint11}
-# con13 = {'type': 'eq', 'fun': PathStartPointsFallOnLines}
 
-con6 = {'type': 'ineq', 'fun': KeepGuessPointsMinDistanceApartConstraint}
-con12 = {'type': 'ineq', 'fun': PointIsBoundedInPolygonConstraint}
-con13 = {'type': 'eq', 'fun': PathStartPointsFallOnLines}
-con14 = {'type': 'ineq', 'fun': StartPointsDoNotGoBeyondLineConstraint}
-con15 = {'type': 'ineq', 'fun': KeepMiddleNodeMinDistanceFromCornersConstraint}
+con1 = {'type': 'ineq', 'fun': KeepGuessPointsMinDistanceApartConstraint}
+con2 = {'type': 'ineq', 'fun': PointIsBoundedInPolygonConstraint}
+con3 = {'type': 'eq', 'fun': PathStartPointsFallOnLines}
+con4 = {'type': 'ineq', 'fun': StartPointsDoNotGoBeyondLineConstraint}
+con5 = {'type': 'ineq', 'fun': KeepMiddleNodeMinDistanceFromCornersConstraint}
+# con6 = {'type': 'ineq', 'fun': constraint1}  # Point is a minimum distance from line
 
-# cons = [con6, con12, con13, con14]
-cons = [con6, con12, con13, con14, con15]
+cons = [con1, con2, con3, con4, con5]
 
 
 def functionToMinimize(optimalPoints):
@@ -465,7 +442,9 @@ def functionToMinimize(optimalPoints):
     line8Opt = ClassLine(point9New, point5New)
     pathLinesNew = [line5Opt, line6Opt, line7Opt, line8Opt]
 
-    return -GetMassOfAllLines(pathLinesNew)
+    return GetMassOfAllLines(pathLinesNew)
+    # return -GetMassOfAllLines(pathLinesNew)
+    # return TempStiffnessCalc(pathLinesNew)
 
 
 # ##DEFINE PANEL POLYGON## #
@@ -480,10 +459,10 @@ point4 = ClassPoint(1.8958, 0.5398)
 # point3 = ClassPoint(1.875, 1.7126)
 # point4 = ClassPoint(1.8958, 0.5398)
 
-minDistanceBetweenPathNodes = 0.25
-# minDistanceBetweenPathNodes = 0.0
-minDistanceFromCorners = 0.1
 
+minDistanceBetweenPathNodes = 0.25
+minDistanceFromCorners = 0.1
+minDistanceFromLine = 0.05
 
 minX, maxX, minY, maxY = FindAxisLimits([point1, point2, point3, point4])
 
@@ -493,16 +472,46 @@ line3 = ClassLine(point3, point4)
 line4 = ClassLine(point1, point4)
 polygonLines = [line1, line2, line3, line4]
 
-point5InitialGuess = [((minX + maxX) / 2, (minY + maxY) / 2)]  # First guess is in middle of bounds
+
+if allowSelectBeginPoint:
+    xValuesToPlotShape = []
+    yValuesToPlotShape = []
+    xValuesToPlotPath = []
+    yValuesToPlotPath = []
+
+    for p in range(len(polygonLines)):
+        plt.plot(polygonLines[p].points[0].x, polygonLines[p].points[0].y, 'r*')
+        plt.plot(polygonLines[p].points[1].x, polygonLines[p].points[1].y, 'r*')
+        xValuesToPlotShape.append(polygonLines[p].points[0].x)
+        xValuesToPlotShape.append(polygonLines[p].points[1].x)
+        yValuesToPlotShape.append(polygonLines[p].points[0].y)
+        yValuesToPlotShape.append(polygonLines[p].points[1].y)
+
+    xValuesToPlotShape.pop()
+    yValuesToPlotShape.pop()
+    plt.plot(xValuesToPlotShape, yValuesToPlotShape, 'b--')
+    plt.plot(xValuesToPlotPath, yValuesToPlotPath, 'g-')
+    ax = plt.gca()
+    ax.set_aspect(1)
+    plt.xlabel('Y')
+    plt.ylabel('X')
+    fig = plt.figure(1)
+
+    coords = []
+    cid = fig.canvas.mpl_connect('button_press_event', onclick)
+    plt.show()
+    point5InitialGuess = [coords[0]]
+else:
+    point5InitialGuess = [((minX + maxX) / 2, (minY + maxY) / 2)]  # First guess is in middle of bounds
+
 point6InitialGuess = GetMidpointOfLine(line1)
 point7InitialGuess = GetMidpointOfLine(line2)
 point8InitialGuess = GetMidpointOfLine(line3)
 point9InitialGuess = GetMidpointOfLine(line4)
+
 initialPointsGuesses = [point5InitialGuess, point6InitialGuess, point7InitialGuess, point8InitialGuess,
                         point9InitialGuess]
 
-# minDistance = 0.1
-# minDistanceFromLine = 0.25
 if plotPointGuesses:
     x5GuessPoints = []
     y5GuessPoints = []
@@ -531,7 +540,6 @@ point9 = ClassPoint(result.x[8], result.x[9])
 # print("Point 8:", point8)
 # print("Point 9:", point9)
 
-
 line5 = ClassLine(point6, point5)
 line6 = ClassLine(point7, point5)
 line7 = ClassLine(point8, point5)
@@ -545,16 +553,6 @@ plotLines.extend(pathLines)
 # PrintMassOfAllLines(pathLines)
 plotShape(plotLines, len(polygonLines))
 
-# print("point 5 is between:", is_between_points(point1, point2,point5), ". This should be False.")
-# print("point 1 is between:", is_between_points(point1, point4, point1), ". This should be True.")
-# print("Point 1 is on line 1:", is_on_line(line1, point1), ". This should be True.")
-# print("Point 3 is on line 1:", is_on_line(line1, point3), ". This should be False.")
-# print("Point 5 is on line 4:", is_on_line(line4, point5), ". This should be False.")
-# print("Point 6 is on line 4:", is_on_line(line4, point6), ". This should be True.")
 
-# print("Point 1 is on any line", is_on_any_line(point1), ". This should be True.")
-# print("Point 2 is on any line", is_on_any_line(point2), ". This should be True.")
-# print("Point 3 is on any line", is_on_any_line(point3), ". This should be True.")
-# print("Point 4 is on any line", is_on_any_line(point4), ". This should be True.")
-# print("Point 5 is on any line", is_on_any_line(point5), ". This should be False.")
-# print("Point 6 is on any line", is_on_any_line(point6), ". This should be True.")
+
+
