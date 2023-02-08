@@ -1,7 +1,6 @@
 # Initial python script for optimization final project
 #Things to work on:
 # -Lines can end on any other line
-# -Ibeam optimized cross section?
 # -Stiffness calculations
 
 from math import sqrt, pi
@@ -14,14 +13,217 @@ from numpy import linalg as la
 plotPointGuesses = True
 allowSelectBeginPoint = True
 
+
+# IF TRIANGULAR PANEL, LEAVE FOURTH POINT EMPTY
+firstPoint = (0.3125, 0.497)
+secondPoint = (0.08333, 1.6287)
+thirdPoint = (1.875, 1.7126)
+fourthPoint = ()
+# fourthPoint = (1.8958, 0.5398)
+
 shapeBaseLength = 0.05  # meters, if square or rectangle
 shapeBaseHeight = 0.05  # meters, if rectangle
 shapeBaseDiameter = 0.05  # meters, if circle
 
+minDistanceBetweenPathNodes = 0.25
+minDistanceFromCorners = 0.1
+minDistanceFromLine = 0.05
+
 materials = ["Aluminum", "Steel", "ABS"]
-crossSectionShapes = ["Square", "Round", "Rectangle"]
+crossSectionShapes = ["Square", "Round", "Rectangle", "I-Beam"]
 material = materials[0]
 crossSection = crossSectionShapes[0]
+
+tryAnotherPoint = True
+
+# If using I-Beam cross-section
+t_min = 0.25  # meters
+A_max = 10  # meters
+H_max = 5  # meters
+f_max = 5  # meters
+ratioIxIy = 3
+
+
+def OptimizeIBeam():
+    def moment_of_inertia(x):
+        flangeLength, heightLength, middleThickness, flangeThickness = x
+        Iy = (((middleThickness ** 3) * heightLength) / 12) + (2 * (((flangeLength ** 3) * flangeThickness) / 12))
+        return -Iy
+
+
+    def thickness_constraint(x):
+        return np.min([x[2], x[3]]) - t_min
+
+
+    def Ix_constraint(x):
+        flangeLength, heightLength, middleThickness, flangeThickness = x
+        Ix = (((heightLength ** 3) * middleThickness) / 12) + (2 * ((((flangeThickness ** 3) * flangeLength) / 12) + (
+                ((flangeThickness * flangeLength) * ((heightLength + flangeThickness) ** 2)) / 4)))
+        Iy = (((middleThickness ** 3) * heightLength) / 12) + (2 * (((flangeLength ** 3) * flangeThickness) / 12))
+
+        return Ix - Iy * ratioIxIy
+
+
+    def area_constraint(x):
+        flangeLength, heightLength, middleThickness, flangeThickness = x
+        A = (2 * flangeLength * flangeThickness) + (heightLength * middleThickness)
+        return A_max - A
+
+
+    def height_constraint(x):
+        flangeLength, heightLength, middleThickness, flangeThickness = x
+        return H_max - heightLength
+
+
+    def flange_constraint(x):
+        flangeLength, heightLength, middleThickness, flangeThickness = x
+        return f_max - flangeLength
+
+
+    def optimize_beam(t_min, A_min, H_max, f_max):
+        x0 = np.array([10, 20, 1, 2])  # initial guesses for flangeLength, heightLength, middleThickness, flangeThickness
+        bounds = [(0, f_max), (0, H_max), (t_min, H_max),
+                  (t_min, f_max)]  # bounds for flangeLength, heightLength, middleThickness, flangeThickness
+        constraints = [{"type": "ineq", "fun": thickness_constraint},
+                       {"type": "ineq", "fun": area_constraint},
+                       {"type": "ineq", "fun": height_constraint},
+                       {"type": "ineq", "fun": Ix_constraint},
+                       {"type": "ineq", "fun": flange_constraint}]
+        res = minimize(moment_of_inertia, x0, bounds=bounds, constraints=constraints)
+
+        return res
+
+
+    def plot_I_beam(flangeLength, heightLength, middleThickness, flangeThickness):
+        # Define the x-coordinates for the flanges and the web
+        x_flange1 = [flangeLength / 2, flangeLength / 2, -flangeLength / 2, -flangeLength / 2]
+        y_flange1 = [heightLength / 2, heightLength / 2 + flangeThickness, heightLength / 2 + flangeThickness,
+                     heightLength / 2]
+        x_flange2 = [flangeLength / 2, flangeLength / 2, -flangeLength / 2, -flangeLength / 2]
+        y_flange2 = [-heightLength / 2, -heightLength / 2 - flangeThickness, -heightLength / 2 - flangeThickness,
+                     -heightLength / 2]
+        x_web = [-middleThickness / 2, middleThickness / 2, middleThickness / 2, -middleThickness / 2]
+        y_web = [heightLength / 2, heightLength / 2, -heightLength / 2, -heightLength / 2]
+
+        # Plot the flanges and the web
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        ax.set_aspect(1)
+        ax.fill(x_flange1, y_flange1, 'k')
+        ax.fill(x_flange2, y_flange2, 'k')
+        ax.fill(x_web, y_web, 'gray')
+        # ax.axis('off')
+        plt.show()
+
+
+    # t_min = 0.25  # inches
+    # A_max = 10  # square inches
+    # H_max = 5  # inches
+    # f_max = 5  # inches
+    # ratioIxIy = 3
+    res = optimize_beam(t_min, A_max, H_max, f_max)
+    flangeLength, heightLength, middleThickness, flangeThickness = res.x
+    Ix = (((heightLength ** 3) * middleThickness) / 12) + (2 * ((((flangeThickness ** 3) * flangeLength) / 12) + (
+                ((flangeThickness * flangeLength) * ((heightLength + flangeThickness) ** 2)) / 4)))
+    Iy = (((middleThickness ** 3) * heightLength) / 12) + (2 * (((flangeLength ** 3) * flangeThickness) / 12))
+    A = (2 * flangeLength * flangeThickness) + (heightLength * middleThickness)
+
+    # print("Optimal flange length:", flangeLength, "inches")
+    # print("Optimal height:", heightLength, "inches")
+    # print("Optimal web thickness:", middleThickness, "inches")
+    # print("Optimal flange thickness:", flangeThickness, "inches")
+    # print("Maximized moment of inertia (y):", Iy, "inch^4")
+    # print("Maximized moment of inertia (x):", Ix, "inch^4")
+    # plot_I_beam(flangeLength, heightLength, middleThickness, flangeThickness)
+    return A, Ix, Iy
+
+
+def PlotOptimizedIBeam():
+    def moment_of_inertia(x):
+        flangeLength, heightLength, middleThickness, flangeThickness = x
+        Iy = (((middleThickness ** 3) * heightLength) / 12) + (2 * (((flangeLength ** 3) * flangeThickness) / 12))
+        return -Iy
+
+    def thickness_constraint(x):
+        return np.min([x[2], x[3]]) - t_min
+
+    def Ix_constraint(x):
+        flangeLength, heightLength, middleThickness, flangeThickness = x
+        Ix = (((heightLength ** 3) * middleThickness) / 12) + (2 * ((((flangeThickness ** 3) * flangeLength) / 12) + (
+                ((flangeThickness * flangeLength) * ((heightLength + flangeThickness) ** 2)) / 4)))
+        Iy = (((middleThickness ** 3) * heightLength) / 12) + (2 * (((flangeLength ** 3) * flangeThickness) / 12))
+
+        return Ix - Iy * ratioIxIy
+
+    def area_constraint(x):
+        flangeLength, heightLength, middleThickness, flangeThickness = x
+        A = (2 * flangeLength * flangeThickness) + (heightLength * middleThickness)
+        return A_max - A
+
+    def height_constraint(x):
+        flangeLength, heightLength, middleThickness, flangeThickness = x
+        return H_max - heightLength
+
+    def flange_constraint(x):
+        flangeLength, heightLength, middleThickness, flangeThickness = x
+        return f_max - flangeLength
+
+    def optimize_beam(t_min, A_min, H_max, f_max):
+        x0 = np.array(
+            [10, 20, 1, 2])  # initial guesses for flangeLength, heightLength, middleThickness, flangeThickness
+        bounds = [(0, f_max), (0, H_max), (t_min, H_max),
+                  (t_min, f_max)]  # bounds for flangeLength, heightLength, middleThickness, flangeThickness
+        constraints = [{"type": "ineq", "fun": thickness_constraint},
+                       {"type": "ineq", "fun": area_constraint},
+                       {"type": "ineq", "fun": height_constraint},
+                       {"type": "ineq", "fun": Ix_constraint},
+                       {"type": "ineq", "fun": flange_constraint}]
+        res = minimize(moment_of_inertia, x0, bounds=bounds, constraints=constraints)
+
+        return res
+
+    def plot_I_beam(flangeLength, heightLength, middleThickness, flangeThickness):
+        # Define the x-coordinates for the flanges and the web
+        x_flange1 = [flangeLength / 2, flangeLength / 2, -flangeLength / 2, -flangeLength / 2]
+        y_flange1 = [heightLength / 2, heightLength / 2 + flangeThickness, heightLength / 2 + flangeThickness,
+                     heightLength / 2]
+        x_flange2 = [flangeLength / 2, flangeLength / 2, -flangeLength / 2, -flangeLength / 2]
+        y_flange2 = [-heightLength / 2, -heightLength / 2 - flangeThickness, -heightLength / 2 - flangeThickness,
+                     -heightLength / 2]
+        x_web = [-middleThickness / 2, middleThickness / 2, middleThickness / 2, -middleThickness / 2]
+        y_web = [heightLength / 2, heightLength / 2, -heightLength / 2, -heightLength / 2]
+
+        # Plot the flanges and the web
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        ax.set_aspect(1)
+        ax.fill(x_flange1, y_flange1, 'k')
+        ax.fill(x_flange2, y_flange2, 'k')
+        ax.fill(x_web, y_web, 'gray')
+        # ax.axis('off')
+        plt.show()
+
+    # t_min = 0.25  # inches
+    # A_max = 10  # square inches
+    # H_max = 5  # inches
+    # f_max = 5  # inches
+    # ratioIxIy = 3
+    res = optimize_beam(t_min, A_max, H_max, f_max)
+    flangeLength, heightLength, middleThickness, flangeThickness = res.x
+    Ix = (((heightLength ** 3) * middleThickness) / 12) + (2 * ((((flangeThickness ** 3) * flangeLength) / 12) + (
+            ((flangeThickness * flangeLength) * ((heightLength + flangeThickness) ** 2)) / 4)))
+    Iy = (((middleThickness ** 3) * heightLength) / 12) + (2 * (((flangeLength ** 3) * flangeThickness) / 12))
+    A = (2 * flangeLength * flangeThickness) + (heightLength * middleThickness)
+
+    print("Optimal flange length:", flangeLength, "inches")
+    print("Optimal height:", heightLength, "inches")
+    print("Optimal web thickness:", middleThickness, "inches")
+    print("Optimal flange thickness:", flangeThickness, "inches")
+    print("Maximized moment of inertia (y):", Iy, "inch^4")
+    print("Maximized moment of inertia (x):", Ix, "inch^4")
+    plot_I_beam(flangeLength, heightLength, middleThickness, flangeThickness)
+    return A, Ix, Iy
+
 
 
 def GetMaterialProperties(materialType):
@@ -68,6 +270,8 @@ def GetPropertiesOfSections(crossSectionShape):
         A = shapeBaseLength ** 2
         Ix = (shapeBaseLength * (shapeBaseLength ** 3)) / 12
         Iy = (shapeBaseLength * (shapeBaseLength ** 3)) / 12
+    elif crossSectionShape == "I-Beam":
+        A, Ix, Iy = OptimizeIBeam()
     else:
         A = -9999
         Ix = -9999
@@ -86,8 +290,8 @@ def GetLengthOfLine(lineToGetLength):
 
 
 def GetMassOfLine(lineToCalcMass):
-    A, Ix, Iy = GetPropertiesOfSections(crossSection)
-    rho, E, Sy, Su = GetMaterialProperties(material)
+    # A, Ix, Iy = GetPropertiesOfSections(crossSection)
+    # rho, E, Sy, Su = GetMaterialProperties(material)
     massOfLine = GetLengthOfLine(lineToCalcMass) * A * rho  # mass in kilograms
 
     return massOfLine
@@ -187,11 +391,12 @@ def plotShape(linesToPlot, numberOfPolygonLines):
             yValuesToPlotPath.append(linesToPlot[p].points[0].y)
             yValuesToPlotPath.append(linesToPlot[p].points[1].y)
 
-    xValuesToPlotShape.pop()
-    yValuesToPlotShape.pop()
+    if len(polygonLines) == 4:
+        xValuesToPlotShape.pop()
+        yValuesToPlotShape.pop()
 
-    xValuesToPlotPath.pop()
-    yValuesToPlotPath.pop()
+        xValuesToPlotPath.pop()
+        yValuesToPlotPath.pop()
 
     plt.plot(xValuesToPlotShape, yValuesToPlotShape, 'b--')
     plt.plot(xValuesToPlotPath, yValuesToPlotPath, 'g-')
@@ -201,7 +406,8 @@ def plotShape(linesToPlot, numberOfPolygonLines):
         plt.plot(x6GuessPoints, y6GuessPoints, 'm.')
         plt.plot(x7GuessPoints, y7GuessPoints, 'y.')
         plt.plot(x8GuessPoints, y8GuessPoints, 'm.')
-        plt.plot(x9GuessPoints, y9GuessPoints, 'y.')
+        if numberOfPolygonLines > 3:
+            plt.plot(x9GuessPoints, y9GuessPoints, 'y.')
 
     ax = plt.gca()
     ax.set_aspect(1)
@@ -222,8 +428,8 @@ def TempStiffnessCalc(allLines):
     stiffness = 0
     kx = 0
     ky = 0
-    A, Ix, Iy = GetPropertiesOfSections("Square")
-    rho, E, Sy, Su = GetMaterialProperties("Aluminum")
+    # A, Ix, Iy = GetPropertiesOfSections(crossSection)
+    # rho, E, Sy, Su = GetMaterialProperties(material)
     gamma = 0.8517
     xLengths = []
     yLengths = []
@@ -239,7 +445,7 @@ def TempStiffnessCalc(allLines):
         ky += (pi*(gamma**2)*E*Iy) / (yLengths[stiffnessIndex])
 
     stiffness = kx
-    stiffness += ky
+    stiffness -= ky
 
     return stiffness
 
@@ -296,7 +502,9 @@ def KeepMiddleNodeMinDistanceFromCornersConstraint(optimalPoints):
     distanceBetweenPoints.append(distance(point1, currentPoint5) - minDistanceFromCorners)
     distanceBetweenPoints.append(distance(point2, currentPoint5) - minDistanceFromCorners)
     distanceBetweenPoints.append(distance(point3, currentPoint5) - minDistanceFromCorners)
-    distanceBetweenPoints.append(distance(point4, currentPoint5) - minDistanceFromCorners)
+
+    if len(optimalPoints) > 9:
+        distanceBetweenPoints.append(distance(point4, currentPoint5) - minDistanceFromCorners)
 
     return distanceBetweenPoints
 
@@ -307,17 +515,19 @@ def KeepGuessPointsMinDistanceApartConstraint(optimalPoints):
     currentPoint6 = ClassPoint(optimalPoints[2], optimalPoints[3])
     currentPoint7 = ClassPoint(optimalPoints[4], optimalPoints[5])
     currentPoint8 = ClassPoint(optimalPoints[6], optimalPoints[7])
-    currentPoint9 = ClassPoint(optimalPoints[8], optimalPoints[9])
 
     distanceBetweenPoints.append(distance(currentPoint6, currentPoint7) - minDistanceBetweenPathNodes)
     distanceBetweenPoints.append(distance(currentPoint7, currentPoint8) - minDistanceBetweenPathNodes)
-    distanceBetweenPoints.append(distance(currentPoint8, currentPoint9) - minDistanceBetweenPathNodes)
-    distanceBetweenPoints.append(distance(currentPoint9, currentPoint6) - minDistanceBetweenPathNodes)
-
     distanceBetweenPoints.append(distance(currentPoint6, currentPoint5) - minDistanceBetweenPathNodes)
     distanceBetweenPoints.append(distance(currentPoint7, currentPoint5) - minDistanceBetweenPathNodes)
     distanceBetweenPoints.append(distance(currentPoint8, currentPoint5) - minDistanceBetweenPathNodes)
-    distanceBetweenPoints.append(distance(currentPoint9, currentPoint5) - minDistanceBetweenPathNodes)
+
+    if len(optimalPoints) > 9:
+        currentPoint9 = ClassPoint(optimalPoints[8], optimalPoints[9])
+
+        distanceBetweenPoints.append(distance(currentPoint8, currentPoint9) - minDistanceBetweenPathNodes)
+        distanceBetweenPoints.append(distance(currentPoint9, currentPoint6) - minDistanceBetweenPathNodes)
+        distanceBetweenPoints.append(distance(currentPoint9, currentPoint5) - minDistanceBetweenPathNodes)
 
     return distanceBetweenPoints
 
@@ -327,8 +537,7 @@ def PointIsBoundedInPolygonConstraint(optimalPoints):
     yOfLine2 = line2.points[1].y + (((line2.points[0].y - line2.points[1].y) / (line2.points[0].x - line2.points[1].x))
                                     * (optimalPoints[0] - line2.points[1].x))
 
-    yOfLine4 = line4.points[1].y + (((line4.points[0].y - line4.points[1].y) / (line4.points[0].x - line4.points[1].x))
-                                    * (optimalPoints[0] - line4.points[1].x))
+
 
     xOfLine1 = line1.points[1].x + (((line1.points[1].x - line1.points[0].x) / (line1.points[1].y - line1.points[0].y))
                                     * (optimalPoints[1] - line1.points[1].y))
@@ -337,9 +546,14 @@ def PointIsBoundedInPolygonConstraint(optimalPoints):
                                     * (optimalPoints[1] - line3.points[1].y))
 
     returnVec.append(yOfLine2 - optimalPoints[1])
-    returnVec.append(optimalPoints[1] - yOfLine4)
     returnVec.append(optimalPoints[0] - xOfLine1)
     returnVec.append(xOfLine3 - optimalPoints[0])
+
+    if len(optimalPoints) > 9:
+        yOfLine4 = line4.points[1].y + (((line4.points[0].y - line4.points[1].y) / (line4.points[0].x - line4.points[1].x))
+                                    * (optimalPoints[0] - line4.points[1].x))
+        returnVec.append(optimalPoints[1] - yOfLine4)
+
 
     return returnVec
 
@@ -368,9 +582,6 @@ def PathStartPointsFallOnLines(optimalPoints):
     yOfLine2 = line2.points[1].y + (((line2.points[1].y - line2.points[0].y) / (line2.points[1].x - line2.points[0].x))
                                     * (optimalPoints[4] - line2.points[1].x))
 
-    yOfLine4 = line4.points[1].y + (((line4.points[0].y - line4.points[1].y) / (line4.points[0].x - line4.points[1].x))
-                                    * (optimalPoints[8] - line4.points[1].x))
-
     # xOfLine1 = line1.points[1].x + (((line1.points[1].x - line1.points[0].x) / (line1.points[1].y - line1.points[0].y))
     #                                 * (optimalPoints[1] - line1.points[1].y))
     xOfLine1 = line1.points[1].x + (((line1.points[1].x - line1.points[0].x) / (line1.points[1].y - line1.points[0].y))
@@ -379,10 +590,15 @@ def PathStartPointsFallOnLines(optimalPoints):
     xOfLine3 = line3.points[0].x + (((line3.points[1].x - line3.points[0].x) / (line3.points[1].y - line3.points[0].y))
                                     * (optimalPoints[7] - line3.points[0].y))
 
-    returnVec.append(yOfLine2 - optimalPoints[5])
-    returnVec.append(optimalPoints[9] - yOfLine4)
     returnVec.append(optimalPoints[2] - xOfLine1)
     returnVec.append(xOfLine3 - optimalPoints[6])
+    returnVec.append(yOfLine2 - optimalPoints[5])
+
+    if len(optimalPoints) > 9:
+        yOfLine4 = line4.points[1].y + (((line4.points[0].y - line4.points[1].y) / (line4.points[0].x - line4.points[1].x))
+                                    * (optimalPoints[8] - line4.points[1].x))
+
+        returnVec.append(optimalPoints[9] - yOfLine4)
 
     # print("optimal9:", optimalPoints[9], " yOfLine4:", yOfLine4)
 
@@ -401,11 +617,12 @@ def StartPointsDoNotGoBeyondLineConstraint(optimalPoints):
     returnVec.append(optimalPoints[7] - line3.points[1].y)
     returnVec.append(line2.points[1].x - optimalPoints[4])
     returnVec.append(optimalPoints[4] - line2.points[0].x)
-    returnVec.append(line4.points[1].x - optimalPoints[8])
-    returnVec.append(optimalPoints[8] - line4.points[0].x)
+    if len(optimalPoints) > 9:
+        returnVec.append(line4.points[1].x - optimalPoints[8])
+        returnVec.append(optimalPoints[8] - line4.points[0].x)
+
 
     return returnVec
-
 
 
 con1 = {'type': 'ineq', 'fun': KeepGuessPointsMinDistanceApartConstraint}
@@ -423,7 +640,8 @@ def functionToMinimize(optimalPoints):
     point6New = ClassPoint(optimalPoints[2], optimalPoints[3])
     point7New = ClassPoint(optimalPoints[4], optimalPoints[5])
     point8New = ClassPoint(optimalPoints[6], optimalPoints[7])
-    point9New = ClassPoint(optimalPoints[8], optimalPoints[9])
+    if len(optimalPoints) > 9:
+        point9New = ClassPoint(optimalPoints[8], optimalPoints[9])
     if plotPointGuesses:
         x5GuessPoints.append(optimalPoints[0])
         y5GuessPoints.append(optimalPoints[1])
@@ -433,25 +651,49 @@ def functionToMinimize(optimalPoints):
         y7GuessPoints.append(optimalPoints[5])
         x8GuessPoints.append(optimalPoints[6])
         y8GuessPoints.append(optimalPoints[7])
-        x9GuessPoints.append(optimalPoints[8])
-        y9GuessPoints.append(optimalPoints[9])
+        if len(optimalPoints) > 9:
+            x9GuessPoints.append(optimalPoints[8])
+            y9GuessPoints.append(optimalPoints[9])
 
     line5Opt = ClassLine(point6New, point5New)
     line6Opt = ClassLine(point7New, point5New)
     line7Opt = ClassLine(point8New, point5New)
-    line8Opt = ClassLine(point9New, point5New)
-    pathLinesNew = [line5Opt, line6Opt, line7Opt, line8Opt]
+    pathLinesNew = [line5Opt, line6Opt, line7Opt]
+
+    if len(optimalPoints) > 9:
+        line8Opt = ClassLine(point9New, point5New)
+        pathLinesNew.append(line8Opt)
 
     return GetMassOfAllLines(pathLinesNew)
     # return -GetMassOfAllLines(pathLinesNew)
     # return TempStiffnessCalc(pathLinesNew)
 
 
+listOfPoints = []
 # ##DEFINE PANEL POLYGON## #
-point1 = ClassPoint(0.3125, 0.497)
-point2 = ClassPoint(0.08333, 1.6287)
-point3 = ClassPoint(1.875, 1.7126)
-point4 = ClassPoint(1.8958, 0.5398)
+point1 = ClassPoint(firstPoint[0], firstPoint[1])
+point2 = ClassPoint(secondPoint[0], secondPoint[1])
+point3 = ClassPoint(thirdPoint[0], thirdPoint[1])
+listOfPoints.append(point1)
+listOfPoints.append(point2)
+listOfPoints.append(point3)
+
+line1 = ClassLine(point1, point2)
+line2 = ClassLine(point2, point3)
+
+if len(fourthPoint) != 0:
+    point4 = ClassPoint(fourthPoint[0], fourthPoint[1])
+    listOfPoints.append(point4)
+
+    line3 = ClassLine(point3, point4)
+    line4 = ClassLine(point1, point4)
+    polygonLines = [line1, line2, line3, line4]
+
+    point9InitialGuess = GetMidpointOfLine(line4)
+
+else:
+    line3 = ClassLine(point3, point1)
+    polygonLines = [line1, line2, line3]
 
 # Flasher panel
 # point1 = ClassPoint(0.3125, 0.497)
@@ -460,98 +702,117 @@ point4 = ClassPoint(1.8958, 0.5398)
 # point4 = ClassPoint(1.8958, 0.5398)
 
 
-minDistanceBetweenPathNodes = 0.25
-minDistanceFromCorners = 0.1
-minDistanceFromLine = 0.05
-
-minX, maxX, minY, maxY = FindAxisLimits([point1, point2, point3, point4])
-
-line1 = ClassLine(point1, point2)
-line2 = ClassLine(point2, point3)
-line3 = ClassLine(point3, point4)
-line4 = ClassLine(point1, point4)
-polygonLines = [line1, line2, line3, line4]
+minX, maxX, minY, maxY = FindAxisLimits(listOfPoints)
 
 
-if allowSelectBeginPoint:
-    xValuesToPlotShape = []
-    yValuesToPlotShape = []
-    xValuesToPlotPath = []
-    yValuesToPlotPath = []
-
-    for p in range(len(polygonLines)):
-        plt.plot(polygonLines[p].points[0].x, polygonLines[p].points[0].y, 'r*')
-        plt.plot(polygonLines[p].points[1].x, polygonLines[p].points[1].y, 'r*')
-        xValuesToPlotShape.append(polygonLines[p].points[0].x)
-        xValuesToPlotShape.append(polygonLines[p].points[1].x)
-        yValuesToPlotShape.append(polygonLines[p].points[0].y)
-        yValuesToPlotShape.append(polygonLines[p].points[1].y)
-
-    xValuesToPlotShape.pop()
-    yValuesToPlotShape.pop()
-    plt.plot(xValuesToPlotShape, yValuesToPlotShape, 'b--')
-    plt.plot(xValuesToPlotPath, yValuesToPlotPath, 'g-')
-    ax = plt.gca()
-    ax.set_aspect(1)
-    plt.xlabel('Y')
-    plt.ylabel('X')
-    fig = plt.figure(1)
-
-    coords = []
-    cid = fig.canvas.mpl_connect('button_press_event', onclick)
-    plt.show()
-    point5InitialGuess = [coords[0]]
-else:
-    point5InitialGuess = [((minX + maxX) / 2, (minY + maxY) / 2)]  # First guess is in middle of bounds
+# line3 = ClassLine(point3, point4)
+# line4 = ClassLine(point1, point4)
+# polygonLines = [line1, line2, line3, line4]
 
 point6InitialGuess = GetMidpointOfLine(line1)
 point7InitialGuess = GetMidpointOfLine(line2)
 point8InitialGuess = GetMidpointOfLine(line3)
-point9InitialGuess = GetMidpointOfLine(line4)
+# point9InitialGuess = GetMidpointOfLine(line4)
 
-initialPointsGuesses = [point5InitialGuess, point6InitialGuess, point7InitialGuess, point8InitialGuess,
-                        point9InitialGuess]
+A, Ix, Iy = GetPropertiesOfSections(crossSection)
+rho, E, Sy, Su = GetMaterialProperties(material)
 
-if plotPointGuesses:
-    x5GuessPoints = []
-    y5GuessPoints = []
-    x6GuessPoints = []
-    y6GuessPoints = []
-    x7GuessPoints = []
-    y7GuessPoints = []
-    x8GuessPoints = []
-    y8GuessPoints = []
-    x9GuessPoints = []
-    y9GuessPoints = []
+while tryAnotherPoint:
+    if allowSelectBeginPoint:
+        xValuesToPlotShape = []
+        yValuesToPlotShape = []
+        xValuesToPlotPath = []
+        yValuesToPlotPath = []
 
-opt = {'maxiter': 1000}
-result = minimize(functionToMinimize, initialPointsGuesses, constraints=cons, options=opt)
-print(result)
+        for p in range(len(polygonLines)):
+            plt.plot(polygonLines[p].points[0].x, polygonLines[p].points[0].y, 'r*')
+            plt.plot(polygonLines[p].points[1].x, polygonLines[p].points[1].y, 'r*')
+            xValuesToPlotShape.append(polygonLines[p].points[0].x)
+            xValuesToPlotShape.append(polygonLines[p].points[1].x)
+            yValuesToPlotShape.append(polygonLines[p].points[0].y)
+            yValuesToPlotShape.append(polygonLines[p].points[1].y)
 
-point5 = ClassPoint(result.x[0], result.x[1])
-point6 = ClassPoint(result.x[2], result.x[3])
-point7 = ClassPoint(result.x[4], result.x[5])
-point8 = ClassPoint(result.x[6], result.x[7])
-point9 = ClassPoint(result.x[8], result.x[9])
+        if len(polygonLines) == 4:
+            xValuesToPlotShape.pop()
+            yValuesToPlotShape.pop()
 
-# print("Point 5:", point5)
-# print("Point 6:", point6)
-# print("Point 7:", point7)
-# print("Point 8:", point8)
-# print("Point 9:", point9)
+        plt.plot(xValuesToPlotShape, yValuesToPlotShape, 'b--')
+        plt.plot(xValuesToPlotPath, yValuesToPlotPath, 'g-')
+        ax = plt.gca()
+        ax.set_aspect(1)
+        plt.xlabel('Y')
+        plt.ylabel('X')
+        fig = plt.figure(1)
 
-line5 = ClassLine(point6, point5)
-line6 = ClassLine(point7, point5)
-line7 = ClassLine(point8, point5)
-line8 = ClassLine(point9, point5)
+        coords = []
+        cid = fig.canvas.mpl_connect('button_press_event', onclick)
+        plt.show()
+        point5InitialGuess = [coords[0]]
+    else:
+        point5InitialGuess = [((minX + maxX) / 2, (minY + maxY) / 2)]  # First guess is in middle of bounds
 
-pathLines = [line5, line6, line7, line8]
+    if len(fourthPoint) != 0:
+        initialPointsGuesses = [point5InitialGuess, point6InitialGuess, point7InitialGuess, point8InitialGuess,
+                            point9InitialGuess]
+    else:
+        initialPointsGuesses = [point5InitialGuess, point6InitialGuess, point7InitialGuess, point8InitialGuess]
 
-plotLines = polygonLines.copy()
-plotLines.extend(pathLines)
 
-# PrintMassOfAllLines(pathLines)
-plotShape(plotLines, len(polygonLines))
+    if plotPointGuesses:
+        x5GuessPoints = []
+        y5GuessPoints = []
+        x6GuessPoints = []
+        y6GuessPoints = []
+        x7GuessPoints = []
+        y7GuessPoints = []
+        x8GuessPoints = []
+        y8GuessPoints = []
+        if len(fourthPoint) != 0:
+            x9GuessPoints = []
+            y9GuessPoints = []
+
+    opt = {'maxiter': 1000}
+    result = minimize(functionToMinimize, initialPointsGuesses, constraints=cons, options=opt)
+    print(result)
+
+    point5 = ClassPoint(result.x[0], result.x[1])
+    point6 = ClassPoint(result.x[2], result.x[3])
+    point7 = ClassPoint(result.x[4], result.x[5])
+    point8 = ClassPoint(result.x[6], result.x[7])
+    if len(fourthPoint) != 0:
+        point9 = ClassPoint(result.x[8], result.x[9])
+
+    # print("Point 5:", point5)
+    # print("Point 6:", point6)
+    # print("Point 7:", point7)
+    # print("Point 8:", point8)
+    # print("Point 9:", point9)
+
+    line5 = ClassLine(point6, point5)
+    line6 = ClassLine(point7, point5)
+    line7 = ClassLine(point8, point5)
+    if len(fourthPoint) != 0:
+        line8 = ClassLine(point9, point5)
+        pathLines = [line5, line6, line7, line8]
+    else:
+        pathLines = [line5, line6, line7]
+
+
+    plotLines = polygonLines.copy()
+    plotLines.extend(pathLines)
+
+    if material == "I-Beam":
+        PlotOptimizedIBeam()
+
+    # PrintMassOfAllLines(pathLines)
+    plotShape(plotLines, len(polygonLines))
+
+    response = input('Try another starting guess? y/n\n\n')
+
+    if response == 'y':
+        tryAnotherPoint = True
+    else:
+        tryAnotherPoint = False
 
 
 
