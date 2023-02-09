@@ -11,12 +11,14 @@ from numpy import linalg as la
 import CrossFrameOptimizationLibrary
 import CrossFrameConstraints
 import PointsAndLinesClass
+import PolyInteractor
 
 plotPointGuesses = True
 allowSelectBeginPoint = True
 tryAnotherPoint = True
 multipleGuesses = False
-connectToMiddlePoint = False
+connectToMiddlePoint = True
+allowModifyPolygon = True
 
 # IF TRIANGULAR PANEL, LEAVE FOURTH POINT EMPTY
 firstPoint = (0.3125, 0.497)
@@ -39,6 +41,38 @@ crossSectionShapes = ["Square", "Round", "Rectangle", "I-Beam"]
 material = materials[0]
 crossSection = crossSectionShapes[0]
 
+
+if allowModifyPolygon:
+# ##DEFINE PANEL POLYGON## #
+    listOfPoints = []
+    point1 = PointsAndLinesClass.ClassPoint(firstPoint[0], firstPoint[1])
+    point2 = PointsAndLinesClass.ClassPoint(secondPoint[0], secondPoint[1])
+    point3 = PointsAndLinesClass.ClassPoint(thirdPoint[0], thirdPoint[1])
+    listOfPoints.append(point1)
+    listOfPoints.append(point2)
+    listOfPoints.append(point3)
+
+    if len(fourthPoint) != 0:
+        point4 = PointsAndLinesClass.ClassPoint(fourthPoint[0], fourthPoint[1])
+        listOfPoints.append(point4)
+
+    newPoints = PolyInteractor.CreatePolygon(listOfPoints)
+    # print("NewPoints:", newPoints)
+
+    if len(fourthPoint) != 0:
+        firstPoint = (newPoints[0][0], newPoints[0][1])
+        secondPoint = (newPoints[1][0], newPoints[1][1])
+        thirdPoint = (newPoints[2][0], newPoints[2][1])
+        fourthPoint = (newPoints[3][0], newPoints[3][1])
+    else:
+        firstPoint = (newPoints[0][0], newPoints[0][1])
+        secondPoint = (newPoints[1][0], newPoints[1][1])
+        thirdPoint = (newPoints[2][0], newPoints[2][1])
+        fourthPoint = ()
+
+
+
+
 '''''
     # If using I-Beam cross-section
     t_min = 0.25  # meters
@@ -47,6 +81,11 @@ crossSection = crossSectionShapes[0]
     f_max = 5  # meters
     ratioIxIy = 3
 '''''
+
+
+
+
+
 
 def onclick(event):
     global ix, iy
@@ -392,8 +431,8 @@ else:
         # return TempStiffnessCalc(pathLinesNew)
 
 
-    listOfPoints = []
     # ##DEFINE PANEL POLYGON## #
+    listOfPoints = []
     point1 = PointsAndLinesClass.ClassPoint(firstPoint[0], firstPoint[1])
     point2 = PointsAndLinesClass.ClassPoint(secondPoint[0], secondPoint[1])
     point3 = PointsAndLinesClass.ClassPoint(thirdPoint[0], thirdPoint[1])
