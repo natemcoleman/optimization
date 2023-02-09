@@ -1,7 +1,7 @@
 import CrossFrameOptimizationLibrary
 import PointsAndLinesClass
 
-def GetConstraints():
+def GetConstraints(polygonLines, listOfPoints, minDistances):
     def constraint1(optimalPoints):
         returnVec = []
 
@@ -11,7 +11,7 @@ def GetConstraints():
         returnVec.append(
             CrossFrameOptimizationLibrary.GetPointDistanceFromLine(PointsAndLinesClass.ClassPoint(optimalPoints[0], optimalPoints[1]),
                                                                    polygonLines[2])
-            - minDistanceFromLine)
+            - minDistances[2])
 
         return returnVec
 
@@ -20,15 +20,15 @@ def GetConstraints():
         currentPoint5 = PointsAndLinesClass.ClassPoint(optimalPoints[0], optimalPoints[1])
 
         distanceBetweenPoints.append(
-            CrossFrameOptimizationLibrary.distance(point1, currentPoint5) - minDistanceFromCorners)
+            CrossFrameOptimizationLibrary.distance(listOfPoints[0], currentPoint5) - minDistances[1])
         distanceBetweenPoints.append(
-            CrossFrameOptimizationLibrary.distance(point2, currentPoint5) - minDistanceFromCorners)
+            CrossFrameOptimizationLibrary.distance(listOfPoints[1], currentPoint5) - minDistances[1])
         distanceBetweenPoints.append(
-            CrossFrameOptimizationLibrary.distance(point3, currentPoint5) - minDistanceFromCorners)
+            CrossFrameOptimizationLibrary.distance(listOfPoints[2], currentPoint5) - minDistances[1])
 
         if len(optimalPoints) > 9:
             distanceBetweenPoints.append(
-                CrossFrameOptimizationLibrary.distance(point4, currentPoint5) - minDistanceFromCorners)
+                CrossFrameOptimizationLibrary.distance(listOfPoints[3], currentPoint5) - minDistances[1])
 
         return distanceBetweenPoints
 
@@ -40,50 +40,50 @@ def GetConstraints():
         currentPoint8 = PointsAndLinesClass.ClassPoint(optimalPoints[6], optimalPoints[7])
 
         distanceBetweenPoints.append(
-            CrossFrameOptimizationLibrary.distance(currentPoint6, currentPoint7) - minDistanceBetweenPathNodes)
+            CrossFrameOptimizationLibrary.distance(currentPoint6, currentPoint7) - minDistances[0])
         distanceBetweenPoints.append(
-            CrossFrameOptimizationLibrary.distance(currentPoint7, currentPoint8) - minDistanceBetweenPathNodes)
+            CrossFrameOptimizationLibrary.distance(currentPoint7, currentPoint8) - minDistances[0])
         distanceBetweenPoints.append(
-            CrossFrameOptimizationLibrary.distance(currentPoint6, currentPoint5) - minDistanceBetweenPathNodes)
+            CrossFrameOptimizationLibrary.distance(currentPoint6, currentPoint5) - minDistances[0])
         distanceBetweenPoints.append(
-            CrossFrameOptimizationLibrary.distance(currentPoint7, currentPoint5) - minDistanceBetweenPathNodes)
+            CrossFrameOptimizationLibrary.distance(currentPoint7, currentPoint5) - minDistances[0])
         distanceBetweenPoints.append(
-            CrossFrameOptimizationLibrary.distance(currentPoint8, currentPoint5) - minDistanceBetweenPathNodes)
+            CrossFrameOptimizationLibrary.distance(currentPoint8, currentPoint5) - minDistances[0])
 
         if len(optimalPoints) > 9:
             currentPoint9 = PointsAndLinesClass.ClassPoint(optimalPoints[8], optimalPoints[9])
 
             distanceBetweenPoints.append(
-                CrossFrameOptimizationLibrary.distance(currentPoint8, currentPoint9) - minDistanceBetweenPathNodes)
+                CrossFrameOptimizationLibrary.distance(currentPoint8, currentPoint9) - minDistances[0])
             distanceBetweenPoints.append(
-                CrossFrameOptimizationLibrary.distance(currentPoint9, currentPoint6) - minDistanceBetweenPathNodes)
+                CrossFrameOptimizationLibrary.distance(currentPoint9, currentPoint6) - minDistances[0])
             distanceBetweenPoints.append(
-                CrossFrameOptimizationLibrary.distance(currentPoint9, currentPoint5) - minDistanceBetweenPathNodes)
+                CrossFrameOptimizationLibrary.distance(currentPoint9, currentPoint5) - minDistances[0])
 
         return distanceBetweenPoints
 
     def PointIsBoundedInPolygonConstraint(optimalPoints):
         returnVec = []
-        yOfLine2 = line2.points[1].y + (
-                    ((line2.points[0].y - line2.points[1].y) / (line2.points[0].x - line2.points[1].x))
-                    * (optimalPoints[0] - line2.points[1].x))
+        yOfLine2 = polygonLines[1].points[1].y + (
+                    ((polygonLines[1].points[0].y - polygonLines[1].points[1].y) / (polygonLines[1].points[0].x - polygonLines[1].points[1].x))
+                    * (optimalPoints[0] - polygonLines[1].points[1].x))
 
-        xOfLine1 = line1.points[1].x + (
-                    ((line1.points[1].x - line1.points[0].x) / (line1.points[1].y - line1.points[0].y))
-                    * (optimalPoints[1] - line1.points[1].y))
+        xOfLine1 = polygonLines[0].points[1].x + (
+                    ((polygonLines[0].points[1].x - polygonLines[0].points[0].x) / (polygonLines[0].points[1].y - polygonLines[0].points[0].y))
+                    * (optimalPoints[1] - polygonLines[0].points[1].y))
 
-        xOfLine3 = line3.points[1].x + (
-                    ((line3.points[1].x - line3.points[0].x) / (line3.points[1].y - line3.points[0].y))
-                    * (optimalPoints[1] - line3.points[1].y))
+        xOfLine3 = polygonLines[2].points[1].x + (
+                    ((polygonLines[2].points[1].x - polygonLines[2].points[0].x) / (polygonLines[2].points[1].y - polygonLines[2].points[0].y))
+                    * (optimalPoints[1] - polygonLines[2].points[1].y))
 
         returnVec.append(yOfLine2 - optimalPoints[1])
         returnVec.append(optimalPoints[0] - xOfLine1)
         returnVec.append(xOfLine3 - optimalPoints[0])
 
         if len(optimalPoints) > 9:
-            yOfLine4 = line4.points[1].y + (
-                        ((line4.points[0].y - line4.points[1].y) / (line4.points[0].x - line4.points[1].x))
-                        * (optimalPoints[0] - line4.points[1].x))
+            yOfLine4 = polygonLines[3].points[1].y + (
+                        ((polygonLines[3].points[0].y - polygonLines[3].points[1].y) / (polygonLines[3].points[0].x - polygonLines[3].points[1].x))
+                        * (optimalPoints[0] - polygonLines[3].points[1].x))
             returnVec.append(optimalPoints[1] - yOfLine4)
 
         return returnVec
@@ -109,28 +109,28 @@ def GetConstraints():
 
         # yOfLine2 = line2.points[1].y + (((line2.points[0].y - line2.points[1].y) / (line2.points[0].x - line2.points[1].x))
         #                                 * (optimalPoints[0] - line2.points[1].x))
-        yOfLine2 = line2.points[1].y + (
-                    ((line2.points[1].y - line2.points[0].y) / (line2.points[1].x - line2.points[0].x))
-                    * (optimalPoints[4] - line2.points[1].x))
+        yOfLine2 = polygonLines[1].points[1].y + (
+                    ((polygonLines[1].points[1].y - polygonLines[1].points[0].y) / (polygonLines[1].points[1].x - polygonLines[1].points[0].x))
+                    * (optimalPoints[4] - polygonLines[1].points[1].x))
 
         # xOfLine1 = line1.points[1].x + (((line1.points[1].x - line1.points[0].x) / (line1.points[1].y - line1.points[0].y))
         #                                 * (optimalPoints[1] - line1.points[1].y))
-        xOfLine1 = line1.points[1].x + (
-                    ((line1.points[1].x - line1.points[0].x) / (line1.points[1].y - line1.points[0].y))
-                    * (optimalPoints[3] - line1.points[1].y))
+        xOfLine1 = polygonLines[0].points[1].x + (
+                    ((polygonLines[0].points[1].x - polygonLines[0].points[0].x) / (polygonLines[0].points[1].y - polygonLines[0].points[0].y))
+                    * (optimalPoints[3] - polygonLines[0].points[1].y))
 
-        xOfLine3 = line3.points[0].x + (
-                    ((line3.points[1].x - line3.points[0].x) / (line3.points[1].y - line3.points[0].y))
-                    * (optimalPoints[7] - line3.points[0].y))
+        xOfLine3 = polygonLines[2].points[0].x + (
+                    ((polygonLines[2].points[1].x - polygonLines[2].points[0].x) / (polygonLines[2].points[1].y - polygonLines[2].points[0].y))
+                    * (optimalPoints[7] - polygonLines[2].points[0].y))
 
         returnVec.append(optimalPoints[2] - xOfLine1)
         returnVec.append(xOfLine3 - optimalPoints[6])
         returnVec.append(yOfLine2 - optimalPoints[5])
 
         if len(optimalPoints) > 9:
-            yOfLine4 = line4.points[1].y + (
-                        ((line4.points[0].y - line4.points[1].y) / (line4.points[0].x - line4.points[1].x))
-                        * (optimalPoints[8] - line4.points[1].x))
+            yOfLine4 = polygonLines[3].points[1].y + (
+                        ((polygonLines[3].points[0].y - polygonLines[3].points[1].y) / (polygonLines[3].points[0].x - polygonLines[3].points[1].x))
+                        * (optimalPoints[8] - polygonLines[3].points[1].x))
 
             returnVec.append(optimalPoints[9] - yOfLine4)
 
@@ -144,15 +144,15 @@ def GetConstraints():
     def StartPointsDoNotGoBeyondLineConstraint(optimalPoints):
         returnVec = []
 
-        returnVec.append(line1.points[1].y - optimalPoints[3])
-        returnVec.append(optimalPoints[3] - line1.points[0].y)
-        returnVec.append(line3.points[0].y - optimalPoints[7])
-        returnVec.append(optimalPoints[7] - line3.points[1].y)
-        returnVec.append(line2.points[1].x - optimalPoints[4])
-        returnVec.append(optimalPoints[4] - line2.points[0].x)
+        returnVec.append(polygonLines[0].points[1].y - optimalPoints[3])
+        returnVec.append(optimalPoints[3] - polygonLines[0].points[0].y)
+        returnVec.append(polygonLines[2].points[0].y - optimalPoints[7])
+        returnVec.append(optimalPoints[7] - polygonLines[2].points[1].y)
+        returnVec.append(polygonLines[1].points[1].x - optimalPoints[4])
+        returnVec.append(optimalPoints[4] - polygonLines[1].points[0].x)
         if len(optimalPoints) > 9:
-            returnVec.append(line4.points[1].x - optimalPoints[8])
-            returnVec.append(optimalPoints[8] - line4.points[0].x)
+            returnVec.append(polygonLines[3].points[1].x - optimalPoints[8])
+            returnVec.append(optimalPoints[8] - polygonLines[3].points[0].x)
 
         return returnVec
 
