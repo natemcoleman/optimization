@@ -1,13 +1,10 @@
-# Initial python script for optimization final project
-#Things to work on:
-# -Lines can end on any other line
-# -Stiffness calculations
+# Python script for optimization final project
 
 from math import sqrt, pi
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
-import numpy as np
-from numpy import linalg as la
+# import numpy as np
+# from numpy import linalg as la
 import CrossFrameOptimizationLibrary
 import CrossFrameConstraints
 import PointsAndLinesClass
@@ -57,9 +54,9 @@ if allowModifyPolygon:
         listOfPoints.append(point4)
 
     newPoints = PolyInteractor.CreatePolygon(listOfPoints)
-    # print("NewPoints:", newPoints)
+    # print("NewPointsLength:", len(newPoints))
 
-    if len(fourthPoint) != 0:
+    if len(newPoints) > 4:
         firstPoint = (newPoints[0][0], newPoints[0][1])
         secondPoint = (newPoints[1][0], newPoints[1][1])
         thirdPoint = (newPoints[2][0], newPoints[2][1])
@@ -341,11 +338,15 @@ if connectToMiddlePoint:
         plotShape(plotLines, len(polygonLines))
 
         if multipleGuesses:
-            response = input('Try another starting guess? y/n\n\n')
-            if response == 'y':
-                tryAnotherPoint = True
-            else:
-                tryAnotherPoint = False
+            tryAnotherPoint = True
+
+            # response = input('Try another starting guess? y/n\n\n')
+            # if response == 'y':
+            #     tryAnotherPoint = True
+            # else:
+            #     tryAnotherPoint = False
+        else:
+            tryAnotherPoint = False
 else:
     def plotShape(linesToPlot, numberOfPolygonLines):
         xValuesToPlotShape = []
@@ -523,11 +524,15 @@ else:
         plotShape(plotLines, len(polygonLines))
 
         if multipleGuesses:
-            response = input('Try another starting guess? y/n\n\n')
-            if response == 'y':
-                tryAnotherPoint = True
-            else:
-                tryAnotherPoint = False
+            tryAnotherPoint = True
+
+            # response = input('Try another starting guess? y/n\n\n')
+            # if response == 'y':
+            #     tryAnotherPoint = True
+            # else:
+            #     tryAnotherPoint = False
+        else:
+            tryAnotherPoint = False
 
 
 

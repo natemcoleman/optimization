@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
 import PointsAndLinesClass
 import CrossFrameOptimizationLibrary
+import matplotlib.image as image
 
 def dist(x, y):
     d = x - y
@@ -42,7 +43,7 @@ class PolygonInteractor:
     """
 
     showverts = True
-    epsilon = 15  # max pixel distance to count as a vertex hit
+    epsilon = 25  # max pixel distance to count as a vertex hit
 
     def __init__(self, ax, poly):
         if poly.figure is None:
@@ -51,6 +52,12 @@ class PolygonInteractor:
         self.ax = ax
         canvas = poly.figure.canvas
         self.poly = poly
+        self.addVal = 0.5
+        self.zoomInKey = 'c'
+        self.zoomOutKey = 'z'
+        self.deleteKey = 'd'
+        self.insertKey = 'a'
+        self.turnOffPointsKey = 't'
 
         x, y = zip(*self.poly.xy)
         self.line = Line2D(x, y,
@@ -70,10 +77,8 @@ class PolygonInteractor:
 
     def on_draw(self, event):
         self.background = self.canvas.copy_from_bbox(self.ax.bbox)
-        self.ax.draw_artist(self.poly)
+        # self.ax.draw_artist(self.poly)
         self.ax.draw_artist(self.line)
-        # do not need to blit here, this will fire before the screen is
-        # updated
 
     def poly_changed(self, poly):
         """This method is called whenever the pathpatch object is called."""
@@ -124,18 +129,18 @@ class PolygonInteractor:
             return
         if event.key == 't':
             self.showverts = not self.showverts
-            self.line.set_visible(self.showverts)
+            # self.line.set_visible(self.showverts)
             if not self.showverts:
                 self._ind = None
         elif event.key == 'd':
-            if len(self.poly.xy) == 4:
+            if len(self.poly.xy) == 5:
                 ind = self.get_ind_under_point(event)
                 if ind is not None:
                     self.poly.xy = np.delete(self.poly.xy,
                                              ind, axis=0)
                     self.line.set_data(zip(*self.poly.xy))
-        elif event.key == 'i':
-            if len(self.poly.xy) == 3:
+        elif event.key == 'a':
+            if len(self.poly.xy) == 4:
                 xys = self.poly.get_transform().transform(self.poly.xy)
                 p = event.x, event.y  # display coords
                 for i in range(len(xys) - 1):
@@ -149,6 +154,15 @@ class PolygonInteractor:
                             axis=0)
                         self.line.set_data(zip(*self.poly.xy))
                         break
+        elif event.key == 'z':
+            self.ax.set_xlim((self.ax.get_xlim()[0] - self.addVal, self.ax.get_xlim()[1] + self.addVal))
+            self.ax.set_ylim((self.ax.get_ylim()[0] - self.addVal, self.ax.get_ylim()[1] + self.addVal))
+            Artist.update_from(self.line, self.poly)
+        elif event.key == 'c':
+            self.ax.set_xlim((self.ax.get_xlim()[0] + self.addVal, self.ax.get_xlim()[1] - self.addVal))
+            self.ax.set_ylim((self.ax.get_ylim()[0] + self.addVal, self.ax.get_ylim()[1] - self.addVal))
+            Artist.update_from(self.line, self.poly)
+
         if self.line.stale:
             self.canvas.draw_idle()
 
@@ -172,7 +186,7 @@ class PolygonInteractor:
         self.line.set_data(zip(*self.poly.xy))
 
         self.canvas.restore_region(self.background)
-        self.ax.draw_artist(self.poly)
+        # self.ax.draw_artist(self.poly)
         self.ax.draw_artist(self.line)
         self.canvas.blit(self.ax.bbox)
 
@@ -191,12 +205,18 @@ def CreatePolygon(listOfPoints):
     poly = Polygon(np.column_stack([xs, ys]), animated=True)
 
     fig, ax = plt.subplots()
+
+    im = plt.imread("Flasher.png")
+    ax.imshow(im)
+
     ax.add_patch(poly)
+
     p = PolygonInteractor(ax, poly)
 
     ax.set_title('Click and drag a point to move it')
     ax.set_xlim((minX - xAxisBuffer, maxX + xAxisBuffer))
     ax.set_ylim((minY - yAxisBuffer, maxY + yAxisBuffer))
+
+
     plt.show()
-    # print("xVals:", p.poly.xy)
     return p.poly.xy
