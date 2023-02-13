@@ -194,7 +194,8 @@ class PolygonInteractor:
 def CreatePolygon(listOfPoints):
     xs = []
     ys = []
-    for i in range(len(listOfPoints)):
+    originalLength = len(listOfPoints)
+    for i in range(originalLength):
         xs.append(listOfPoints[i].x)
         ys.append(listOfPoints[i].y)
 
@@ -206,9 +207,6 @@ def CreatePolygon(listOfPoints):
 
     fig, ax = plt.subplots()
 
-    im = plt.imread("Flasher.png")
-    ax.imshow(im)
-
     ax.add_patch(poly)
 
     p = PolygonInteractor(ax, poly)
@@ -217,6 +215,9 @@ def CreatePolygon(listOfPoints):
     ax.set_xlim((minX - xAxisBuffer, maxX + xAxisBuffer))
     ax.set_ylim((minY - yAxisBuffer, maxY + yAxisBuffer))
 
+    for i in range(originalLength):
+        xs.pop()
+        ys.pop()
 
     plt.show()
     return p.poly.xy

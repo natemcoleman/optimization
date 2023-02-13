@@ -1,4 +1,8 @@
 # Python script for optimization final project
+# Compare with and without middle point
+# Breakout files for triangle and rectangle
+# Multiple panels
+
 
 from math import sqrt, pi
 import matplotlib.pyplot as plt
@@ -7,22 +11,24 @@ from scipy.optimize import minimize
 # from numpy import linalg as la
 import CrossFrameOptimizationLibrary
 import CrossFrameConstraints
+import OptimizeFlasherPanel
 import PointsAndLinesClass
 import PolyInteractor
 
+connectToMiddlePoint = True
 plotPointGuesses = True
-allowSelectBeginPoint = True
+allowModifyPolygon = False
 tryAnotherPoint = True
 multipleGuesses = False
-connectToMiddlePoint = True
-allowModifyPolygon = True
+allowSelectBeginPoint = True
+
 
 # IF TRIANGULAR PANEL, LEAVE FOURTH POINT EMPTY
 firstPoint = (0.3125, 0.497)
 secondPoint = (0.08333, 1.6287)
 thirdPoint = (1.875, 1.7126)
-# fourthPoint = ()
-fourthPoint = (1.8958, 0.5398)
+fourthPoint = ()
+# fourthPoint = (1.8958, 0.5398)
 
 shapeBaseLength = 0.05  # meters, if square or rectangle
 shapeBaseHeight = 0.05  # meters, if rectangle
@@ -31,43 +37,54 @@ shapeBaseDiameter = 0.05  # meters, if circle
 minDistanceBetweenPathNodes = 0.25
 minDistanceFromCorners = 0.1
 minDistanceFromLine = 0.05
-minDistances = [minDistanceBetweenPathNodes, minDistanceFromCorners, minDistanceFromLine]
 
 materials = ["Aluminum", "Steel", "ABS"]
 crossSectionShapes = ["Square", "Round", "Rectangle", "I-Beam"]
 material = materials[0]
 crossSection = crossSectionShapes[0]
 
+boolOptions = [connectToMiddlePoint, plotPointGuesses, allowModifyPolygon, tryAnotherPoint, multipleGuesses, allowSelectBeginPoint]
+minDistances = [minDistanceBetweenPathNodes, minDistanceFromCorners, minDistanceFromLine]
+crossSectionLengths = [shapeBaseLength, shapeBaseHeight, shapeBaseDiameter]
+listOfPoints = []
+point1 = PointsAndLinesClass.ClassPoint(firstPoint[0], firstPoint[1])
+point2 = PointsAndLinesClass.ClassPoint(secondPoint[0], secondPoint[1])
+point3 = PointsAndLinesClass.ClassPoint(thirdPoint[0], thirdPoint[1])
+listOfPoints.append(point1)
+listOfPoints.append(point2)
+listOfPoints.append(point3)
+if len(fourthPoint) != 0:
+    point4 = PointsAndLinesClass.ClassPoint(fourthPoint[0], fourthPoint[1])
+    listOfPoints.append(point4)
 
-if allowModifyPolygon:
-# ##DEFINE PANEL POLYGON## #
-    listOfPoints = []
-    point1 = PointsAndLinesClass.ClassPoint(firstPoint[0], firstPoint[1])
-    point2 = PointsAndLinesClass.ClassPoint(secondPoint[0], secondPoint[1])
-    point3 = PointsAndLinesClass.ClassPoint(thirdPoint[0], thirdPoint[1])
-    listOfPoints.append(point1)
-    listOfPoints.append(point2)
-    listOfPoints.append(point3)
-
-    if len(fourthPoint) != 0:
-        point4 = PointsAndLinesClass.ClassPoint(fourthPoint[0], fourthPoint[1])
-        listOfPoints.append(point4)
-
-    newPoints = PolyInteractor.CreatePolygon(listOfPoints)
-    # print("NewPointsLength:", len(newPoints))
-
-    if len(newPoints) > 4:
-        firstPoint = (newPoints[0][0], newPoints[0][1])
-        secondPoint = (newPoints[1][0], newPoints[1][1])
-        thirdPoint = (newPoints[2][0], newPoints[2][1])
-        fourthPoint = (newPoints[3][0], newPoints[3][1])
-    else:
-        firstPoint = (newPoints[0][0], newPoints[0][1])
-        secondPoint = (newPoints[1][0], newPoints[1][1])
-        thirdPoint = (newPoints[2][0], newPoints[2][1])
-        fourthPoint = ()
-
-
+#
+# if allowModifyPolygon:
+# # ##DEFINE PANEL POLYGON## #
+#     listOfPoints = []
+#     point1 = PointsAndLinesClass.ClassPoint(firstPoint[0], firstPoint[1])
+#     point2 = PointsAndLinesClass.ClassPoint(secondPoint[0], secondPoint[1])
+#     point3 = PointsAndLinesClass.ClassPoint(thirdPoint[0], thirdPoint[1])
+#     listOfPoints.append(point1)
+#     listOfPoints.append(point2)
+#     listOfPoints.append(point3)
+#
+#     if len(fourthPoint) != 0:
+#         point4 = PointsAndLinesClass.ClassPoint(fourthPoint[0], fourthPoint[1])
+#         listOfPoints.append(point4)
+#
+#     newPoints = PolyInteractor.CreatePolygon(listOfPoints)
+#     # print("NewPointsLength:", len(newPoints))
+#
+#     if len(newPoints) > 4:
+#         firstPoint = (newPoints[0][0], newPoints[0][1])
+#         secondPoint = (newPoints[1][0], newPoints[1][1])
+#         thirdPoint = (newPoints[2][0], newPoints[2][1])
+#         fourthPoint = (newPoints[3][0], newPoints[3][1])
+#     else:
+#         firstPoint = (newPoints[0][0], newPoints[0][1])
+#         secondPoint = (newPoints[1][0], newPoints[1][1])
+#         thirdPoint = (newPoints[2][0], newPoints[2][1])
+#         fourthPoint = ()
 
 
 '''''
@@ -78,10 +95,6 @@ if allowModifyPolygon:
     f_max = 5  # meters
     ratioIxIy = 3
 '''''
-
-
-
-
 
 
 def onclick(event):
@@ -121,7 +134,11 @@ def TempStiffnessCalc(allLines):
     return stiffness
 
 
-if connectToMiddlePoint:
+OptimizeFlasherPanel.OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths, material, crossSection)
+
+
+
+if False:
     def plotShape(linesToPlot, numberOfPolygonLines):
         xValuesToPlotShape = []
         yValuesToPlotShape = []
@@ -347,7 +364,7 @@ if connectToMiddlePoint:
             #     tryAnotherPoint = False
         else:
             tryAnotherPoint = False
-else:
+if False:
     def plotShape(linesToPlot, numberOfPolygonLines):
         xValuesToPlotShape = []
         yValuesToPlotShape = []
@@ -499,12 +516,6 @@ else:
         if len(fourthPoint) != 0:
             point9 = PointsAndLinesClass.ClassPoint(result.x[6], result.x[7])
 
-        # print("Point 5:", point5)
-        # print("Point 6:", point6)
-        # print("Point 7:", point7)
-        # print("Point 8:", point8)
-        # print("Point 9:", point9)
-
         if len(fourthPoint) != 0:
             line5 = PointsAndLinesClass.ClassLine(point6, point7)
             line6 = PointsAndLinesClass.ClassLine(point7, point8)
@@ -525,12 +536,6 @@ else:
 
         if multipleGuesses:
             tryAnotherPoint = True
-
-            # response = input('Try another starting guess? y/n\n\n')
-            # if response == 'y':
-            #     tryAnotherPoint = True
-            # else:
-            #     tryAnotherPoint = False
         else:
             tryAnotherPoint = False
 
