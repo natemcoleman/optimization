@@ -88,6 +88,29 @@ def PrintMassOfAllLines(linesToGetMass, A, rho):
     print("Total mass:", totalMass, "kg")
 
 
+def TempStiffnessCalc(allLines, E, Ix, Iy):
+    stiffness = 0
+    kx = 0
+    ky = 0
+    gamma = 0.8517
+    xLengths = []
+    yLengths = []
+
+    for stiffnessIndex in range(len(allLines)):
+        xLengths.append(abs(allLines[stiffnessIndex].points[0].x - allLines[stiffnessIndex].points[1].x))
+        yLengths.append(abs(allLines[stiffnessIndex].points[0].y - allLines[stiffnessIndex].points[1].y))
+
+    for stiffnessIndex in range(len(xLengths)):
+        kx += (pi*(gamma**2)*E*Ix) / (xLengths[stiffnessIndex])
+        ky += (pi*(gamma**2)*E*Iy) / (yLengths[stiffnessIndex])
+
+    stiffness = kx
+    stiffness -= ky
+
+    return stiffness
+
+
+
 def distance(a, b):
     # print(a)
     # print(b)
@@ -312,6 +335,42 @@ def FindAxisLimits(arrayOfPoints):
             minYAxis = arrayOfPoints[q].y
 
     return minXAxis, maxXAxis, minYAxis, maxYAxis
+
+
+def FindAxisLimitsOfLines(arrayOfLines):
+    minXAxis = 10000
+    maxXAxis = -10000
+    minYAxis = 10000
+    maxYAxis = -10000
+
+    minXAxis = float(minXAxis)
+    maxXAxis = float(maxXAxis)
+    minYAxis = float(minYAxis)
+    maxYAxis = float(maxYAxis)
+
+    xPoints = []
+    yPoints = []
+
+    for q in range(len(arrayOfLines)):
+        xPoints.append(arrayOfLines[q].points[0].x)
+        xPoints.append(arrayOfLines[q].points[1].x)
+        yPoints.append(arrayOfLines[q].points[0].y)
+        yPoints.append(arrayOfLines[q].points[1].y)
+
+    numberOfPointsNotOnEdge = round(len(xPoints))
+
+    for q in range(numberOfPointsNotOnEdge):
+        if xPoints[q] > maxXAxis:
+            maxXAxis = xPoints[q]
+        if xPoints[q] < minXAxis:
+            minXAxis = xPoints[q]
+        if yPoints[q] > maxYAxis:
+            maxYAxis = yPoints[q]
+        if yPoints[q] < minYAxis:
+            minYAxis = yPoints[q]
+
+    return minXAxis, maxXAxis, minYAxis, maxYAxis
+
 
 
 def GetMidpointOfLine(currLine):

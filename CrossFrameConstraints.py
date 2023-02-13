@@ -1,21 +1,9 @@
 import CrossFrameOptimizationLibrary
 import PointsAndLinesClass
 
-def GetConstraintsWithMiddle(polygonLines, listOfPoints, minDistances):
-    def constraint1(optimalPoints):
-        returnVec = []
+def GetConstraintsWithMiddle(polygonLines, listOfPoints, minDistances, isSinglePanel):
 
-        # for distanceIndex in range(len(polygonLines)):
-        #     returnVec.append(GetPointDistanceFromLine(currPoint5, polygonLines[distanceIndex])-minDistanceFromLine)
-
-        returnVec.append(
-            CrossFrameOptimizationLibrary.GetPointDistanceFromLine(PointsAndLinesClass.ClassPoint(optimalPoints[0], optimalPoints[1]),
-                                                                   polygonLines[2])
-            - minDistances[2])
-
-        return returnVec
-
-    def KeepMiddleNodeMinDistanceFromCornersConstraint(optimalPoints):
+    def KeepMiddleNodeMinDistanceFromCornersConstraintPanel1(optimalPoints):
         distanceBetweenPoints = []
         currentPoint5 = PointsAndLinesClass.ClassPoint(optimalPoints[0], optimalPoints[1])
 
@@ -32,7 +20,7 @@ def GetConstraintsWithMiddle(polygonLines, listOfPoints, minDistances):
 
         return distanceBetweenPoints
 
-    def KeepGuessPointsMinDistanceApartConstraint(optimalPoints):
+    def KeepGuessPointsMinDistanceApartConstraintPanel1(optimalPoints):
         distanceBetweenPoints = []
         currentPoint5 = PointsAndLinesClass.ClassPoint(optimalPoints[0], optimalPoints[1])
         currentPoint6 = PointsAndLinesClass.ClassPoint(optimalPoints[2], optimalPoints[3])
@@ -62,7 +50,7 @@ def GetConstraintsWithMiddle(polygonLines, listOfPoints, minDistances):
 
         return distanceBetweenPoints
 
-    def PointIsBoundedInPolygonConstraint(optimalPoints):
+    def PointIsBoundedInPolygonConstraintPanel1(optimalPoints):
         returnVec = []
         yOfLine2 = polygonLines[1].points[1].y + (
                     ((polygonLines[1].points[0].y - polygonLines[1].points[1].y) / (polygonLines[1].points[0].x - polygonLines[1].points[1].x))
@@ -88,33 +76,14 @@ def GetConstraintsWithMiddle(polygonLines, listOfPoints, minDistances):
 
         return returnVec
 
-    def PathStartPointsFallOnLines(optimalPoints):
+    def PathStartPointsFallOnLinesPanel1(optimalPoints):
         returnVec = []
 
-        # point6ThatShouldBeOnLine = classPoint(optimalPoints[2], optimalPoints[3])
-        # returnVec.append(distance(line1.points[0], point6ThatShouldBeOnLine) +
-        # distance(point6ThatShouldBeOnLine, line1.points[1]) - distance(line1.points[0], line1.points[1]))
-
-        # point7ThatShouldBeOnLine = classPoint(optimalPoints[4], optimalPoints[5])
-        # returnVec.append(distance(line2.points[0], point7ThatShouldBeOnLine) +
-        # distance(point7ThatShouldBeOnLine, line2.points[1]) - distance(line2.points[0], line2.points[1]))
-
-        # point8ThatShouldBeOnLine = classPoint(optimalPoints[6], optimalPoints[7])
-        # returnVec.append(distance(line3.points[0], point8ThatShouldBeOnLine) +
-        # distance(point8ThatShouldBeOnLine, line3.points[1]) - distance(line3.points[0], line3.points[1]))
-
-        # point9ThatShouldBeOnLine = classPoint(optimalPoints[8], optimalPoints[9])
-        # returnVec.append(distance(line4.points[0], point9ThatShouldBeOnLine) +
-        # distance(point9ThatShouldBeOnLine, line4.points[1]) - distance(line4.points[0], line4.points[1]))
-
-        # yOfLine2 = line2.points[1].y + (((line2.points[0].y - line2.points[1].y) / (line2.points[0].x - line2.points[1].x))
-        #                                 * (optimalPoints[0] - line2.points[1].x))
         yOfLine2 = polygonLines[1].points[1].y + (
                     ((polygonLines[1].points[1].y - polygonLines[1].points[0].y) / (polygonLines[1].points[1].x - polygonLines[1].points[0].x))
                     * (optimalPoints[4] - polygonLines[1].points[1].x))
 
-        # xOfLine1 = line1.points[1].x + (((line1.points[1].x - line1.points[0].x) / (line1.points[1].y - line1.points[0].y))
-        #                                 * (optimalPoints[1] - line1.points[1].y))
+
         xOfLine1 = polygonLines[0].points[1].x + (
                     ((polygonLines[0].points[1].x - polygonLines[0].points[0].x) / (polygonLines[0].points[1].y - polygonLines[0].points[0].y))
                     * (optimalPoints[3] - polygonLines[0].points[1].y))
@@ -134,14 +103,9 @@ def GetConstraintsWithMiddle(polygonLines, listOfPoints, minDistances):
 
             returnVec.append(optimalPoints[9] - yOfLine4)
 
-        # print("optimal9:", optimalPoints[9], " yOfLine4:", yOfLine4)
-
-        # for x in range(len(returnVec)):
-        #     print(returnVec[x])
-
         return returnVec
 
-    def StartPointsDoNotGoBeyondLineConstraint(optimalPoints):
+    def StartPointsDoNotGoBeyondLineConstraintPanel1(optimalPoints):
         returnVec = []
 
         returnVec.append(polygonLines[0].points[1].y - optimalPoints[3])
@@ -156,18 +120,145 @@ def GetConstraintsWithMiddle(polygonLines, listOfPoints, minDistances):
 
         return returnVec
 
-    con1 = {'type': 'ineq', 'fun': KeepGuessPointsMinDistanceApartConstraint}
-    con2 = {'type': 'ineq', 'fun': PointIsBoundedInPolygonConstraint}
-    con3 = {'type': 'eq', 'fun': PathStartPointsFallOnLines}
-    con4 = {'type': 'ineq', 'fun': StartPointsDoNotGoBeyondLineConstraint}
-    con5 = {'type': 'ineq', 'fun': KeepMiddleNodeMinDistanceFromCornersConstraint}
-    # con6 = {'type': 'ineq', 'fun': constraint1}  # Point is a minimum distance from line
+    def KeepMiddleNodeMinDistanceFromCornersConstraintPanel2(optimalPoints):
 
-    cons = [con1, con2, con3, con4, con5]
+        # for e in range(len(optimalPoints)):
+        #     print("optimalPoint", e, ": ", optimalPoints[e])
+
+        distanceBetweenPoints = []
+        currentPoint10 = PointsAndLinesClass.ClassPoint(optimalPoints[10], optimalPoints[11])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[0], currentPoint10) - minDistances[1])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[3], currentPoint10) - minDistances[1])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[4], currentPoint10) - minDistances[1])
+        distanceBetweenPoints.append(
+                CrossFrameOptimizationLibrary.distance(listOfPoints[5], currentPoint10) - minDistances[1])
+
+        return distanceBetweenPoints
+
+    def KeepGuessPointsMinDistanceApartConstraintPanel2(optimalPoints):
+        distanceBetweenPoints = []
+        currentPoint10 = PointsAndLinesClass.ClassPoint(optimalPoints[10], optimalPoints[11])
+        currentPoint11 = PointsAndLinesClass.ClassPoint(optimalPoints[12], optimalPoints[13])
+        currentPoint12 = PointsAndLinesClass.ClassPoint(optimalPoints[14], optimalPoints[15])
+        currentPoint13 = PointsAndLinesClass.ClassPoint(optimalPoints[16], optimalPoints[17])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(currentPoint11, currentPoint12) - minDistances[0])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(currentPoint12, currentPoint13) - minDistances[0])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(currentPoint11, currentPoint10) - minDistances[0])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(currentPoint12, currentPoint10) - minDistances[0])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(currentPoint13, currentPoint10) - minDistances[0])
+
+        return distanceBetweenPoints
+
+    def PointIsBoundedInPolygonConstraintPanel2(optimalPoints):
+        returnVec = []
+
+        xOfLine5 = polygonLines[4].points[1].x + (
+                ((polygonLines[4].points[1].x - polygonLines[4].points[0].x) / (
+                        polygonLines[4].points[1].y - polygonLines[4].points[0].y))
+                * (optimalPoints[11] - polygonLines[4].points[1].y))
+
+        yOfLine6 = polygonLines[5].points[1].y + (
+                ((polygonLines[5].points[0].y - polygonLines[5].points[1].y) / (
+                            polygonLines[5].points[0].x - polygonLines[5].points[1].x))
+                * (optimalPoints[10] - polygonLines[5].points[1].x))
+
+        xOfLine7 = polygonLines[6].points[1].x + (
+                ((polygonLines[6].points[1].x - polygonLines[6].points[0].x) / (
+                            polygonLines[6].points[1].y - polygonLines[6].points[0].y))
+                * (optimalPoints[11] - polygonLines[6].points[1].y))
+
+        yOfLine8 = polygonLines[7].points[1].y + (
+                    ((polygonLines[7].points[0].y - polygonLines[7].points[1].y) / (
+                                polygonLines[7].points[0].x - polygonLines[7].points[1].x))
+                    * (optimalPoints[10] - polygonLines[7].points[1].x))
+
+
+        returnVec.append(yOfLine6 - optimalPoints[11])
+        returnVec.append(optimalPoints[10] - xOfLine5)
+        returnVec.append(xOfLine7 - optimalPoints[10])
+        returnVec.append(optimalPoints[11] - yOfLine8)
+
+        return returnVec
+
+    def PathStartPointsFallOnLinesPanel2(optimalPoints):
+        returnVec = []
+
+        xOfLine5 = polygonLines[4].points[1].x + (
+                ((polygonLines[4].points[1].x - polygonLines[4].points[0].x) / (
+                        polygonLines[4].points[1].y - polygonLines[4].points[0].y))
+                * (optimalPoints[13] - polygonLines[4].points[1].y))
+
+        # yOfLine6 = polygonLines[5].points[1].y + (
+        #         ((polygonLines[5].points[0].y - polygonLines[5].points[1].y) / (
+        #                 polygonLines[5].points[0].x - polygonLines[5].points[1].x))
+        #         * (optimalPoints[8] - polygonLines[5].points[1].x))
+
+        xOfLine7 = polygonLines[6].points[1].x + (
+                ((polygonLines[6].points[1].x - polygonLines[6].points[0].x) / (
+                        polygonLines[6].points[1].y - polygonLines[6].points[0].y))
+                * (optimalPoints[15] - polygonLines[6].points[1].y))
+
+        yOfLine8 = polygonLines[7].points[1].y + (
+                ((polygonLines[7].points[0].y - polygonLines[7].points[1].y) / (
+                        polygonLines[7].points[0].x - polygonLines[7].points[1].x))
+                * (optimalPoints[16] - polygonLines[7].points[1].x))
+
+
+        returnVec.append(optimalPoints[12] - xOfLine5)
+        returnVec.append(xOfLine7 - optimalPoints[14])
+        # returnVec.append(yOfLine6 - optimalPoints[9])
+        returnVec.append(optimalPoints[17] - yOfLine8)
+
+        return returnVec
+
+    def StartPointsDoNotGoBeyondLineConstraintPanel2(optimalPoints):
+        returnVec = []
+
+        returnVec.append(polygonLines[4].points[1].y - optimalPoints[13])
+        returnVec.append(optimalPoints[13] - polygonLines[4].points[0].y)
+        returnVec.append(polygonLines[6].points[0].y - optimalPoints[15])
+        returnVec.append(optimalPoints[15] - polygonLines[6].points[1].y)
+        returnVec.append(polygonLines[5].points[1].x - optimalPoints[8])
+        returnVec.append(optimalPoints[8] - polygonLines[5].points[0].x)
+        returnVec.append(polygonLines[7].points[1].x - optimalPoints[16])
+        returnVec.append(optimalPoints[16] - polygonLines[7].points[0].x)
+
+        return returnVec
+
+
+
+
+    con1 = {'type': 'ineq', 'fun': KeepGuessPointsMinDistanceApartConstraintPanel1}
+    con2 = {'type': 'ineq', 'fun': PointIsBoundedInPolygonConstraintPanel1}
+    con3 = {'type': 'eq', 'fun': PathStartPointsFallOnLinesPanel1}
+    con4 = {'type': 'ineq', 'fun': StartPointsDoNotGoBeyondLineConstraintPanel1}
+    con5 = {'type': 'ineq', 'fun': KeepMiddleNodeMinDistanceFromCornersConstraintPanel1}
+
+    con6 = {'type': 'ineq', 'fun': KeepGuessPointsMinDistanceApartConstraintPanel2}
+    con7 = {'type': 'ineq', 'fun': PointIsBoundedInPolygonConstraintPanel2}
+    con8 = {'type': 'eq', 'fun': PathStartPointsFallOnLinesPanel2}
+    con9 = {'type': 'ineq', 'fun': StartPointsDoNotGoBeyondLineConstraintPanel2}
+    con10 = {'type': 'ineq', 'fun': KeepMiddleNodeMinDistanceFromCornersConstraintPanel2}
+
+    if isSinglePanel:
+        cons = [con1, con2, con3, con4, con5]
+    else:
+        cons = [con1, con2, con3, con4, con5, con6, con7, con8, con9, con10]
+
     return cons
 
 
-def GetConstraintsNoMiddle(polygonLines, listOfPoints, minDistances):
+def GetConstraintsNoMiddle(polygonLines, listOfPoints, minDistances, isSinglePanel):
     # def constraint1(optimalPoints):
     #     returnVec = []
     #
@@ -193,7 +284,7 @@ def GetConstraintsNoMiddle(polygonLines, listOfPoints, minDistances):
     #
     #     return distanceBetweenPoints
 
-    def KeepGuessPointsMinDistanceApartConstraint(optimalPoints):
+    def KeepGuessPointsMinDistanceApartConstraintPanel1(optimalPoints):
         distanceBetweenPoints = []
 
         if len(optimalPoints) > 7:
@@ -215,8 +306,7 @@ def GetConstraintsNoMiddle(polygonLines, listOfPoints, minDistances):
 
         return distanceBetweenPoints
 
-
-    def PathStartPointsFallOnLines(optimalPoints):
+    def PathStartPointsFallOnLinesPanel1(optimalPoints):
         returnVec = []
 
         yOfLine2 = polygonLines[1].points[1].y + (
@@ -244,7 +334,7 @@ def GetConstraintsNoMiddle(polygonLines, listOfPoints, minDistances):
 
         return returnVec
 
-    def StartPointsDoNotGoBeyondLineConstraint(optimalPoints):
+    def StartPointsDoNotGoBeyondLineConstraintPanel1(optimalPoints):
         returnVec = []
 
         returnVec.append(polygonLines[0].points[1].y - optimalPoints[1])
@@ -259,14 +349,80 @@ def GetConstraintsNoMiddle(polygonLines, listOfPoints, minDistances):
 
         return returnVec
 
-    con1 = {'type': 'ineq', 'fun': KeepGuessPointsMinDistanceApartConstraint}
-    # con2 = {'type': 'ineq', 'fun': PointIsBoundedInPolygonConstraint}
-    con3 = {'type': 'eq', 'fun': PathStartPointsFallOnLines}
-    con4 = {'type': 'ineq', 'fun': StartPointsDoNotGoBeyondLineConstraint}
-    # con5 = {'type': 'ineq', 'fun': KeepMiddleNodeMinDistanceFromCornersConstraint}
-    # con6 = {'type': 'ineq', 'fun': constraint1}  # Point is a minimum distance from line
 
-    cons = [con1, con3, con4]
+
+    def KeepGuessPointsMinDistanceApartConstraintPanel2(optimalPoints):
+        distanceBetweenPoints = []
+
+        currentPoint11 = PointsAndLinesClass.ClassPoint(optimalPoints[8], optimalPoints[9])
+        currentPoint12 = PointsAndLinesClass.ClassPoint(optimalPoints[10], optimalPoints[11])
+        currentPoint13 = PointsAndLinesClass.ClassPoint(optimalPoints[12], optimalPoints[13])
+        currentPoint9 = PointsAndLinesClass.ClassPoint(optimalPoints[6], optimalPoints[7])
+        distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(currentPoint11, currentPoint9) - minDistances[0])
+        distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(currentPoint9, currentPoint12) - minDistances[0])
+        distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(currentPoint12, currentPoint13) - minDistances[0])
+        distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(currentPoint13, currentPoint11) - minDistances[0])
+
+        return distanceBetweenPoints
+
+    def PathStartPointsFallOnLinesPanel2(optimalPoints):
+        returnVec = []
+
+        xOfLine5 = polygonLines[4].points[1].x + (
+                ((polygonLines[4].points[1].x - polygonLines[4].points[0].x) / (
+                            polygonLines[4].points[1].y - polygonLines[4].points[0].y))
+                * (optimalPoints[9] - polygonLines[4].points[1].y))
+
+        # yOfLine2 = polygonLines[1].points[1].y + (
+        #             ((polygonLines[1].points[1].y - polygonLines[1].points[0].y) / (polygonLines[1].points[1].x - polygonLines[1].points[0].x))
+        #             * (optimalPoints[2] - polygonLines[1].points[1].x))
+
+        xOfLine7 = polygonLines[6].points[0].x + (
+                    ((polygonLines[6].points[1].x - polygonLines[6].points[0].x) / (polygonLines[6].points[1].y - polygonLines[6].points[0].y))
+                    * (optimalPoints[11] - polygonLines[6].points[0].y))
+
+        yOfLine8 = polygonLines[7].points[1].y + (
+                ((polygonLines[7].points[0].y - polygonLines[7].points[1].y) / (
+                            polygonLines[7].points[0].x - polygonLines[7].points[1].x))
+                * (optimalPoints[12] - polygonLines[7].points[1].x))
+
+        returnVec.append(optimalPoints[8] - xOfLine5)
+        returnVec.append(xOfLine7 - optimalPoints[10])
+        # returnVec.append(yOfLine2 - optimalPoints[3])
+        returnVec.append(optimalPoints[13] - yOfLine8)
+
+        return returnVec
+
+    def StartPointsDoNotGoBeyondLineConstraintPanel2(optimalPoints):
+        returnVec = []
+
+        returnVec.append(polygonLines[4].points[1].y - optimalPoints[9])
+        returnVec.append(optimalPoints[9] - polygonLines[4].points[0].y)
+        # returnVec.append(polygonLines[2].points[0].y - optimalPoints[5])
+        # returnVec.append(optimalPoints[5] - polygonLines[2].points[1].y)
+        returnVec.append(polygonLines[6].points[0].y - optimalPoints[11])
+        returnVec.append(optimalPoints[11] - polygonLines[6].points[1].y)
+        returnVec.append(polygonLines[7].points[1].x - optimalPoints[12])
+        returnVec.append(optimalPoints[12] - polygonLines[7].points[0].x)
+
+        return returnVec
+
+
+
+
+    con1 = {'type': 'ineq', 'fun': KeepGuessPointsMinDistanceApartConstraintPanel1}
+    con2 = {'type': 'eq', 'fun': PathStartPointsFallOnLinesPanel1}
+    con3 = {'type': 'ineq', 'fun': StartPointsDoNotGoBeyondLineConstraintPanel1}
+
+    con4 = {'type': 'ineq', 'fun': KeepGuessPointsMinDistanceApartConstraintPanel2}
+    con5 = {'type': 'eq', 'fun': PathStartPointsFallOnLinesPanel2}
+    con6 = {'type': 'ineq', 'fun': StartPointsDoNotGoBeyondLineConstraintPanel2}
+
+    if isSinglePanel:
+        cons = [con1, con2, con3]
+    else:
+        cons = [con1, con2, con3, con4, con5, con6]
+
     return cons
 
 
