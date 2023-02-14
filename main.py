@@ -18,7 +18,7 @@ firstPoint = (0.3125, 0.497)
 secondPoint = (0.08333, 1.6287)
 thirdPoint = (1.875, 1.7126)
 fourthPoint = ()
-fourthPoint = (1.8958, 0.5398)
+# fourthPoint = (1.8958, 0.5398)
 
 
 flasherPoint1 = (1.5556, 6.2593)
@@ -49,6 +49,8 @@ point3 = PointsAndLinesClass.ClassPoint(flasherPoint3[0], flasherPoint3[1])
 point4 = PointsAndLinesClass.ClassPoint(flasherPoint4[0], flasherPoint4[1])
 point5 = PointsAndLinesClass.ClassPoint(flasherPoint5[0], flasherPoint5[1])
 point6 = PointsAndLinesClass.ClassPoint(flasherPoint6[0], flasherPoint6[1])
+point7 = PointsAndLinesClass.ClassPoint(flasherPoint7[0], flasherPoint7[1])
+point8 = PointsAndLinesClass.ClassPoint(flasherPoint8[0], flasherPoint8[1])
 
 listOfPointsForFlasher.append(point1)
 listOfPointsForFlasher.append(point2)
@@ -56,6 +58,8 @@ listOfPointsForFlasher.append(point3)
 listOfPointsForFlasher.append(point4)
 listOfPointsForFlasher.append(point5)
 listOfPointsForFlasher.append(point6)
+listOfPointsForFlasher.append(point7)
+listOfPointsForFlasher.append(point8)
 
 
 shapeBaseLength = 0.05  # meters, if square or rectangle
@@ -72,8 +76,7 @@ material = materials[0]
 crossSection = crossSectionShapes[0]
 
 
-
-# ##ALL PARAMETERS ABOVE THIS LINE## #
+##ALL PARAMETERS ABOVE THIS LINE## #
 boolOptions = [connectToMiddlePoint, plotPointGuesses, allowModifyPolygon, tryAnotherPoint, multipleGuesses, allowSelectBeginPoint]
 minDistances = [minDistanceBetweenPathNodes, minDistanceFromCorners, minDistanceFromLine]
 crossSectionLengths = [shapeBaseLength, shapeBaseHeight, shapeBaseDiameter]
