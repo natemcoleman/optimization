@@ -395,10 +395,8 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
 def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths, material, crossSection):
     connectToMiddlePoint = boolOptions[0]
     plotPointGuesses = boolOptions[1]
-    # allowModifyPolygon = boolOptions[2]
     tryAnotherPoint = boolOptions[3]
     multipleGuesses = boolOptions[4]
-    # allowSelectBeginPoint = boolOptions[5]
 
     shapeBaseLength = crossSectionLengths[0]  # meters, if square or rectangle
     shapeBaseHeight = crossSectionLengths[1]  # meters, if rectangle
@@ -411,14 +409,21 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
             point7New = PointsAndLinesClass.ClassPoint(optimalPoints[4], optimalPoints[5])
             point8New = PointsAndLinesClass.ClassPoint(optimalPoints[6], optimalPoints[7])
             point9New = PointsAndLinesClass.ClassPoint(optimalPoints[8], optimalPoints[9])
+
             point10New = PointsAndLinesClass.ClassPoint(optimalPoints[10], optimalPoints[11])
             point11New = PointsAndLinesClass.ClassPoint(optimalPoints[12], optimalPoints[13])
             point12New = PointsAndLinesClass.ClassPoint(optimalPoints[14], optimalPoints[15])
             point13New = PointsAndLinesClass.ClassPoint(optimalPoints[16], optimalPoints[17])
+
             point14New = PointsAndLinesClass.ClassPoint(optimalPoints[18], optimalPoints[19])
             point15New = PointsAndLinesClass.ClassPoint(optimalPoints[20], optimalPoints[21])
             point16New = PointsAndLinesClass.ClassPoint(optimalPoints[22], optimalPoints[23])
             point17New = PointsAndLinesClass.ClassPoint(optimalPoints[24], optimalPoints[25])
+
+            point18New = PointsAndLinesClass.ClassPoint(optimalPoints[26], optimalPoints[27])
+            point19New = PointsAndLinesClass.ClassPoint(optimalPoints[28], optimalPoints[29])
+            point20New = PointsAndLinesClass.ClassPoint(optimalPoints[30], optimalPoints[31])
+            point21New = PointsAndLinesClass.ClassPoint(optimalPoints[32], optimalPoints[33])
 
             if plotPointGuesses:
                 x5GuessPoints.append(optimalPoints[0])
@@ -448,21 +453,30 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                 x17GuessPoints.append(optimalPoints[24])
                 y17GuessPoints.append(optimalPoints[25])
 
-
             line5Opt = PointsAndLinesClass.ClassLine(point6New, point5New)
             line6Opt = PointsAndLinesClass.ClassLine(point7New, point5New)
             line7Opt = PointsAndLinesClass.ClassLine(point8New, point5New)
             line8Opt = PointsAndLinesClass.ClassLine(point9New, point5New)
+
             line9Opt = PointsAndLinesClass.ClassLine(point11New, point10New)
             line10Opt = PointsAndLinesClass.ClassLine(point9New, point10New)
             line11Opt = PointsAndLinesClass.ClassLine(point12New, point10New)
             line12Opt = PointsAndLinesClass.ClassLine(point13New, point10New)
+
             line13Opt = PointsAndLinesClass.ClassLine(point15New, point14New)
             line14Opt = PointsAndLinesClass.ClassLine(point13New, point14New)
             line15Opt = PointsAndLinesClass.ClassLine(point16New, point14New)
             line16Opt = PointsAndLinesClass.ClassLine(point17New, point14New)
 
-            pathLinesNew = [line5Opt, line6Opt, line7Opt, line8Opt, line9Opt, line10Opt, line11Opt, line12Opt, line13Opt, line14Opt, line15Opt, line16Opt]
+            line17Opt = PointsAndLinesClass.ClassLine(point19New, point18New)
+            line18Opt = PointsAndLinesClass.ClassLine(point17New, point18New)
+            line19Opt = PointsAndLinesClass.ClassLine(point20New, point18New)
+            line20Opt = PointsAndLinesClass.ClassLine(point21New, point18New)
+
+            pathLinesNew = [line5Opt, line6Opt, line7Opt, line8Opt,
+                            line9Opt, line10Opt, line11Opt, line12Opt,
+                            line13Opt, line14Opt, line15Opt, line16Opt,
+                            line17Opt, line18Opt, line19Opt, line20Opt]
 
             return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
             # return -GetMassOfAllLines(pathLinesNew)
@@ -484,14 +498,22 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
         line11 = PointsAndLinesClass.ClassLine(listOfPoints[5], listOfPoints[7])
         line12 = PointsAndLinesClass.ClassLine(listOfPoints[6], listOfPoints[7])
 
-        polygonLines = [line1, line2, line3, line4, line5, line6, line7, line8, line9, line10, line11, line12]
+        line13 = PointsAndLinesClass.ClassLine(listOfPoints[8], listOfPoints[6])
+        line14 = line12
+        line15 = PointsAndLinesClass.ClassLine(listOfPoints[7], listOfPoints[9])
+        line16 = PointsAndLinesClass.ClassLine(listOfPoints[8], listOfPoints[9])
+
+        polygonLines = [line1, line2, line3, line4, line5, line6, line7, line8, line9, line10, line11, line12,
+                        line13, line14, line15, line16]
         panel1 = [line1, line2, line3, line4]
         panel2 = [line5, line6, line7, line8]
         panel3 = [line9, line10, line11, line12]
+        panel4 = [line13, line14, line15, line16]
 
         minX1, maxX1, minY1, maxY1 = CrossFrameOptimizationLibrary.FindAxisLimitsOfLines(panel1)
         minX2, maxX2, minY2, maxY2 = CrossFrameOptimizationLibrary.FindAxisLimitsOfLines(panel2)
         minX3, maxX3, minY3, maxY3 = CrossFrameOptimizationLibrary.FindAxisLimitsOfLines(panel3)
+        minX4, maxX4, minY4, maxY4 = CrossFrameOptimizationLibrary.FindAxisLimitsOfLines(panel4)
 
 
         minX, maxX, minY, maxY = CrossFrameOptimizationLibrary.FindAxisLimits(listOfPoints)
@@ -510,12 +532,20 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
         point16InitialGuess = CrossFrameOptimizationLibrary.GetMidpointOfLine(line11)
         point17InitialGuess = CrossFrameOptimizationLibrary.GetMidpointOfLine(line12)
 
+        point19InitialGuess = CrossFrameOptimizationLibrary.GetMidpointOfLine(line13)
+        point20InitialGuess = CrossFrameOptimizationLibrary.GetMidpointOfLine(line15)
+        point21InitialGuess = CrossFrameOptimizationLibrary.GetMidpointOfLine(line16)
+
 
         point5InitialGuess = [((minX1 + maxX1) / 2, (minY1 + maxY1) / 2)]  # First guess is in middle of bounds
         point10InitialGuess = [((minX2 + maxX2) / 2, (minY2 + maxY2) / 2)]  # First guess is in middle of bounds
         point14InitialGuess = [((minX3 + maxX3) / 2, (minY3 + maxY3) / 2)]  # First guess is in middle of bounds
+        point18InitialGuess = [((minX4 + maxX4) / 2, (minY4 + maxY4) / 2)]  # First guess is in middle of bounds
 
-        initialPointsGuesses = [point5InitialGuess, point6InitialGuess, point7InitialGuess, point8InitialGuess, point9InitialGuess, point10InitialGuess, point11InitialGuess, point12InitialGuess, point13InitialGuess, point14InitialGuess, point15InitialGuess, point16InitialGuess, point17InitialGuess]
+        initialPointsGuesses = [point5InitialGuess, point6InitialGuess, point7InitialGuess, point8InitialGuess, point9InitialGuess,
+                                point10InitialGuess, point11InitialGuess, point12InitialGuess, point13InitialGuess,
+                                point14InitialGuess, point15InitialGuess, point16InitialGuess, point17InitialGuess,
+                                point18InitialGuess, point19InitialGuess, point20InitialGuess, point21InitialGuess]
 
         A, Ix, Iy = CrossFrameOptimizationLibrary.GetPropertiesOfSections(crossSection, shapeBaseLength,
                                                                           shapeBaseHeight, shapeBaseDiameter)
@@ -574,6 +604,10 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
             point16 = PointsAndLinesClass.ClassPoint(result.x[22], result.x[23])
             point17 = PointsAndLinesClass.ClassPoint(result.x[24], result.x[25])
 
+            point18 = PointsAndLinesClass.ClassPoint(result.x[26], result.x[27])
+            point19 = PointsAndLinesClass.ClassPoint(result.x[28], result.x[29])
+            point20 = PointsAndLinesClass.ClassPoint(result.x[30], result.x[31])
+            point21 = PointsAndLinesClass.ClassPoint(result.x[32], result.x[33])
 
             line5 = PointsAndLinesClass.ClassLine(point6, point5)
             line6 = PointsAndLinesClass.ClassLine(point7, point5)
@@ -590,11 +624,21 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
             line15 = PointsAndLinesClass.ClassLine(point16, point14)
             line16 = PointsAndLinesClass.ClassLine(point17, point14)
 
-            pathLines = [line5, line6, line7, line8, line9, line10, line11, line12, line13, line14, line15, line16]
+            line17 = PointsAndLinesClass.ClassLine(point19, point18)
+            line18 = PointsAndLinesClass.ClassLine(point17, point18)
+            line19 = PointsAndLinesClass.ClassLine(point20, point18)
+            line20 = PointsAndLinesClass.ClassLine(point21, point18)
+
+            pathLines = [line5, line6, line7, line8, line9, line10, line11, line12, line13, line14, line15, line16,
+                         line17, line18, line19, line20]
 
             if plotPointGuesses:
-                xGuessPoints = [x5GuessPoints, x6GuessPoints, x7GuessPoints, x8GuessPoints, x9GuessPoints, x10GuessPoints, x11GuessPoints, x12GuessPoints, x13GuessPoints, x14GuessPoints, x15GuessPoints, x16GuessPoints, x17GuessPoints]
-                yGuessPoints = [y5GuessPoints, y6GuessPoints, y7GuessPoints, y8GuessPoints, y9GuessPoints, y10GuessPoints, y11GuessPoints, y12GuessPoints, y13GuessPoints, y14GuessPoints, y15GuessPoints, y16GuessPoints, y17GuessPoints]
+                xGuessPoints = [x5GuessPoints, x6GuessPoints, x7GuessPoints, x8GuessPoints, x9GuessPoints,
+                                x10GuessPoints, x11GuessPoints, x12GuessPoints, x13GuessPoints, x14GuessPoints,
+                                x15GuessPoints, x16GuessPoints, x17GuessPoints]
+                yGuessPoints = [y5GuessPoints, y6GuessPoints, y7GuessPoints, y8GuessPoints, y9GuessPoints,
+                                y10GuessPoints, y11GuessPoints, y12GuessPoints, y13GuessPoints, y14GuessPoints,
+                                y15GuessPoints, y16GuessPoints, y17GuessPoints]
             else:
                 xGuessPoints = []
                 yGuessPoints = []
@@ -615,12 +659,18 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
             point7New = PointsAndLinesClass.ClassPoint(optimalPoints[2], optimalPoints[3])
             point8New = PointsAndLinesClass.ClassPoint(optimalPoints[4], optimalPoints[5])
             point9New = PointsAndLinesClass.ClassPoint(optimalPoints[6], optimalPoints[7])
+
             point11New = PointsAndLinesClass.ClassPoint(optimalPoints[8], optimalPoints[9])
             point12New = PointsAndLinesClass.ClassPoint(optimalPoints[10], optimalPoints[11])
             point13New = PointsAndLinesClass.ClassPoint(optimalPoints[12], optimalPoints[13])
+
             point15New = PointsAndLinesClass.ClassPoint(optimalPoints[14], optimalPoints[15])
             point16New = PointsAndLinesClass.ClassPoint(optimalPoints[16], optimalPoints[17])
             point17New = PointsAndLinesClass.ClassPoint(optimalPoints[18], optimalPoints[19])
+
+            point19New = PointsAndLinesClass.ClassPoint(optimalPoints[20], optimalPoints[21])
+            point20New = PointsAndLinesClass.ClassPoint(optimalPoints[22], optimalPoints[23])
+            point21New = PointsAndLinesClass.ClassPoint(optimalPoints[24], optimalPoints[25])
 
             if plotPointGuesses:
                 x6GuessPoints.append(optimalPoints[0])
@@ -659,7 +709,13 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
             line16Opt = PointsAndLinesClass.ClassLine(point16New, point17New)
             line17Opt = PointsAndLinesClass.ClassLine(point17New, point15New)
 
-            pathLinesNew = [line5Opt, line6Opt, line7Opt, line8Opt, line9Opt, line11Opt, line12Opt, line13Opt, line14Opt, line15Opt, line16Opt, line17Opt]
+            line18Opt = PointsAndLinesClass.ClassLine(point19New, point17New)
+            line19Opt = PointsAndLinesClass.ClassLine(point17New, point20New)
+            line20Opt = PointsAndLinesClass.ClassLine(point20New, point21New)
+            line21Opt = PointsAndLinesClass.ClassLine(point21New, point19New)
+
+            pathLinesNew = [line5Opt, line6Opt, line7Opt, line8Opt, line9Opt, line11Opt, line12Opt, line13Opt,
+                            line14Opt, line15Opt, line16Opt, line17Opt, line18Opt, line19Opt, line20Opt, line21Opt]
 
             return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
             # return -GetMassOfAllLines(pathLinesNew)
@@ -680,7 +736,13 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
         line11 = PointsAndLinesClass.ClassLine(listOfPoints[5], listOfPoints[7])
         line12 = PointsAndLinesClass.ClassLine(listOfPoints[6], listOfPoints[7])
 
-        polygonLines = [line1, line2, line3, line4, line5, line6, line7, line8, line9, line10, line11, line12]
+        line13 = PointsAndLinesClass.ClassLine(listOfPoints[8], listOfPoints[6])
+        line14 = line12
+        line15 = PointsAndLinesClass.ClassLine(listOfPoints[7], listOfPoints[9])
+        line16 = PointsAndLinesClass.ClassLine(listOfPoints[8], listOfPoints[9])
+
+        polygonLines = [line1, line2, line3, line4, line5, line6, line7, line8, line9, line10, line11, line12,
+                        line13, line14, line15, line16]
         panel1 = [line1, line2, line3, line4]
         panel2 = [line5, line6, line7, line8]
         panel3 = [line9, line10, line11, line12]
@@ -702,11 +764,15 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
         point15InitialGuess = CrossFrameOptimizationLibrary.GetMidpointOfLine(line9)
         point16InitialGuess = CrossFrameOptimizationLibrary.GetMidpointOfLine(line11)
         point17InitialGuess = CrossFrameOptimizationLibrary.GetMidpointOfLine(line12)
+        point19InitialGuess = CrossFrameOptimizationLibrary.GetMidpointOfLine(line13)
+        point20InitialGuess = CrossFrameOptimizationLibrary.GetMidpointOfLine(line15)
+        point21InitialGuess = CrossFrameOptimizationLibrary.GetMidpointOfLine(line16)
 
 
         initialPointsGuesses = [point6InitialGuess, point7InitialGuess, point8InitialGuess,
                                 point9InitialGuess, point11InitialGuess, point12InitialGuess,
-                                point13InitialGuess, point15InitialGuess, point16InitialGuess, point17InitialGuess]
+                                point13InitialGuess, point15InitialGuess, point16InitialGuess, point17InitialGuess,
+                                point19InitialGuess, point20InitialGuess, point21InitialGuess]
 
         A, Ix, Iy = CrossFrameOptimizationLibrary.GetPropertiesOfSections(crossSection, shapeBaseLength,
                                                                           shapeBaseHeight, shapeBaseDiameter)
@@ -756,6 +822,9 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
             point15 = PointsAndLinesClass.ClassPoint(result.x[14], result.x[15])
             point16 = PointsAndLinesClass.ClassPoint(result.x[16], result.x[17])
             point17 = PointsAndLinesClass.ClassPoint(result.x[18], result.x[19])
+            point19 = PointsAndLinesClass.ClassPoint(result.x[20], result.x[21])
+            point20 = PointsAndLinesClass.ClassPoint(result.x[22], result.x[23])
+            point21 = PointsAndLinesClass.ClassPoint(result.x[24], result.x[25])
 
 
             line5 = PointsAndLinesClass.ClassLine(point6, point7)
@@ -773,8 +842,14 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
             line15 = PointsAndLinesClass.ClassLine(point16, point17)
             line16 = PointsAndLinesClass.ClassLine(point17, point15)
 
+            line17 = PointsAndLinesClass.ClassLine(point19, point17)
+            line18 = PointsAndLinesClass.ClassLine(point17, point20)
+            line19 = PointsAndLinesClass.ClassLine(point20, point21)
+            line20 = PointsAndLinesClass.ClassLine(point21, point19)
 
-            pathLines = [line5, line6, line7, line8, line9, line10, line11, line12, line13, line14, line15, line16]
+
+            pathLines = [line5, line6, line7, line8, line9, line10, line11, line12, line13, line14, line15, line16,
+                         line17, line18, line19, line20]
 
             if plotPointGuesses:
                 xGuessPoints = [x6GuessPoints, x7GuessPoints, x8GuessPoints, x9GuessPoints,

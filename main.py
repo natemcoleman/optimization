@@ -47,19 +47,29 @@ point1 = PointsAndLinesClass.ClassPoint(flasherPoint1[0], flasherPoint1[1])
 point2 = PointsAndLinesClass.ClassPoint(flasherPoint2[0], flasherPoint2[1])
 point3 = PointsAndLinesClass.ClassPoint(flasherPoint3[0], flasherPoint3[1])
 point4 = PointsAndLinesClass.ClassPoint(flasherPoint4[0], flasherPoint4[1])
+
 point5 = PointsAndLinesClass.ClassPoint(flasherPoint5[0], flasherPoint5[1])
 point6 = PointsAndLinesClass.ClassPoint(flasherPoint6[0], flasherPoint6[1])
+
 point7 = PointsAndLinesClass.ClassPoint(flasherPoint7[0], flasherPoint7[1])
 point8 = PointsAndLinesClass.ClassPoint(flasherPoint8[0], flasherPoint8[1])
+
+point9 = PointsAndLinesClass.ClassPoint(flasherPoint9[0], flasherPoint9[1])
+point10 = PointsAndLinesClass.ClassPoint(flasherPoint10[0], flasherPoint10[1])
 
 listOfPointsForFlasher.append(point1)
 listOfPointsForFlasher.append(point2)
 listOfPointsForFlasher.append(point3)
 listOfPointsForFlasher.append(point4)
+
 listOfPointsForFlasher.append(point5)
 listOfPointsForFlasher.append(point6)
+
 listOfPointsForFlasher.append(point7)
 listOfPointsForFlasher.append(point8)
+
+listOfPointsForFlasher.append(point9)
+listOfPointsForFlasher.append(point10)
 
 
 shapeBaseLength = 0.05  # meters, if square or rectangle
