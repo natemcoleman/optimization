@@ -7,7 +7,7 @@ import PointsAndLinesClass
 
 connectToMiddlePoint = False
 plotPointGuesses = False
-allowModifyPolygon = False
+allowModifyPolygon = True
 tryAnotherPoint = True
 multipleGuesses = False
 allowSelectBeginPoint = False
@@ -19,6 +19,19 @@ secondPoint = (0.08333, 1.6287)
 thirdPoint = (1.875, 1.7126)
 fourthPoint = ()
 # fourthPoint = (1.8958, 0.5398)
+
+shapeBaseLength = 0.05  # meters, if square or rectangle
+shapeBaseHeight = 0.05  # meters, if rectangle
+shapeBaseDiameter = 0.05  # meters, if circle
+
+minDistanceBetweenPathNodes = 0.25
+minDistanceFromCorners = 0.1
+minDistanceFromLine = 0.05
+
+materials = ["Aluminum", "Steel", "ABS"]
+crossSectionShapes = ["Square", "Round", "Rectangle", "I-Beam"]
+material = materials[0]
+crossSection = crossSectionShapes[0]
 
 
 flasherPoint1 = (1.5556, 6.2593)
@@ -33,7 +46,7 @@ flasherPoint9 = (2.5185, 1.5556)
 flasherPoint10 = (3.5556, 1.5926)
 flasherPoint11 = (2.5185, 0.44444)
 flasherPoint12 = (3.7407, 0.55556)
-flasherPoint13 = (3.2963, 10.074)
+flasherPoint13 = (6.2963, 10.074)
 flasherPoint14 = (6.7778, 7.4815)
 flasherPoint15 = (5.6667, 4.8889)
 flasherPoint16 = (8.7407, 5.1852)
@@ -57,6 +70,24 @@ point8 = PointsAndLinesClass.ClassPoint(flasherPoint8[0], flasherPoint8[1])
 point9 = PointsAndLinesClass.ClassPoint(flasherPoint9[0], flasherPoint9[1])
 point10 = PointsAndLinesClass.ClassPoint(flasherPoint10[0], flasherPoint10[1])
 
+point11 = PointsAndLinesClass.ClassPoint(flasherPoint11[0], flasherPoint11[1])
+point12 = PointsAndLinesClass.ClassPoint(flasherPoint12[0], flasherPoint12[1])
+
+point13 = PointsAndLinesClass.ClassPoint(flasherPoint13[0], flasherPoint13[1])
+point14 = PointsAndLinesClass.ClassPoint(flasherPoint14[0], flasherPoint14[1])
+
+point15 = PointsAndLinesClass.ClassPoint(flasherPoint15[0], flasherPoint15[1])
+
+point16 = PointsAndLinesClass.ClassPoint(flasherPoint16[0], flasherPoint16[1])
+point17 = PointsAndLinesClass.ClassPoint(flasherPoint17[0], flasherPoint17[1])
+
+point18 = PointsAndLinesClass.ClassPoint(flasherPoint18[0], flasherPoint18[1])
+point19 = PointsAndLinesClass.ClassPoint(flasherPoint19[0], flasherPoint19[1])
+
+point20 = PointsAndLinesClass.ClassPoint(flasherPoint20[0], flasherPoint20[1])
+
+
+
 listOfPointsForFlasher.append(point1)
 listOfPointsForFlasher.append(point2)
 listOfPointsForFlasher.append(point3)
@@ -71,19 +102,21 @@ listOfPointsForFlasher.append(point8)
 listOfPointsForFlasher.append(point9)
 listOfPointsForFlasher.append(point10)
 
+listOfPointsForFlasher.append(point11)
+listOfPointsForFlasher.append(point12)
 
-shapeBaseLength = 0.05  # meters, if square or rectangle
-shapeBaseHeight = 0.05  # meters, if rectangle
-shapeBaseDiameter = 0.05  # meters, if circle
+listOfPointsForFlasher.append(point13)
+listOfPointsForFlasher.append(point14)
 
-minDistanceBetweenPathNodes = 0.25
-minDistanceFromCorners = 0.1
-minDistanceFromLine = 0.05
+listOfPointsForFlasher.append(point15)
 
-materials = ["Aluminum", "Steel", "ABS"]
-crossSectionShapes = ["Square", "Round", "Rectangle", "I-Beam"]
-material = materials[0]
-crossSection = crossSectionShapes[0]
+listOfPointsForFlasher.append(point16)
+listOfPointsForFlasher.append(point17)
+
+listOfPointsForFlasher.append(point18)
+listOfPointsForFlasher.append(point19)
+
+listOfPointsForFlasher.append(point20)
 
 
 ##ALL PARAMETERS ABOVE THIS LINE## #
