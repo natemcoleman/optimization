@@ -1,10 +1,13 @@
 # Python script for optimization final project
+# Figures of progression for paper
+# nitinol to jake
+# z cross frame constraints
 
 import OptimizeFlasherPanel
 import PointsAndLinesClass
 
-connectToMiddlePoint = True
-zPanel = False
+connectToMiddlePoint = False
+zPanel = True
 plotPointGuesses = False
 allowModifyPolygon = True
 tryAnotherPoint = True
@@ -16,8 +19,8 @@ allowSelectBeginPoint = False
 firstPoint = (0.3125, 0.497)
 secondPoint = (0.08333, 1.6287)
 thirdPoint = (1.875, 1.7126)
-fourthPoint = ()
-# fourthPoint = (1.8958, 0.5398)
+# fourthPoint = ()
+fourthPoint = (1.8958, 0.5398)
 
 shapeBaseLength = 0.05  # meters, if square or rectangle
 shapeBaseHeight = 0.05  # meters, if rectangle
@@ -26,6 +29,7 @@ shapeBaseDiameter = 0.05  # meters, if circle
 minDistanceBetweenPathNodes = 0.25
 minDistanceFromCorners = 0.1
 minDistanceFromLine = 0.05
+minEdgePointDistanceFromCorners = 0.25
 
 materials = ["Aluminum", "Steel", "ABS"]
 crossSectionShapes = ["Square", "Round", "Rectangle", "I-Beam"]
@@ -120,7 +124,7 @@ listOfPointsForFlasher.append(point20)
 
 ##ALL PARAMETERS ABOVE THIS LINE## #
 boolOptions = [connectToMiddlePoint, plotPointGuesses, allowModifyPolygon, tryAnotherPoint, multipleGuesses, allowSelectBeginPoint, zPanel]
-minDistances = [minDistanceBetweenPathNodes, minDistanceFromCorners, minDistanceFromLine]
+minDistances = [minDistanceBetweenPathNodes, minDistanceFromCorners, minDistanceFromLine, minEdgePointDistanceFromCorners]
 crossSectionLengths = [shapeBaseLength, shapeBaseHeight, shapeBaseDiameter]
 listOfPoints = []
 point1 = PointsAndLinesClass.ClassPoint(firstPoint[0], firstPoint[1])

@@ -1836,7 +1836,7 @@ def GetConstraintsNoMiddle(polygonLines, listOfPoints, minDistances, isSinglePan
         currentPoint21 = PointsAndLinesClass.ClassPoint(optimalPoints[24], optimalPoints[25])
         currentPoint42 = PointsAndLinesClass.ClassPoint(optimalPoints[54], optimalPoints[55])
         currentPoint47 = PointsAndLinesClass.ClassPoint(optimalPoints[60], optimalPoints[61])
-        currentPoint48 = PointsAndLinesClass.ClassPoint(optimalPoints[36], optimalPoints[37])
+        currentPoint48 = PointsAndLinesClass.ClassPoint(optimalPoints[62], optimalPoints[63])
         currentPoint51 = PointsAndLinesClass.ClassPoint(optimalPoints[64], optimalPoints[65])
 
 
@@ -1891,6 +1891,190 @@ def GetConstraintsNoMiddle(polygonLines, listOfPoints, minDistances, isSinglePan
 
         return returnVec
 
+    def KeepGuessPointsAwayFromVerticies(optimalPoints):
+        distanceBetweenPoints = []
+
+        currentPoint6 = PointsAndLinesClass.ClassPoint(optimalPoints[0], optimalPoints[1])
+        currentPoint7 = PointsAndLinesClass.ClassPoint(optimalPoints[2], optimalPoints[3])
+        currentPoint8 = PointsAndLinesClass.ClassPoint(optimalPoints[4], optimalPoints[5])
+        currentPoint9 = PointsAndLinesClass.ClassPoint(optimalPoints[6], optimalPoints[7])
+        currentPoint11 = PointsAndLinesClass.ClassPoint(optimalPoints[8], optimalPoints[9])
+        currentPoint12 = PointsAndLinesClass.ClassPoint(optimalPoints[10], optimalPoints[11])
+        currentPoint13 = PointsAndLinesClass.ClassPoint(optimalPoints[12], optimalPoints[13])
+        currentPoint15 = PointsAndLinesClass.ClassPoint(optimalPoints[14], optimalPoints[15])
+        currentPoint16 = PointsAndLinesClass.ClassPoint(optimalPoints[16], optimalPoints[17])
+        currentPoint17 = PointsAndLinesClass.ClassPoint(optimalPoints[18], optimalPoints[19])
+        currentPoint19 = PointsAndLinesClass.ClassPoint(optimalPoints[20], optimalPoints[21])
+        currentPoint20 = PointsAndLinesClass.ClassPoint(optimalPoints[22], optimalPoints[23])
+        currentPoint21 = PointsAndLinesClass.ClassPoint(optimalPoints[24], optimalPoints[25])
+        currentPoint23 = PointsAndLinesClass.ClassPoint(optimalPoints[26], optimalPoints[27])
+        currentPoint24 = PointsAndLinesClass.ClassPoint(optimalPoints[28], optimalPoints[29])
+        currentPoint25 = PointsAndLinesClass.ClassPoint(optimalPoints[30], optimalPoints[31])
+        currentPoint25 = PointsAndLinesClass.ClassPoint(optimalPoints[30], optimalPoints[31])
+        currentPoint27 = PointsAndLinesClass.ClassPoint(optimalPoints[32], optimalPoints[33])
+        currentPoint28 = PointsAndLinesClass.ClassPoint(optimalPoints[34], optimalPoints[35])
+        currentPoint30 = PointsAndLinesClass.ClassPoint(optimalPoints[36], optimalPoints[37])
+        currentPoint31 = PointsAndLinesClass.ClassPoint(optimalPoints[38], optimalPoints[39])
+        currentPoint32 = PointsAndLinesClass.ClassPoint(optimalPoints[40], optimalPoints[41])
+        currentPoint34 = PointsAndLinesClass.ClassPoint(optimalPoints[42], optimalPoints[43])
+        currentPoint35 = PointsAndLinesClass.ClassPoint(optimalPoints[44], optimalPoints[45])
+        currentPoint36 = PointsAndLinesClass.ClassPoint(optimalPoints[46], optimalPoints[47])
+        currentPoint38 = PointsAndLinesClass.ClassPoint(optimalPoints[48], optimalPoints[49])
+        currentPoint39 = PointsAndLinesClass.ClassPoint(optimalPoints[50], optimalPoints[51])
+        currentPoint40 = PointsAndLinesClass.ClassPoint(optimalPoints[52], optimalPoints[53])
+        currentPoint42 = PointsAndLinesClass.ClassPoint(optimalPoints[54], optimalPoints[55])
+        currentPoint43 = PointsAndLinesClass.ClassPoint(optimalPoints[56], optimalPoints[57])
+        currentPoint44 = PointsAndLinesClass.ClassPoint(optimalPoints[58], optimalPoints[59])
+        currentPoint47 = PointsAndLinesClass.ClassPoint(optimalPoints[60], optimalPoints[61])
+        currentPoint48 = PointsAndLinesClass.ClassPoint(optimalPoints[36], optimalPoints[37])
+        currentPoint51 = PointsAndLinesClass.ClassPoint(optimalPoints[64], optimalPoints[65])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[0], currentPoint6) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[1], currentPoint6) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[2], currentPoint7) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[1], currentPoint7) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[2], currentPoint8) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[3], currentPoint8) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[0], currentPoint9) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[3], currentPoint9) - minDistances[3])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[0], currentPoint11) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[4], currentPoint11) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[3], currentPoint12) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[5], currentPoint12) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[4], currentPoint13) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[5], currentPoint13) - minDistances[3])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[6], currentPoint15) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[4], currentPoint15) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[7], currentPoint16) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[5], currentPoint16) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[6], currentPoint17) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[7], currentPoint17) - minDistances[3])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[6], currentPoint19) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[8], currentPoint19) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[7], currentPoint20) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[9], currentPoint20) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[8], currentPoint21) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[9], currentPoint21) - minDistances[3])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[2], currentPoint23) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[12], currentPoint23) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[12], currentPoint24) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[13], currentPoint24) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[3], currentPoint25) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[13], currentPoint25) - minDistances[3])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[13], currentPoint27) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[14], currentPoint27) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[5], currentPoint28) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[14], currentPoint28) - minDistances[3])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[14], currentPoint30) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[16], currentPoint30) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[13], currentPoint31) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[15], currentPoint31) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[16], currentPoint32) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[15], currentPoint32) - minDistances[3])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[18], currentPoint34) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[16], currentPoint34) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[17], currentPoint35) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[15], currentPoint35) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[18], currentPoint36) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[17], currentPoint36) - minDistances[3])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[7], currentPoint38) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[19], currentPoint38) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[7], currentPoint39) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[16], currentPoint39) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[19], currentPoint40) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[18], currentPoint40) - minDistances[3])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[9], currentPoint42) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[11], currentPoint42) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[11], currentPoint43) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[19], currentPoint43) - minDistances[3])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[7], currentPoint44) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[14], currentPoint44) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[10], currentPoint47) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[11], currentPoint47) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[10], currentPoint48) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[9], currentPoint48) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[8], currentPoint51) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[10], currentPoint51) - minDistances[3])
+
+        return distanceBetweenPoints
+
+
     con1 = {'type': 'ineq', 'fun': KeepGuessPointsMinDistanceApartConstraintPanel1}
     con2 = {'type': 'eq', 'fun': PathStartPointsFallOnLinesPanel1}
     con3 = {'type': 'ineq', 'fun': StartPointsDoNotGoBeyondLineConstraintPanel1}
@@ -1942,12 +2126,14 @@ def GetConstraintsNoMiddle(polygonLines, listOfPoints, minDistances, isSinglePan
     con36 = {'type': 'eq', 'fun': PathStartPointsFallOnLinesPanel13And14}
     con37 = {'type': 'ineq', 'fun': StartPointsDoNotGoBeyondLineConstraintPanel13And14}
 
+    con38 = {'type': 'ineq', 'fun': KeepGuessPointsAwayFromVerticies}
+
     if isSinglePanel:
         cons = [con1, con2, con3]
     else:
         cons = [con1, con2, con3, con4, con5, con6, con7, con8, con9, con10, con11, con12,
                 con13, con14, con15, con16, con17, con18, con19, con20, con21, con22, con23, con24,
-                con25, con26, con27, con28, con29, con30, con31, con32, con33, con34, con35, con36, con37]
+                con25, con26, con27, con28, con29, con30, con31, con32, con33, con34, con35, con36, con37, con38]
 
     return cons
 

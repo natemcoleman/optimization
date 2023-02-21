@@ -39,12 +39,11 @@ def plotShape(linesToPlot, numberOfPolygonLines, xGuessPoints, yGuessPoints, axi
             plt.plot(linesToPlot[p].points[0].x, linesToPlot[p].points[0].y, 'r*')
             plt.plot(linesToPlot[p].points[1].x, linesToPlot[p].points[1].y, 'r*')
             plt.plot([linesToPlot[p].points[0].x, linesToPlot[p].points[1].x], [linesToPlot[p].points[0].y, linesToPlot[p].points[1].y], 'b--')
-
+            # print("")
         else:
             plt.plot(linesToPlot[p].points[0].x, linesToPlot[p].points[0].y, 'go')
             plt.plot(linesToPlot[p].points[1].x, linesToPlot[p].points[1].y, 'go')
             plt.plot([linesToPlot[p].points[0].x, linesToPlot[p].points[1].x], [linesToPlot[p].points[0].y, linesToPlot[p].points[1].y], 'g-')
-
     if plotPointGuesses:
         for plotLength in range(len(xGuessPoints)-1):
             plt.plot(xGuessPoints[plotLength], yGuessPoints[plotLength], 'c.')
@@ -977,80 +976,74 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                 line55Opt = PointsAndLinesClass.ClassLine(point51New, point21New)
                 line56Opt = PointsAndLinesClass.ClassLine(point21New, point48New)
                 line57Opt = PointsAndLinesClass.ClassLine(point48New, point51New)
+
+                pathLinesNew = [line5Opt, line6Opt, line7Opt, line8Opt, line9Opt, line11Opt, line12Opt, line13Opt,
+                                line14Opt, line15Opt, line16Opt, line17Opt, line18Opt, line19Opt, line20Opt, line21Opt,
+                                line22Opt, line23Opt, line24Opt, line25Opt, line26Opt, line27Opt, line28Opt, line29Opt,
+                                line30Opt, line31Opt, line32Opt, line33Opt, line34Opt, line35Opt, line36Opt, line37Opt,
+                                line38Opt, line39Opt, line40Opt, line41Opt, line42Opt, line43Opt, line44Opt, line45Opt,
+                                line46Opt, line47Opt, line48Opt, line49Opt, line50Opt, line51Opt,
+                                line52Opt, line53Opt, line54Opt, line55Opt, line56Opt, line57Opt]
             else:
                 line5Opt = PointsAndLinesClass.ClassLine(point6New, point7New)
                 line6Opt = PointsAndLinesClass.ClassLine(point9New, point7New)
                 line7Opt = PointsAndLinesClass.ClassLine(point8New, point9New)
-                line8Opt = PointsAndLinesClass.ClassLine(point9New, point9New)
 
                 line9Opt = PointsAndLinesClass.ClassLine(point11New, point9New)
                 line11Opt = PointsAndLinesClass.ClassLine(point9New, point13New)
                 line12Opt = PointsAndLinesClass.ClassLine(point13New, point12New)
-                line13Opt = PointsAndLinesClass.ClassLine(point9New, point9New)
 
                 line14Opt = PointsAndLinesClass.ClassLine(point15New, point13New)
                 line15Opt = PointsAndLinesClass.ClassLine(point13New, point17New)
                 line16Opt = PointsAndLinesClass.ClassLine(point17New, point16New)
-                line17Opt = PointsAndLinesClass.ClassLine(point15New, point15New)
 
                 line18Opt = PointsAndLinesClass.ClassLine(point19New, point17New)
                 line19Opt = PointsAndLinesClass.ClassLine(point17New, point21New)
                 line20Opt = PointsAndLinesClass.ClassLine(point21New, point20New)
-                line21Opt = PointsAndLinesClass.ClassLine(point19New, point19New)
 
                 line22Opt = PointsAndLinesClass.ClassLine(point8New, point23New)
                 line23Opt = PointsAndLinesClass.ClassLine(point23New, point25New)
                 line24Opt = PointsAndLinesClass.ClassLine(point24New, point25New)
-                line25Opt = PointsAndLinesClass.ClassLine(point8New, point8New)
 
                 line26Opt = PointsAndLinesClass.ClassLine(point12New, point25New)
                 line27Opt = PointsAndLinesClass.ClassLine(point28New, point25New)
                 line28Opt = PointsAndLinesClass.ClassLine(point27New, point28New)
-                line29Opt = PointsAndLinesClass.ClassLine(point12New, point12New)
 
                 line30Opt = PointsAndLinesClass.ClassLine(point30New, point27New)
-                line31Opt = PointsAndLinesClass.ClassLine(point27New, point32New)
+                line31Opt = PointsAndLinesClass.ClassLine(point31New, point30New)
                 line32Opt = PointsAndLinesClass.ClassLine(point31New, point32New)
-                line33Opt = PointsAndLinesClass.ClassLine(point30New, point30New)
-##Ended here
+
                 line34Opt = PointsAndLinesClass.ClassLine(point34New, point32New)
-                line35Opt = PointsAndLinesClass.ClassLine(point32New, point35New)
+                line35Opt = PointsAndLinesClass.ClassLine(point32New, point36New)
                 line36Opt = PointsAndLinesClass.ClassLine(point35New, point36New)
-                line37Opt = PointsAndLinesClass.ClassLine(point36New, point34New)
 
                 line38Opt = PointsAndLinesClass.ClassLine(point38New, point39New)
-                line39Opt = PointsAndLinesClass.ClassLine(point39New, point34New)
+                line39Opt = PointsAndLinesClass.ClassLine(point39New, point40New)
                 line40Opt = PointsAndLinesClass.ClassLine(point34New, point40New)
-                line41Opt = PointsAndLinesClass.ClassLine(point40New, point38New)
 
                 line42Opt = PointsAndLinesClass.ClassLine(point42New, point20New)
-                line43Opt = PointsAndLinesClass.ClassLine(point20New, point38New)
+                line43Opt = PointsAndLinesClass.ClassLine(point42New, point38New)
                 line44Opt = PointsAndLinesClass.ClassLine(point38New, point43New)
-                line45Opt = PointsAndLinesClass.ClassLine(point43New, point42New)
 
-                line46Opt = PointsAndLinesClass.ClassLine(point16New, point28New)
-                line47Opt = PointsAndLinesClass.ClassLine(point28New, point44New)
-                line48Opt = PointsAndLinesClass.ClassLine(point44New, point16New)
+                line46Opt = PointsAndLinesClass.ClassLine(point44New, point28New)
+                line47Opt = PointsAndLinesClass.ClassLine(point16New, point44New)
 
                 line49Opt = PointsAndLinesClass.ClassLine(point44New, point30New)
-                line50Opt = PointsAndLinesClass.ClassLine(point30New, point39New)
-                line51Opt = PointsAndLinesClass.ClassLine(point39New, point44New)
+                line50Opt = PointsAndLinesClass.ClassLine(point44New, point39New)
 
-                line52Opt = PointsAndLinesClass.ClassLine(point47New, point48New)
-                line53Opt = PointsAndLinesClass.ClassLine(point48New, point42New)
-                line54Opt = PointsAndLinesClass.ClassLine(point42New, point47New)
+                line52Opt = PointsAndLinesClass.ClassLine(point42New, point48New)
+                line53Opt = PointsAndLinesClass.ClassLine(point48New, point47New)
 
-                line55Opt = PointsAndLinesClass.ClassLine(point51New, point21New)
-                line56Opt = PointsAndLinesClass.ClassLine(point21New, point48New)
-                line57Opt = PointsAndLinesClass.ClassLine(point48New, point51New)
+                line55Opt = PointsAndLinesClass.ClassLine(point48New, point21New)
+                line56Opt = PointsAndLinesClass.ClassLine(point51New, point48New)
 
-            pathLinesNew = [line5Opt, line6Opt, line7Opt, line8Opt, line9Opt, line11Opt, line12Opt, line13Opt,
-                            line14Opt, line15Opt, line16Opt, line17Opt, line18Opt, line19Opt, line20Opt, line21Opt,
-                            line22Opt, line23Opt, line24Opt, line25Opt, line26Opt, line27Opt, line28Opt, line29Opt,
-                            line30Opt, line31Opt, line32Opt, line33Opt, line34Opt, line35Opt, line36Opt, line37Opt,
-                            line38Opt, line39Opt, line40Opt, line41Opt, line42Opt, line43Opt, line44Opt, line45Opt,
-                            line46Opt, line47Opt, line48Opt, line49Opt, line50Opt, line51Opt,
-                            line52Opt, line53Opt, line54Opt, line55Opt, line56Opt, line57Opt]
+                pathLinesNew = [line5Opt, line6Opt, line7Opt, line9Opt, line11Opt, line12Opt,
+                                line14Opt, line15Opt, line16Opt, line18Opt, line19Opt, line20Opt,
+                                line22Opt, line23Opt, line24Opt, line26Opt, line27Opt, line28Opt,
+                                line30Opt, line31Opt, line32Opt, line34Opt, line35Opt, line36Opt,
+                                line38Opt, line39Opt, line40Opt, line42Opt, line43Opt, line44Opt,
+                                line46Opt, line47Opt, line49Opt, line50Opt,
+                                line52Opt, line53Opt, line55Opt, line56Opt]
 
             return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
             # return -GetMassOfAllLines(pathLinesNew)
@@ -1235,85 +1228,173 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
 
             point51 = PointsAndLinesClass.ClassPoint(result.x[64], result.x[65])
 
-            line5 = PointsAndLinesClass.ClassLine(point6, point7)
-            line6 = PointsAndLinesClass.ClassLine(point7, point8)
-            line7 = PointsAndLinesClass.ClassLine(point8, point9)
-            line8 = PointsAndLinesClass.ClassLine(point9, point6)
+            if boolOptions[6] is False:
+                line5 = PointsAndLinesClass.ClassLine(point6, point7)
+                line6 = PointsAndLinesClass.ClassLine(point7, point8)
+                line7 = PointsAndLinesClass.ClassLine(point8, point9)
+                line8 = PointsAndLinesClass.ClassLine(point9, point6)
 
-            line9 = PointsAndLinesClass.ClassLine(point11, point9)
-            line10 = PointsAndLinesClass.ClassLine(point9, point12)
-            line11 = PointsAndLinesClass.ClassLine(point12, point13)
-            line12 = PointsAndLinesClass.ClassLine(point13, point11)
+                line9 = PointsAndLinesClass.ClassLine(point11, point9)
+                line10 = PointsAndLinesClass.ClassLine(point9, point12)
+                line11 = PointsAndLinesClass.ClassLine(point12, point13)
+                line12 = PointsAndLinesClass.ClassLine(point13, point11)
 
-            line13 = PointsAndLinesClass.ClassLine(point15, point13)
-            line14 = PointsAndLinesClass.ClassLine(point13, point16)
-            line15 = PointsAndLinesClass.ClassLine(point16, point17)
-            line16 = PointsAndLinesClass.ClassLine(point17, point15)
+                line13 = PointsAndLinesClass.ClassLine(point15, point13)
+                line14 = PointsAndLinesClass.ClassLine(point13, point16)
+                line15 = PointsAndLinesClass.ClassLine(point16, point17)
+                line16 = PointsAndLinesClass.ClassLine(point17, point15)
 
-            line17 = PointsAndLinesClass.ClassLine(point19, point17)
-            line18 = PointsAndLinesClass.ClassLine(point17, point20)
-            line19 = PointsAndLinesClass.ClassLine(point20, point21)
-            line20 = PointsAndLinesClass.ClassLine(point21, point19)
+                line17 = PointsAndLinesClass.ClassLine(point19, point17)
+                line18 = PointsAndLinesClass.ClassLine(point17, point20)
+                line19 = PointsAndLinesClass.ClassLine(point20, point21)
+                line20 = PointsAndLinesClass.ClassLine(point21, point19)
 
-            line21 = PointsAndLinesClass.ClassLine(point8, point23)
-            line22 = PointsAndLinesClass.ClassLine(point23, point24)
-            line23 = PointsAndLinesClass.ClassLine(point24, point25)
-            line24 = PointsAndLinesClass.ClassLine(point25, point8)
+                line21 = PointsAndLinesClass.ClassLine(point8, point23)
+                line22 = PointsAndLinesClass.ClassLine(point23, point24)
+                line23 = PointsAndLinesClass.ClassLine(point24, point25)
+                line24 = PointsAndLinesClass.ClassLine(point25, point8)
 
-            line25 = PointsAndLinesClass.ClassLine(point12, point25)
-            line26 = PointsAndLinesClass.ClassLine(point25, point27)
-            line27 = PointsAndLinesClass.ClassLine(point27, point28)
-            line28 = PointsAndLinesClass.ClassLine(point28, point12)
+                line25 = PointsAndLinesClass.ClassLine(point12, point25)
+                line26 = PointsAndLinesClass.ClassLine(point25, point27)
+                line27 = PointsAndLinesClass.ClassLine(point27, point28)
+                line28 = PointsAndLinesClass.ClassLine(point28, point12)
 
-            line29 = PointsAndLinesClass.ClassLine(point30, point27)
-            line30 = PointsAndLinesClass.ClassLine(point27, point31)
-            line31 = PointsAndLinesClass.ClassLine(point31, point32)
-            line32 = PointsAndLinesClass.ClassLine(point32, point30)
+                line29 = PointsAndLinesClass.ClassLine(point30, point27)
+                line30 = PointsAndLinesClass.ClassLine(point27, point31)
+                line31 = PointsAndLinesClass.ClassLine(point31, point32)
+                line32 = PointsAndLinesClass.ClassLine(point32, point30)
 
-            line33 = PointsAndLinesClass.ClassLine(point34, point32)
-            line34 = PointsAndLinesClass.ClassLine(point32, point35)
-            line35 = PointsAndLinesClass.ClassLine(point35, point36)
-            line36 = PointsAndLinesClass.ClassLine(point36, point34)
+                line33 = PointsAndLinesClass.ClassLine(point34, point32)
+                line34 = PointsAndLinesClass.ClassLine(point32, point35)
+                line35 = PointsAndLinesClass.ClassLine(point35, point36)
+                line36 = PointsAndLinesClass.ClassLine(point36, point34)
 
-            line38 = PointsAndLinesClass.ClassLine(point38, point39)
-            line39 = PointsAndLinesClass.ClassLine(point39, point34)
-            line40 = PointsAndLinesClass.ClassLine(point34, point40)
-            line41 = PointsAndLinesClass.ClassLine(point40, point38)
+                line38 = PointsAndLinesClass.ClassLine(point38, point39)
+                line39 = PointsAndLinesClass.ClassLine(point39, point34)
+                line40 = PointsAndLinesClass.ClassLine(point34, point40)
+                line41 = PointsAndLinesClass.ClassLine(point40, point38)
 
-            line42 = PointsAndLinesClass.ClassLine(point42, point20)
-            line43 = PointsAndLinesClass.ClassLine(point20, point38)
-            line44 = PointsAndLinesClass.ClassLine(point38, point43)
-            line45 = PointsAndLinesClass.ClassLine(point43, point42)
+                line42 = PointsAndLinesClass.ClassLine(point42, point20)
+                line43 = PointsAndLinesClass.ClassLine(point20, point38)
+                line44 = PointsAndLinesClass.ClassLine(point38, point43)
+                line45 = PointsAndLinesClass.ClassLine(point43, point42)
 
-            line46 = PointsAndLinesClass.ClassLine(point16, point28)
-            line47 = PointsAndLinesClass.ClassLine(point28, point44)
-            line48 = PointsAndLinesClass.ClassLine(point44, point16)
+                line46 = PointsAndLinesClass.ClassLine(point16, point28)
+                line47 = PointsAndLinesClass.ClassLine(point28, point44)
+                line48 = PointsAndLinesClass.ClassLine(point44, point16)
 
-            line49 = PointsAndLinesClass.ClassLine(point44, point30)
-            line50 = PointsAndLinesClass.ClassLine(point30, point39)
-            line51 = PointsAndLinesClass.ClassLine(point39, point44)
+                line49 = PointsAndLinesClass.ClassLine(point44, point30)
+                line50 = PointsAndLinesClass.ClassLine(point30, point39)
+                line51 = PointsAndLinesClass.ClassLine(point39, point44)
 
-            line52 = PointsAndLinesClass.ClassLine(point48, point42)
-            line53 = PointsAndLinesClass.ClassLine(point42, point47)
-            line54 = PointsAndLinesClass.ClassLine(point47, point48)
+                line52 = PointsAndLinesClass.ClassLine(point48, point42)
+                line53 = PointsAndLinesClass.ClassLine(point42, point47)
+                line54 = PointsAndLinesClass.ClassLine(point47, point48)
 
-            line55 = PointsAndLinesClass.ClassLine(point51, point21)
-            line56 = PointsAndLinesClass.ClassLine(point21, point48)
-            line57 = PointsAndLinesClass.ClassLine(point48, point51)
+                line55 = PointsAndLinesClass.ClassLine(point51, point21)
+                line56 = PointsAndLinesClass.ClassLine(point21, point48)
+                line57 = PointsAndLinesClass.ClassLine(point48, point51)
 
-            pathLines = [line5, line6, line7, line8,
-                         line9, line10, line11, line12,
-                         line13, line14, line15, line16,
-                         line17, line18, line19, line20,
-                         line21, line22, line23, line24,
-                         line25, line26, line27, line28,
-                         line29, line30, line31, line32,
-                         line33, line34, line35, line36,
-                         line38, line39, line40, line41,
-                         line42, line43, line44, line45,
-                         line46, line47, line48, line49, line50, line51,
-                         line52, line53, line54,
-                         line55, line56, line57]
+                pathLines = [line5, line6, line7, line8,
+                             line9, line10, line11, line12,
+                             line13, line14, line15, line16,
+                             line17, line18, line19, line20,
+                             line21, line22, line23, line24,
+                             line25, line26, line27, line28,
+                             line29, line30, line31, line32,
+                             line33, line34, line35, line36,
+                             line38, line39, line40, line41,
+                             line42, line43, line44, line45,
+                             line46, line47, line48, line49, line50, line51,
+                             line52, line53, line54,
+                             line55, line56, line57]
+            else:
+                line5 = PointsAndLinesClass.ClassLine(point6, point7)
+                line6 = PointsAndLinesClass.ClassLine(point9, point7)
+                line7 = PointsAndLinesClass.ClassLine(point8, point9)
+
+                line9 = PointsAndLinesClass.ClassLine(point11, point9)
+                line11 = PointsAndLinesClass.ClassLine(point9, point13)
+                line12 = PointsAndLinesClass.ClassLine(point13, point12)
+
+                line14 = PointsAndLinesClass.ClassLine(point15, point13)
+                line15 = PointsAndLinesClass.ClassLine(point13, point17)
+                line16 = PointsAndLinesClass.ClassLine(point17, point16)
+
+                line18 = PointsAndLinesClass.ClassLine(point19, point17)
+                line19 = PointsAndLinesClass.ClassLine(point17, point21)
+                line20 = PointsAndLinesClass.ClassLine(point21, point20)
+
+                line22 = PointsAndLinesClass.ClassLine(point8, point23)
+                line23 = PointsAndLinesClass.ClassLine(point23, point25)
+                line24 = PointsAndLinesClass.ClassLine(point24, point25)
+
+                line26 = PointsAndLinesClass.ClassLine(point12, point25)
+                line27 = PointsAndLinesClass.ClassLine(point28, point25)
+                line28 = PointsAndLinesClass.ClassLine(point27, point28)
+
+                line30 = PointsAndLinesClass.ClassLine(point30, point27)
+                line31 = PointsAndLinesClass.ClassLine(point31, point30)
+                line32 = PointsAndLinesClass.ClassLine(point31, point32)
+
+                line34 = PointsAndLinesClass.ClassLine(point34, point32)
+                line35 = PointsAndLinesClass.ClassLine(point32, point36)
+                line36 = PointsAndLinesClass.ClassLine(point35, point36)
+
+                line38 = PointsAndLinesClass.ClassLine(point38, point39)
+                line39 = PointsAndLinesClass.ClassLine(point39, point40)
+                line40 = PointsAndLinesClass.ClassLine(point34, point40)
+
+                line42 = PointsAndLinesClass.ClassLine(point42, point20)
+                line43 = PointsAndLinesClass.ClassLine(point42, point38)
+                line44 = PointsAndLinesClass.ClassLine(point38, point43)
+
+                line46 = PointsAndLinesClass.ClassLine(point44, point28)
+                line47 = PointsAndLinesClass.ClassLine(point16, point44)
+
+                line49 = PointsAndLinesClass.ClassLine(point44, point30)
+                line50 = PointsAndLinesClass.ClassLine(point44, point39)
+
+                line52 = PointsAndLinesClass.ClassLine(point42, point48)
+                line53 = PointsAndLinesClass.ClassLine(point48, point47)
+
+                line55 = PointsAndLinesClass.ClassLine(point48, point21)
+                line56 = PointsAndLinesClass.ClassLine(point51, point48)
+
+                pathLines = [line5, line6, line7,
+                             line9, line11, line12,
+                             line14, line15, line16,
+                             line18, line19, line20,
+                             line22, line23, line24,
+                             line26, line27, line28,
+                             line30, line31, line32,
+                             line34, line35, line36,
+                             line38, line39, line40,
+                             line42, line43, line44,
+                             line46, line47,
+                             line49, line50,
+                             line52, line53,
+                             line55, line56]
+
+                # print("point9:", point9)
+                # print("line9:", line9)
+                # for numpathlines in range(len(pathLines)-1):
+                #     print("pathLine", numpathlines, ":", pathLines[numpathlines])
+            #
+            # pathLines = [line5, line6, line7, line8,
+            #              line9, line10, line11, line12,
+            #              line13, line14, line15, line16,
+            #              line17, line18, line19, line20,
+            #              line21, line22, line23, line24,
+            #              line25, line26, line27, line28,
+            #              line29, line30, line31, line32,
+            #              line33, line34, line35, line36,
+            #              line38, line39, line40, line41,
+            #              line42, line43, line44, line45,
+            #              line46, line47, line48, line49, line50, line51,
+            #              line52, line53, line54,
+            #              line55, line56, line57]
+
 
             xGuessPoints = []
             yGuessPoints = []
