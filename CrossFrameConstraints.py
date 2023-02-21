@@ -390,6 +390,7 @@ def GetConstraintsWithMiddle(polygonLines, listOfPoints, minDistances, isSingleP
     def KeepMiddleNodeMinDistanceFromCornersConstraintPanel4(optimalPoints):
         distanceBetweenPoints = []
         currentPoint18 = PointsAndLinesClass.ClassPoint(optimalPoints[26], optimalPoints[27])
+        currentPoint20 = PointsAndLinesClass.ClassPoint(optimalPoints[30], optimalPoints[31])
 
         distanceBetweenPoints.append(
             CrossFrameOptimizationLibrary.distance(listOfPoints[6], currentPoint18) - minDistances[1])
@@ -399,6 +400,11 @@ def GetConstraintsWithMiddle(polygonLines, listOfPoints, minDistances, isSingleP
             CrossFrameOptimizationLibrary.distance(listOfPoints[9], currentPoint18) - minDistances[1])
         distanceBetweenPoints.append(
                 CrossFrameOptimizationLibrary.distance(listOfPoints[7], currentPoint18) - minDistances[1])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[9], currentPoint20) - minDistances[1])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[7], currentPoint20) - minDistances[1])
 
         return distanceBetweenPoints
 
@@ -512,6 +518,9 @@ def GetConstraintsWithMiddle(polygonLines, listOfPoints, minDistances, isSingleP
             CrossFrameOptimizationLibrary.distance(currentPoint28, currentPoint12) - minDistances[0])
         distanceBetweenPoints.append(
             CrossFrameOptimizationLibrary.distance(currentPoint28, currentPoint27) - minDistances[0])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[14], currentPoint27) - minDistances[1])
 
         return distanceBetweenPoints
 
@@ -631,6 +640,7 @@ def GetConstraintsWithMiddle(polygonLines, listOfPoints, minDistances, isSingleP
     def KeepMiddleNodeMinDistanceFromCornersConstraintPanel7(optimalPoints):
         distanceBetweenPoints = []
         currentPoint29 = PointsAndLinesClass.ClassPoint(optimalPoints[48], optimalPoints[49])
+        currentPoint32 = PointsAndLinesClass.ClassPoint(optimalPoints[54], optimalPoints[55])
 
         distanceBetweenPoints.append(
             CrossFrameOptimizationLibrary.distance(listOfPoints[14], currentPoint29) - minDistances[1])
@@ -640,6 +650,9 @@ def GetConstraintsWithMiddle(polygonLines, listOfPoints, minDistances, isSingleP
             CrossFrameOptimizationLibrary.distance(listOfPoints[16], currentPoint29) - minDistances[1])
         distanceBetweenPoints.append(
                 CrossFrameOptimizationLibrary.distance(listOfPoints[15], currentPoint29) - minDistances[1])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[16], currentPoint32) - minDistances[1])
 
         return distanceBetweenPoints
 
@@ -891,10 +904,12 @@ def GetConstraintsWithMiddle(polygonLines, listOfPoints, minDistances, isSingleP
         currentPoint6 = PointsAndLinesClass.ClassPoint(optimalPoints[2], optimalPoints[3])
         currentPoint11 = PointsAndLinesClass.ClassPoint(optimalPoints[12], optimalPoints[13])
         currentPoint15 = PointsAndLinesClass.ClassPoint(optimalPoints[20], optimalPoints[21])
+        currentPoint19 = PointsAndLinesClass.ClassPoint(optimalPoints[28], optimalPoints[29])
 
         currentPoint36 = PointsAndLinesClass.ClassPoint(optimalPoints[62], optimalPoints[63])
         currentPoint40 = PointsAndLinesClass.ClassPoint(optimalPoints[70], optimalPoints[71])
         currentPoint43 = PointsAndLinesClass.ClassPoint(optimalPoints[76], optimalPoints[77])
+        currentPoint47 = PointsAndLinesClass.ClassPoint(optimalPoints[84], optimalPoints[85])
 
         distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(listOfPoints[1], currentPoint6) -
                                      CrossFrameOptimizationLibrary.distance(listOfPoints[17], currentPoint36))
@@ -904,6 +919,10 @@ def GetConstraintsWithMiddle(polygonLines, listOfPoints, minDistances, isSingleP
 
         distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(listOfPoints[4], currentPoint15) -
                                      CrossFrameOptimizationLibrary.distance(listOfPoints[19], currentPoint43))
+
+
+        distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(listOfPoints[6], currentPoint19) -
+                                     CrossFrameOptimizationLibrary.distance(listOfPoints[11], currentPoint47))
 
         return distanceBetweenPoints
 
@@ -1004,6 +1023,130 @@ def GetConstraintsWithMiddle(polygonLines, listOfPoints, minDistances, isSingleP
         return distanceBetweenPoints
 
 
+    def KeepGuessPointsMinDistanceApartConstraintPanel13(optimalPoints):
+        distanceBetweenPoints = []
+
+        currentPoint49 = PointsAndLinesClass.ClassPoint(optimalPoints[88], optimalPoints[89])
+        currentPoint47 = PointsAndLinesClass.ClassPoint(optimalPoints[84], optimalPoints[85])
+        currentPoint48 = PointsAndLinesClass.ClassPoint(optimalPoints[86], optimalPoints[87])
+        currentPoint42 = PointsAndLinesClass.ClassPoint(optimalPoints[74], optimalPoints[75])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(currentPoint49, currentPoint47) - minDistances[0])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(currentPoint49, currentPoint48) - minDistances[0])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(currentPoint49, currentPoint42) - minDistances[0])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(currentPoint47, currentPoint48) - minDistances[0])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(currentPoint48, currentPoint42) - minDistances[0])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(currentPoint42, currentPoint47) - minDistances[0])
+
+        return distanceBetweenPoints
+
+    def PathStartPointsFallOnLinesPanel13(optimalPoints):
+        returnVec = []
+
+        yOfLine36 = polygonLines[40].points[1].y + (
+                ((polygonLines[40].points[0].y - polygonLines[40].points[1].y) / (
+                        polygonLines[40].points[0].x - polygonLines[40].points[1].x))
+                * (optimalPoints[84] - polygonLines[40].points[1].x))
+
+        xOfLine37 = polygonLines[39].points[0].x + (
+                ((polygonLines[39].points[1].x - polygonLines[39].points[0].x) / (
+                            polygonLines[39].points[1].y - polygonLines[39].points[0].y))
+                * (optimalPoints[87] - polygonLines[39].points[0].y))
+
+        returnVec.append(optimalPoints[85] - yOfLine36)
+        returnVec.append(optimalPoints[86] - xOfLine37)
+
+        return returnVec
+
+    def StartPointsDoNotGoBeyondLineConstraintPanel13(optimalPoints):
+        returnVec = []
+
+        returnVec.append(polygonLines[39].points[1].y - optimalPoints[85])
+        returnVec.append(optimalPoints[85] - polygonLines[39].points[0].y)
+
+        returnVec.append(polygonLines[40].points[1].x - optimalPoints[86])
+        returnVec.append(optimalPoints[86] - polygonLines[40].points[0].x)
+
+        return returnVec
+
+    def KeepMiddleNodeMinDistanceFromCornersConstraintPanel13(optimalPoints):
+        distanceBetweenPoints = []
+        currentPoint49 = PointsAndLinesClass.ClassPoint(optimalPoints[88], optimalPoints[89])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[9], currentPoint49) - minDistances[1])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[10], currentPoint49) - minDistances[1])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[11], currentPoint49) - minDistances[1])
+
+        return distanceBetweenPoints
+
+
+    def KeepGuessPointsMinDistanceApartConstraintPanel14(optimalPoints):
+        distanceBetweenPoints = []
+
+        currentPoint21 = PointsAndLinesClass.ClassPoint(optimalPoints[32], optimalPoints[33])
+        currentPoint48 = PointsAndLinesClass.ClassPoint(optimalPoints[86], optimalPoints[87])
+        currentPoint50 = PointsAndLinesClass.ClassPoint(optimalPoints[90], optimalPoints[91])
+        currentPoint51 = PointsAndLinesClass.ClassPoint(optimalPoints[92], optimalPoints[93])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(currentPoint50, currentPoint21) - minDistances[0])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(currentPoint50, currentPoint48) - minDistances[0])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(currentPoint50, currentPoint51) - minDistances[0])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(currentPoint21, currentPoint48) - minDistances[0])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(currentPoint48, currentPoint51) - minDistances[0])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(currentPoint51, currentPoint21) - minDistances[0])
+
+        return distanceBetweenPoints
+
+    def PathStartPointsFallOnLinesPanel14(optimalPoints):
+        returnVec = []
+
+        xOfLine35 = polygonLines[41].points[0].x + (
+                ((polygonLines[41].points[1].x - polygonLines[41].points[0].x) / (
+                        polygonLines[41].points[1].y - polygonLines[41].points[0].y))
+                * (optimalPoints[93] - polygonLines[41].points[0].y))
+
+        returnVec.append(optimalPoints[92] - xOfLine35)
+
+        return returnVec
+
+    def StartPointsDoNotGoBeyondLineConstraintPanel14(optimalPoints):
+        returnVec = []
+
+        returnVec.append(polygonLines[41].points[1].y - optimalPoints[93])
+        returnVec.append(optimalPoints[93] - polygonLines[41].points[0].y)
+
+        return returnVec
+
+    def KeepMiddleNodeMinDistanceFromCornersConstraintPanel14(optimalPoints):
+        distanceBetweenPoints = []
+        currentPoint50 = PointsAndLinesClass.ClassPoint(optimalPoints[92], optimalPoints[93])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[8], currentPoint50) - minDistances[1])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[10], currentPoint50) - minDistances[1])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[9], currentPoint50) - minDistances[1])
+
+        return distanceBetweenPoints
+
 
     con1 = {'type': 'ineq', 'fun': KeepGuessPointsMinDistanceApartConstraintPanel1}
     con2 = {'type': 'eq', 'fun': PathStartPointsFallOnLinesPanel1}
@@ -1063,13 +1206,23 @@ def GetConstraintsWithMiddle(polygonLines, listOfPoints, minDistances, isSingleP
     con44 = {'type': 'ineq', 'fun': KeepGuessPointsMinDistanceApartConstraintPanel12}
     con45 = {'type': 'ineq', 'fun': KeepMiddleNodeMinDistanceFromCornersConstraintPanel12}
 
+    con46 = {'type': 'ineq', 'fun': KeepGuessPointsMinDistanceApartConstraintPanel13}
+    con47 = {'type': 'eq', 'fun': PathStartPointsFallOnLinesPanel13}
+    con48 = {'type': 'ineq', 'fun': StartPointsDoNotGoBeyondLineConstraintPanel13}
+    con49 = {'type': 'ineq', 'fun': KeepMiddleNodeMinDistanceFromCornersConstraintPanel13}
+
+    con50 = {'type': 'ineq', 'fun': KeepGuessPointsMinDistanceApartConstraintPanel14}
+    con51 = {'type': 'eq', 'fun': PathStartPointsFallOnLinesPanel14}
+    con52 = {'type': 'ineq', 'fun': StartPointsDoNotGoBeyondLineConstraintPanel14}
+    con53 = {'type': 'ineq', 'fun': KeepMiddleNodeMinDistanceFromCornersConstraintPanel14}
+
     if isSinglePanel:
         cons = [con1, con2, con3]
     else:
         cons = [con1, con2, con3, con4, con5, con6, con7, con8, con9, con10, con11, con12, con13, con14,
                 con15, con16, con17, con18, con19, con20, con21, con22, con23, con24, con25, con26,
                 con27, con28, con29, con30, con31, con32, con33, con34, con35, con36, con37, con38, con39,
-                con40, con41, con42, con43, con44, con45]
+                con40, con41, con42, con43, con44, con45, con46, con47, con48, con49, con50, con51, con52, con53]
 
     return cons
 
@@ -1258,6 +1411,8 @@ def GetConstraintsNoMiddle(polygonLines, listOfPoints, minDistances, isSinglePan
         distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(currentPoint17, currentPoint19) - minDistances[0])
         distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(currentPoint17, currentPoint20) - minDistances[0])
 
+        distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(listOfPoints[9], currentPoint20) - minDistances[1])
+
         return distanceBetweenPoints
 
     def PathStartPointsFallOnLinesPanel4(optimalPoints):
@@ -1364,6 +1519,8 @@ def GetConstraintsNoMiddle(polygonLines, listOfPoints, minDistances, isSinglePan
         distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(currentPoint25, currentPoint27) - minDistances[0])
         distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(currentPoint28, currentPoint12) - minDistances[0])
         distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(currentPoint28, currentPoint27) - minDistances[0])
+
+        distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(listOfPoints[14], currentPoint27) - minDistances[1])
 
         return distanceBetweenPoints
 
@@ -1608,10 +1765,12 @@ def GetConstraintsNoMiddle(polygonLines, listOfPoints, minDistances, isSinglePan
         currentPoint6 = PointsAndLinesClass.ClassPoint(optimalPoints[0], optimalPoints[1])
         currentPoint11 = PointsAndLinesClass.ClassPoint(optimalPoints[8], optimalPoints[9])
         currentPoint15 = PointsAndLinesClass.ClassPoint(optimalPoints[14], optimalPoints[15])
+        currentPoint19 = PointsAndLinesClass.ClassPoint(optimalPoints[20], optimalPoints[21])
 
         currentPoint36 = PointsAndLinesClass.ClassPoint(optimalPoints[46], optimalPoints[47])
         currentPoint40 = PointsAndLinesClass.ClassPoint(optimalPoints[52], optimalPoints[53])
         currentPoint43 = PointsAndLinesClass.ClassPoint(optimalPoints[56], optimalPoints[57])
+        currentPoint47 = PointsAndLinesClass.ClassPoint(optimalPoints[60], optimalPoints[61])
 
         distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(listOfPoints[1], currentPoint6) -
                                      CrossFrameOptimizationLibrary.distance(listOfPoints[17], currentPoint36))
@@ -1621,6 +1780,9 @@ def GetConstraintsNoMiddle(polygonLines, listOfPoints, minDistances, isSinglePan
 
         distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(listOfPoints[4], currentPoint15) -
                                      CrossFrameOptimizationLibrary.distance(listOfPoints[19], currentPoint43))
+
+        distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(listOfPoints[6], currentPoint19) -
+                                     CrossFrameOptimizationLibrary.distance(listOfPoints[11], currentPoint47))
 
         return distanceBetweenPoints
 
@@ -1668,6 +1830,67 @@ def GetConstraintsNoMiddle(polygonLines, listOfPoints, minDistances, isSinglePan
         return returnVec
 
 
+    def KeepGuessPointsMinDistanceApartConstraintPanel13And14(optimalPoints):
+        distanceBetweenPoints = []
+
+        currentPoint21 = PointsAndLinesClass.ClassPoint(optimalPoints[24], optimalPoints[25])
+        currentPoint42 = PointsAndLinesClass.ClassPoint(optimalPoints[54], optimalPoints[55])
+        currentPoint47 = PointsAndLinesClass.ClassPoint(optimalPoints[60], optimalPoints[61])
+        currentPoint48 = PointsAndLinesClass.ClassPoint(optimalPoints[36], optimalPoints[37])
+        currentPoint51 = PointsAndLinesClass.ClassPoint(optimalPoints[64], optimalPoints[65])
+
+
+        distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(currentPoint42, currentPoint47) - minDistances[0])
+        distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(currentPoint47, currentPoint48) - minDistances[0])
+        distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(currentPoint48, currentPoint42) - minDistances[0])
+
+        distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(currentPoint51, currentPoint21) - minDistances[0])
+        distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(currentPoint21, currentPoint48) - minDistances[0])
+        distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(currentPoint48, currentPoint51) - minDistances[0])
+
+        distanceBetweenPoints.append(CrossFrameOptimizationLibrary.distance(listOfPoints[10], currentPoint51) - minDistances[1])
+
+        return distanceBetweenPoints
+
+    def PathStartPointsFallOnLinesPanel13And14(optimalPoints):
+        returnVec = []
+
+        yOfLine36 = polygonLines[40].points[1].y + (
+                ((polygonLines[40].points[0].y - polygonLines[40].points[1].y) / (
+                        polygonLines[40].points[0].x - polygonLines[40].points[1].x))
+                * (optimalPoints[60] - polygonLines[40].points[1].x))
+
+        xOfLine37 = polygonLines[39].points[0].x + (
+                ((polygonLines[39].points[1].x - polygonLines[39].points[0].x) / (
+                        polygonLines[39].points[1].y - polygonLines[39].points[0].y))
+                * (optimalPoints[63] - polygonLines[39].points[0].y))
+
+        xOfLine38 = polygonLines[41].points[0].x + (
+                ((polygonLines[41].points[1].x - polygonLines[41].points[0].x) / (
+                        polygonLines[41].points[1].y - polygonLines[41].points[0].y))
+                * (optimalPoints[65] - polygonLines[41].points[0].y))
+
+        returnVec.append(optimalPoints[61] - yOfLine36)
+        returnVec.append(optimalPoints[62] - xOfLine37)
+        returnVec.append(optimalPoints[64] - xOfLine38)
+
+
+        return returnVec
+
+    def StartPointsDoNotGoBeyondLineConstraintPanel13And14(optimalPoints):
+        returnVec = []
+
+        returnVec.append(polygonLines[39].points[1].y - optimalPoints[63])
+        returnVec.append(optimalPoints[63] - polygonLines[39].points[0].y)
+
+        returnVec.append(polygonLines[40].points[1].x - optimalPoints[60])
+        returnVec.append(optimalPoints[60] - polygonLines[40].points[0].x)
+
+        returnVec.append(polygonLines[41].points[1].y - optimalPoints[65])
+        returnVec.append(optimalPoints[65] - polygonLines[41].points[0].y)
+
+        return returnVec
+
     con1 = {'type': 'ineq', 'fun': KeepGuessPointsMinDistanceApartConstraintPanel1}
     con2 = {'type': 'eq', 'fun': PathStartPointsFallOnLinesPanel1}
     con3 = {'type': 'ineq', 'fun': StartPointsDoNotGoBeyondLineConstraintPanel1}
@@ -1714,12 +1937,17 @@ def GetConstraintsNoMiddle(polygonLines, listOfPoints, minDistances, isSinglePan
     con33 = {'type': 'eq', 'fun': PathStartPointsFallOnLinesPanel11And12}
     con34 = {'type': 'ineq', 'fun': StartPointsDoNotGoBeyondLineConstraintPanel11And12}
 
+
+    con35 = {'type': 'ineq', 'fun': KeepGuessPointsMinDistanceApartConstraintPanel13And14}
+    con36 = {'type': 'eq', 'fun': PathStartPointsFallOnLinesPanel13And14}
+    con37 = {'type': 'ineq', 'fun': StartPointsDoNotGoBeyondLineConstraintPanel13And14}
+
     if isSinglePanel:
         cons = [con1, con2, con3]
     else:
         cons = [con1, con2, con3, con4, con5, con6, con7, con8, con9, con10, con11, con12,
                 con13, con14, con15, con16, con17, con18, con19, con20, con21, con22, con23, con24,
-                con25, con26, con27, con28, con29, con30, con31, con32, con33, con34]
+                con25, con26, con27, con28, con29, con30, con31, con32, con33, con34, con35, con36, con37]
 
     return cons
 

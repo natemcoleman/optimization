@@ -1,11 +1,10 @@
 # Python script for optimization final project
-# Compare with and without middle point
-# Multiple panels
 
 import OptimizeFlasherPanel
 import PointsAndLinesClass
 
-connectToMiddlePoint = False
+connectToMiddlePoint = True
+zPanel = False
 plotPointGuesses = False
 allowModifyPolygon = True
 tryAnotherPoint = True
@@ -120,7 +119,7 @@ listOfPointsForFlasher.append(point20)
 
 
 ##ALL PARAMETERS ABOVE THIS LINE## #
-boolOptions = [connectToMiddlePoint, plotPointGuesses, allowModifyPolygon, tryAnotherPoint, multipleGuesses, allowSelectBeginPoint]
+boolOptions = [connectToMiddlePoint, plotPointGuesses, allowModifyPolygon, tryAnotherPoint, multipleGuesses, allowSelectBeginPoint, zPanel]
 minDistances = [minDistanceBetweenPathNodes, minDistanceFromCorners, minDistanceFromLine]
 crossSectionLengths = [shapeBaseLength, shapeBaseHeight, shapeBaseDiameter]
 listOfPoints = []
