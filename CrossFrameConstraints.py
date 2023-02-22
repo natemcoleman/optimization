@@ -1891,13 +1891,41 @@ def GetConstraintsNoMiddle(polygonLines, listOfPoints, minDistances, isSinglePan
 
         return returnVec
 
-    def KeepGuessPointsAwayFromVerticies(optimalPoints):
+
+    def KeepGuessPointsAwayFromVerticiesSinglePanel(optimalPoints):
         distanceBetweenPoints = []
 
         currentPoint6 = PointsAndLinesClass.ClassPoint(optimalPoints[0], optimalPoints[1])
         currentPoint7 = PointsAndLinesClass.ClassPoint(optimalPoints[2], optimalPoints[3])
         currentPoint8 = PointsAndLinesClass.ClassPoint(optimalPoints[4], optimalPoints[5])
         currentPoint9 = PointsAndLinesClass.ClassPoint(optimalPoints[6], optimalPoints[7])
+
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[0], currentPoint6) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[1], currentPoint6) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[2], currentPoint7) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[1], currentPoint7) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[2], currentPoint8) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[3], currentPoint8) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[0], currentPoint9) - minDistances[3])
+        distanceBetweenPoints.append(
+            CrossFrameOptimizationLibrary.distance(listOfPoints[3], currentPoint9) - minDistances[3])
+
+        return distanceBetweenPoints
+
+    def KeepGuessPointsAwayFromVerticies(optimalPoints):
+        distanceBetweenPoints = []
+
+        # currentPoint6 = PointsAndLinesClass.ClassPoint(optimalPoints[0], optimalPoints[1])
+        # currentPoint7 = PointsAndLinesClass.ClassPoint(optimalPoints[2], optimalPoints[3])
+        # currentPoint8 = PointsAndLinesClass.ClassPoint(optimalPoints[4], optimalPoints[5])
+        # currentPoint9 = PointsAndLinesClass.ClassPoint(optimalPoints[6], optimalPoints[7])
         currentPoint11 = PointsAndLinesClass.ClassPoint(optimalPoints[8], optimalPoints[9])
         currentPoint12 = PointsAndLinesClass.ClassPoint(optimalPoints[10], optimalPoints[11])
         currentPoint13 = PointsAndLinesClass.ClassPoint(optimalPoints[12], optimalPoints[13])
@@ -1929,22 +1957,22 @@ def GetConstraintsNoMiddle(polygonLines, listOfPoints, minDistances, isSinglePan
         currentPoint48 = PointsAndLinesClass.ClassPoint(optimalPoints[36], optimalPoints[37])
         currentPoint51 = PointsAndLinesClass.ClassPoint(optimalPoints[64], optimalPoints[65])
 
-        distanceBetweenPoints.append(
-            CrossFrameOptimizationLibrary.distance(listOfPoints[0], currentPoint6) - minDistances[3])
-        distanceBetweenPoints.append(
-            CrossFrameOptimizationLibrary.distance(listOfPoints[1], currentPoint6) - minDistances[3])
-        distanceBetweenPoints.append(
-            CrossFrameOptimizationLibrary.distance(listOfPoints[2], currentPoint7) - minDistances[3])
-        distanceBetweenPoints.append(
-            CrossFrameOptimizationLibrary.distance(listOfPoints[1], currentPoint7) - minDistances[3])
-        distanceBetweenPoints.append(
-            CrossFrameOptimizationLibrary.distance(listOfPoints[2], currentPoint8) - minDistances[3])
-        distanceBetweenPoints.append(
-            CrossFrameOptimizationLibrary.distance(listOfPoints[3], currentPoint8) - minDistances[3])
-        distanceBetweenPoints.append(
-            CrossFrameOptimizationLibrary.distance(listOfPoints[0], currentPoint9) - minDistances[3])
-        distanceBetweenPoints.append(
-            CrossFrameOptimizationLibrary.distance(listOfPoints[3], currentPoint9) - minDistances[3])
+        # distanceBetweenPoints.append(
+        #     CrossFrameOptimizationLibrary.distance(listOfPoints[0], currentPoint6) - minDistances[3])
+        # distanceBetweenPoints.append(
+        #     CrossFrameOptimizationLibrary.distance(listOfPoints[1], currentPoint6) - minDistances[3])
+        # distanceBetweenPoints.append(
+        #     CrossFrameOptimizationLibrary.distance(listOfPoints[2], currentPoint7) - minDistances[3])
+        # distanceBetweenPoints.append(
+        #     CrossFrameOptimizationLibrary.distance(listOfPoints[1], currentPoint7) - minDistances[3])
+        # distanceBetweenPoints.append(
+        #     CrossFrameOptimizationLibrary.distance(listOfPoints[2], currentPoint8) - minDistances[3])
+        # distanceBetweenPoints.append(
+        #     CrossFrameOptimizationLibrary.distance(listOfPoints[3], currentPoint8) - minDistances[3])
+        # distanceBetweenPoints.append(
+        #     CrossFrameOptimizationLibrary.distance(listOfPoints[0], currentPoint9) - minDistances[3])
+        # distanceBetweenPoints.append(
+        #     CrossFrameOptimizationLibrary.distance(listOfPoints[3], currentPoint9) - minDistances[3])
 
         distanceBetweenPoints.append(
             CrossFrameOptimizationLibrary.distance(listOfPoints[0], currentPoint11) - minDistances[3])
@@ -2127,13 +2155,14 @@ def GetConstraintsNoMiddle(polygonLines, listOfPoints, minDistances, isSinglePan
     con37 = {'type': 'ineq', 'fun': StartPointsDoNotGoBeyondLineConstraintPanel13And14}
 
     con38 = {'type': 'ineq', 'fun': KeepGuessPointsAwayFromVerticies}
+    con39 = {'type': 'ineq', 'fun': KeepGuessPointsAwayFromVerticiesSinglePanel}
 
     if isSinglePanel:
-        cons = [con1, con2, con3]
+        cons = [con1, con2, con3, con39]
     else:
         cons = [con1, con2, con3, con4, con5, con6, con7, con8, con9, con10, con11, con12,
                 con13, con14, con15, con16, con17, con18, con19, con20, con21, con22, con23, con24,
-                con25, con26, con27, con28, con29, con30, con31, con32, con33, con34, con35, con36, con37, con38]
+                con25, con26, con27, con28, con29, con30, con31, con32, con33, con34, con35, con36, con37, con38, con39]
 
     return cons
 

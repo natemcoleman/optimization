@@ -116,8 +116,8 @@ def plotShape(linesToPlot, numberOfPolygonLines, xGuessPoints, yGuessPoints, axi
 
 
     if plotPointGuesses:
-        for plotLength in range(len(xGuessPoints)-1):
-            plt.plot(xGuessPoints[plotLength], yGuessPoints[plotLength], 'c.')
+        for plotLength in range(len(xGuessPoints)):
+            plt.plot(xGuessPoints[plotLength], yGuessPoints[plotLength], 'r.')
 
     ax = plt.gca()
     ax.set_aspect(1)
@@ -339,17 +339,30 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
                     x9GuessPoints.append(optimalPoints[6])
                     y9GuessPoints.append(optimalPoints[7])
 
-            if len(optimalPoints) > 7:
-                line5Opt = PointsAndLinesClass.ClassLine(point6New, point7New)
-                line6Opt = PointsAndLinesClass.ClassLine(point7New, point8New)
-                line7Opt = PointsAndLinesClass.ClassLine(point8New, point9New)
-                line8Opt = PointsAndLinesClass.ClassLine(point9New, point6New)
-                pathLinesNew = [line5Opt, line6Opt, line7Opt, line8Opt]
+            if boolOptions[6] is False:
+                if len(optimalPoints) > 7:
+                    line5Opt = PointsAndLinesClass.ClassLine(point6New, point7New)
+                    line6Opt = PointsAndLinesClass.ClassLine(point7New, point8New)
+                    line7Opt = PointsAndLinesClass.ClassLine(point8New, point9New)
+                    line8Opt = PointsAndLinesClass.ClassLine(point9New, point6New)
+                    pathLinesNew = [line5Opt, line6Opt, line7Opt, line8Opt]
+                else:
+                    line5Opt = PointsAndLinesClass.ClassLine(point6New, point7New)
+                    line6Opt = PointsAndLinesClass.ClassLine(point7New, point8New)
+                    line7Opt = PointsAndLinesClass.ClassLine(point8New, point6New)
+                    pathLinesNew = [line5Opt, line6Opt, line7Opt]
             else:
-                line5Opt = PointsAndLinesClass.ClassLine(point6New, point7New)
-                line6Opt = PointsAndLinesClass.ClassLine(point7New, point8New)
-                line7Opt = PointsAndLinesClass.ClassLine(point8New, point6New)
-                pathLinesNew = [line5Opt, line6Opt, line7Opt]
+                if len(optimalPoints) > 7:
+                    line5Opt = PointsAndLinesClass.ClassLine(point6New, point7New)
+                    line6Opt = PointsAndLinesClass.ClassLine(point7New, point9New)
+                    line7Opt = PointsAndLinesClass.ClassLine(point8New, point9New)
+                    # line8Opt = PointsAndLinesClass.ClassLine(point9New, point6New)
+                    pathLinesNew = [line5Opt, line6Opt, line7Opt]
+                else:
+                    line5Opt = PointsAndLinesClass.ClassLine(point6New, point7New)
+                    line6Opt = PointsAndLinesClass.ClassLine(point7New, point8New)
+                    # line7Opt = PointsAndLinesClass.ClassLine(point8New, point6New)
+                    pathLinesNew = [line5Opt, line6Opt]
 
             return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
             # return -GetMassOfAllLines(pathLinesNew)
@@ -415,17 +428,30 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
             if len(listOfPoints) > 3:
                 point9 = PointsAndLinesClass.ClassPoint(result.x[6], result.x[7])
 
-            if len(listOfPoints) > 3:
-                line5 = PointsAndLinesClass.ClassLine(point6, point7)
-                line6 = PointsAndLinesClass.ClassLine(point7, point8)
-                line7 = PointsAndLinesClass.ClassLine(point8, point9)
-                line8 = PointsAndLinesClass.ClassLine(point9, point6)
-                pathLines = [line5, line6, line7, line8]
+            if boolOptions[6] is False:
+                if len(listOfPoints) > 3:
+                    line5 = PointsAndLinesClass.ClassLine(point6, point7)
+                    line6 = PointsAndLinesClass.ClassLine(point7, point8)
+                    line7 = PointsAndLinesClass.ClassLine(point8, point9)
+                    line8 = PointsAndLinesClass.ClassLine(point9, point6)
+                    pathLines = [line5, line6, line7, line8]
+                else:
+                    line5 = PointsAndLinesClass.ClassLine(point6, point7)
+                    line6 = PointsAndLinesClass.ClassLine(point7, point8)
+                    line7 = PointsAndLinesClass.ClassLine(point8, point6)
+                    pathLines = [line5, line6, line7]
             else:
-                line5 = PointsAndLinesClass.ClassLine(point6, point7)
-                line6 = PointsAndLinesClass.ClassLine(point7, point8)
-                line7 = PointsAndLinesClass.ClassLine(point8, point6)
-                pathLines = [line5, line6, line7]
+                if len(listOfPoints) > 3:
+                    line5 = PointsAndLinesClass.ClassLine(point6, point7)
+                    line6 = PointsAndLinesClass.ClassLine(point7, point9)
+                    line7 = PointsAndLinesClass.ClassLine(point8, point9)
+                    # line8 = PointsAndLinesClass.ClassLine(point9, point6)
+                    pathLines = [line5, line6, line7]
+                else:
+                    line5 = PointsAndLinesClass.ClassLine(point6, point7)
+                    line6 = PointsAndLinesClass.ClassLine(point7, point8)
+                    # line7 = PointsAndLinesClass.ClassLine(point8, point6)
+                    pathLines = [line5, line6]
 
             if plotPointGuesses:
                 if len(listOfPoints) > 3:
