@@ -6,8 +6,8 @@
 import OptimizeFlasherPanel
 import PointsAndLinesClass
 
-connectToMiddlePoint = False
-zPanel = True
+connectToMiddlePoint = True
+zPanel = False
 plotFlasherPanels = True
 plotEntireFlasher = False
 
@@ -142,5 +142,5 @@ if len(fourthPoint) != 0:
 
 
 
-OptimizeFlasherPanel.OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths, material, crossSection)
-# OptimizeFlasherPanel.Optimize22Gore(listOfPointsForFlasher, boolOptions, minDistances, crossSectionLengths, material, crossSection)
+# OptimizeFlasherPanel.OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths, material, crossSection)
+OptimizeFlasherPanel.Optimize22Gore(listOfPointsForFlasher, boolOptions, minDistances, crossSectionLengths, material, crossSection)

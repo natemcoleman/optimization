@@ -6,6 +6,7 @@ import PointsAndLinesClass
 import PolyInteractor
 from math import cos, sin, pi
 import numpy as np
+import csv
 
 global coords
 
@@ -34,8 +35,17 @@ def ModifyPolygon(listOfPoints):
 
     return listOfPoints
 
+def CreateCSV(pathLinesToSave):
+   with open('test.csv', 'w', newline='') as f:
+        writer = csv.writer(f)
+        for i in range(len(pathLinesToSave)):
+            xvals1 = pathLinesToSave[i].points[0].x
+            yvals1 = pathLinesToSave[i].points[0].y
+            xvals2 = pathLinesToSave[i].points[1].x
+            yvals2 = pathLinesToSave[i].points[1].y
+            writer.writerow([xvals1, yvals1, xvals2, yvals2])
 
-# def rotate_point_wrt_center(point_to_be_rotated, angle, center_point=(1.946, 1.01)):
+
 def rotate_point_wrt_center(point_to_be_rotated, angle, center_point=(2, 1)):
 
     angle = np.deg2rad(angle)
@@ -955,6 +965,8 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
             plotLines = polygonLines.copy()
             plotLines.extend(pathLines)
 
+
+            CreateCSV(pathLines)
             # PrintMassOfAllLines(pathLines)
             plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions)
 
@@ -1474,32 +1486,13 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                              line52, line53,
                              line55, line56]
 
-                # print("point9:", point9)
-                # print("line9:", line9)
-                # for numpathlines in range(len(pathLines)-1):
-                #     print("pathLine", numpathlines, ":", pathLines[numpathlines])
-            #
-            # pathLines = [line5, line6, line7, line8,
-            #              line9, line10, line11, line12,
-            #              line13, line14, line15, line16,
-            #              line17, line18, line19, line20,
-            #              line21, line22, line23, line24,
-            #              line25, line26, line27, line28,
-            #              line29, line30, line31, line32,
-            #              line33, line34, line35, line36,
-            #              line38, line39, line40, line41,
-            #              line42, line43, line44, line45,
-            #              line46, line47, line48, line49, line50, line51,
-            #              line52, line53, line54,
-            #              line55, line56, line57]
-
-
             xGuessPoints = []
             yGuessPoints = []
 
             plotLines = polygonLines.copy()
             plotLines.extend(pathLines)
 
+            CreateCSV(pathLines)
             # PrintMassOfAllLines(pathLines)
             plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions)
 
