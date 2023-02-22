@@ -8,6 +8,9 @@ import PointsAndLinesClass
 
 connectToMiddlePoint = False
 zPanel = True
+plotFlasherPanels = False
+plotEntireFlasher = True
+
 plotPointGuesses = False
 allowModifyPolygon = True
 tryAnotherPoint = True
@@ -123,7 +126,7 @@ listOfPointsForFlasher.append(point20)
 
 
 ##ALL PARAMETERS ABOVE THIS LINE## #
-boolOptions = [connectToMiddlePoint, plotPointGuesses, allowModifyPolygon, tryAnotherPoint, multipleGuesses, allowSelectBeginPoint, zPanel]
+boolOptions = [connectToMiddlePoint, plotPointGuesses, allowModifyPolygon, tryAnotherPoint, multipleGuesses, allowSelectBeginPoint, zPanel, plotFlasherPanels, plotEntireFlasher]
 minDistances = [minDistanceBetweenPathNodes, minDistanceFromCorners, minDistanceFromLine, minEdgePointDistanceFromCorners]
 crossSectionLengths = [shapeBaseLength, shapeBaseHeight, shapeBaseDiameter]
 listOfPoints = []

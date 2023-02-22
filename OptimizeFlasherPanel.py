@@ -4,6 +4,8 @@ import CrossFrameOptimizationLibrary
 import CrossFrameConstraints
 import PointsAndLinesClass
 import PolyInteractor
+from math import cos, sin, pi
+import numpy as np
 
 global coords
 
@@ -33,21 +35,89 @@ def ModifyPolygon(listOfPoints):
     return listOfPoints
 
 
-def plotShape(linesToPlot, numberOfPolygonLines, xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, connectToMiddlePoint):
+# def rotate_point_wrt_center(point_to_be_rotated, angle, center_point=(1.946, 1.01)):
+def rotate_point_wrt_center(point_to_be_rotated, angle, center_point=(2, 1)):
+
+    angle = np.deg2rad(angle)
+
+    # print("point to be rotated:", point_to_be_rotated)
+
+    xnew = cos(angle) * (point_to_be_rotated[0] - center_point[0]) - sin(angle) * (
+                point_to_be_rotated[1] - center_point[1]) + center_point[0]
+
+    ynew = sin(angle) * (point_to_be_rotated[0] - center_point[0]) + cos(angle) * (
+                point_to_be_rotated[1] - center_point[1]) + center_point[1]
+
+    return xnew, ynew
+
+def plotShape(linesToPlot, numberOfPolygonLines, xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions):
+    plotEntireFlasher = True
+
     for p in range(len(linesToPlot)):
         if p < numberOfPolygonLines:
             plt.plot(linesToPlot[p].points[0].x, linesToPlot[p].points[0].y, 'r*')
             plt.plot(linesToPlot[p].points[1].x, linesToPlot[p].points[1].y, 'r*')
-            plt.plot([linesToPlot[p].points[0].x, linesToPlot[p].points[1].x], [linesToPlot[p].points[0].y, linesToPlot[p].points[1].y], 'b--')
+            if boolOptions[7]:
+                plt.plot([linesToPlot[p].points[0].x, linesToPlot[p].points[1].x], [linesToPlot[p].points[0].y, linesToPlot[p].points[1].y], 'b--')
             # print("")
         else:
             plt.plot(linesToPlot[p].points[0].x, linesToPlot[p].points[0].y, 'go')
             plt.plot(linesToPlot[p].points[1].x, linesToPlot[p].points[1].y, 'go')
             plt.plot([linesToPlot[p].points[0].x, linesToPlot[p].points[1].x], [linesToPlot[p].points[0].y, linesToPlot[p].points[1].y], 'g-')
+
+
+    if boolOptions[8]:
+        for p in range(len(linesToPlot)):
+            if p < numberOfPolygonLines:
+                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y), 90)
+                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y), 90)
+                plt.plot(rotatedX1, rotatedY1, 'r*')
+                plt.plot(rotatedX2, rotatedY2, 'r*')
+                if boolOptions[7]:
+                    plt.plot([rotatedX1, rotatedX2], [rotatedY1, rotatedY2], 'b--')
+            else:
+                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y), 90)
+                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y), 90)
+                plt.plot(rotatedX1, rotatedY1, 'go')
+                plt.plot(rotatedX2, rotatedY2, 'go')
+                plt.plot([rotatedX1, rotatedX2],
+                         [rotatedY1, rotatedY2], 'g-')
+
+        for p in range(len(linesToPlot)):
+            if p < numberOfPolygonLines:
+                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y), 180)
+                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y), 180)
+                plt.plot(rotatedX1, rotatedY1, 'r*')
+                plt.plot(rotatedX2, rotatedY2, 'r*')
+                if boolOptions[7]:
+                    plt.plot([rotatedX1, rotatedX2], [rotatedY1, rotatedY2], 'b--')
+            else:
+                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y), 180)
+                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y), 180)
+                plt.plot(rotatedX1, rotatedY1, 'go')
+                plt.plot(rotatedX2, rotatedY2, 'go')
+                plt.plot([rotatedX1, rotatedX2],
+                         [rotatedY1, rotatedY2], 'g-')
+        for p in range(len(linesToPlot)):
+            if p < numberOfPolygonLines:
+                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y), 270)
+                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y), 270)
+                plt.plot(rotatedX1, rotatedY1, 'r*')
+                plt.plot(rotatedX2, rotatedY2, 'r*')
+                if boolOptions[7]:
+                    plt.plot([rotatedX1, rotatedX2], [rotatedY1, rotatedY2], 'b--')
+            else:
+                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y), 270)
+                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y), 270)
+                plt.plot(rotatedX1, rotatedY1, 'go')
+                plt.plot(rotatedX2, rotatedY2, 'go')
+                plt.plot([rotatedX1, rotatedX2],
+                         [rotatedY1, rotatedY2], 'g-')
+
+
     if plotPointGuesses:
         for plotLength in range(len(xGuessPoints)-1):
             plt.plot(xGuessPoints[plotLength], yGuessPoints[plotLength], 'c.')
-
 
     ax = plt.gca()
     ax.set_aspect(1)
@@ -57,8 +127,8 @@ def plotShape(linesToPlot, numberOfPolygonLines, xGuessPoints, yGuessPoints, axi
     xAxisBuffer = abs(axisLimits[1] - axisLimits[0]) * 0.05
     yAxisBuffer = abs(axisLimits[3] - axisLimits[2]) * 0.05
 
-    plt.xlim([axisLimits[0] - xAxisBuffer, axisLimits[1] + xAxisBuffer])
-    plt.ylim([axisLimits[2] - yAxisBuffer, axisLimits[3] + yAxisBuffer])
+    # plt.xlim([axisLimits[0] - xAxisBuffer, axisLimits[1] + xAxisBuffer])
+    # plt.ylim([axisLimits[2] - yAxisBuffer, axisLimits[3] + yAxisBuffer])
 
     plt.show()
 
@@ -70,6 +140,8 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
     tryAnotherPoint = boolOptions[3]
     multipleGuesses = boolOptions[4]
     allowSelectBeginPoint = boolOptions[5]
+    boolOptions[7] = True
+    boolOptions[8] = False
 
     shapeBaseLength = crossSectionLengths[0]  # meters, if square or rectangle
     shapeBaseHeight = crossSectionLengths[1]  # meters, if rectangle
@@ -243,7 +315,7 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
             plotLines.extend(pathLines)
 
             # PrintMassOfAllLines(pathLines)
-            plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, connectToMiddlePoint)
+            plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions)
 
             if multipleGuesses:
                 tryAnotherPoint = True
@@ -370,7 +442,7 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
             plotLines.extend(pathLines)
 
             # PrintMassOfAllLines(pathLines)
-            plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, connectToMiddlePoint)
+            plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions)
 
             if multipleGuesses:
                 tryAnotherPoint = True
@@ -858,7 +930,7 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
             plotLines.extend(pathLines)
 
             # PrintMassOfAllLines(pathLines)
-            plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, connectToMiddlePoint)
+            plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions)
 
             tryAnotherPoint = False
 
@@ -1403,6 +1475,6 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
             plotLines.extend(pathLines)
 
             # PrintMassOfAllLines(pathLines)
-            plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, connectToMiddlePoint)
+            plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions)
 
             tryAnotherPoint = False
