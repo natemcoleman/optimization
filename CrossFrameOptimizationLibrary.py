@@ -48,7 +48,7 @@ def GetPropertiesOfSections(crossSectionShape, baseLength, baseHeight, diameter)
         Ix = (baseLength * (baseLength ** 3)) / 12
         Iy = (baseLength * (baseLength ** 3)) / 12
     # elif crossSectionShape == "I-Beam":
-        # A, Ix, Iy = OptimizeIBeam()
+    # A, Ix, Iy = OptimizeIBeam()
     else:
         A = -9999
         Ix = -9999
@@ -101,8 +101,8 @@ def TempStiffnessCalc(allLines, E, Ix, Iy):
         yLengths.append(abs(allLines[stiffnessIndex].points[0].y - allLines[stiffnessIndex].points[1].y))
 
     for stiffnessIndex in range(len(xLengths)):
-        kx += (pi*(gamma**2)*E*Ix) / (xLengths[stiffnessIndex])
-        ky += (pi*(gamma**2)*E*Iy) / (yLengths[stiffnessIndex])
+        kx += (pi * (gamma ** 2) * E * Ix) / (xLengths[stiffnessIndex])
+        ky += (pi * (gamma ** 2) * E * Iy) / (yLengths[stiffnessIndex])
 
     stiffness = kx
     stiffness -= ky
@@ -205,18 +205,20 @@ def CalculateStiffnessOfAllPanels(panels):
 
     return totalStiffness
 
+
 def CalculateStiffnessOfPanel(panelLines):
     stiffnessCalcX = 0
     stiffnessCalcY = 0
 
+    print(panelLines.points[0])
+
     for j in range(len(panelLines)):
-        #Stiffness calc for line[j] along axisX
+        # Stiffness calc for line[j] along axisX
         newStiffnessCalcX = 1
-        #Stiffness calc for line[j] along axisY
+        # Stiffness calc for line[j] along axisY
         newStiffnessCalcY = 1
 
         stiffnessCalcX += newStiffnessCalcX
         stiffnessCalcY += newStiffnessCalcY
 
     return stiffnessCalcX, stiffnessCalcY
-
