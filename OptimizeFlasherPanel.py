@@ -35,15 +35,17 @@ def ModifyPolygon(listOfPoints):
 
     return listOfPoints
 
-def CreateCSV(pathLinesToSave):
+def CreateCSV(panels):
    with open('test.csv', 'w', newline='') as f:
         writer = csv.writer(f)
-        for i in range(len(pathLinesToSave)):
-            xvals1 = pathLinesToSave[i].points[0].x
-            yvals1 = pathLinesToSave[i].points[0].y
-            xvals2 = pathLinesToSave[i].points[1].x
-            yvals2 = pathLinesToSave[i].points[1].y
-            writer.writerow([xvals1, yvals1, xvals2, yvals2])
+        writer.writerow(["Panel", "X1", "Y1", "X2", "Y2"])
+        for i in range(len(panels)):
+            for j in range(len(panels[i])):
+                xvals1 = panels[i][j].points[0].x
+                yvals1 = panels[i][j].points[0].y
+                xvals2 = panels[i][j].points[1].x
+                yvals2 = panels[i][j].points[1].y
+                writer.writerow([i+1, xvals1, yvals1, xvals2, yvals2])
 
 
 def rotate_point_wrt_center(point_to_be_rotated, angle, center_point=(2, 1)):
@@ -291,7 +293,10 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
             result = minimize(functionToMinimize, initialPointsGuesses,
                               constraints=CrossFrameConstraints.GetConstraintsWithMiddle(polygonLines, listOfPoints,
                                                                                          minDistances, isSinglePanel), options=opt)
-            print(result)
+            print("message:", result.message)
+            print("success:", result.success)
+            print("iterations:", result.nit)
+            print("fun:", result.fun)
 
             point5 = PointsAndLinesClass.ClassPoint(result.x[0], result.x[1])
             point6 = PointsAndLinesClass.ClassPoint(result.x[2], result.x[3])
@@ -825,7 +830,11 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
             result = minimize(functionToMinimize, initialPointsGuesses,
                               constraints=CrossFrameConstraints.GetConstraintsWithMiddle(polygonLines, listOfPoints,
                                                                                          minDistances, isSinglePanel), options=opt)
-            print(result)
+            # print(result)
+            print("message:", result.message)
+            print("success:", result.success)
+            print("iterations:", result.nit)
+            print("fun:", result.fun)
 
             point5 = PointsAndLinesClass.ClassPoint(result.x[0], result.x[1])
             point6 = PointsAndLinesClass.ClassPoint(result.x[2], result.x[3])
@@ -959,6 +968,24 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                          line41, line42, line43, line44, line45, line46, line47, line48,
                          line49, line50, line51, line52, line53, line54, line55, line56]
 
+            panel1 = [line5, line6, line7, line8]
+            panel2 = [line9, line10, line11, line12]
+            panel3 = [line13, line14, line15, line16]
+            panel4 = [line17, line18, line19, line20]
+            panel5 = [line21, line22, line23, line24]
+            panel6 = [line25, line26, line27, line28]
+            panel7 = [line29, line30, line31, line32]
+            panel8 = [line33, line34, line35, line36]
+            panel9 = [line37, line38, line39, line40]
+            panel10 = [line41, line42, line43, line44]
+            panel11 = [line45, line46, line47]
+            panel12 = [line48, line49, line50]
+            panel13 = [line51, line52, line53]
+            panel14 = [line54, line55, line56]
+
+            panels = [panel1, panel2, panel3, panel4, panel5, panel6, panel7, panel8, panel9, panel10, panel11, panel12,
+                      panel13, panel14]
+
             xGuessPoints = []
             yGuessPoints = []
 
@@ -966,7 +993,7 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
             plotLines.extend(pathLines)
 
 
-            CreateCSV(pathLines)
+            CreateCSV(panels)
             # PrintMassOfAllLines(pathLines)
             plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions)
 
@@ -1293,7 +1320,12 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                               constraints=CrossFrameConstraints.GetConstraintsNoMiddle(polygonLines, listOfPoints,
                                                                                          minDistances, isSinglePanel),
                               options=opt)
-            print(result)
+            # print(result)
+            print("message:", result.message)
+            print("success:", result.success)
+            print("iterations:", result.nit)
+            print("fun:", result.fun)
+
 
             point6 = PointsAndLinesClass.ClassPoint(result.x[0], result.x[1])
             point7 = PointsAndLinesClass.ClassPoint(result.x[2], result.x[3])
@@ -1405,6 +1437,21 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                 line56 = PointsAndLinesClass.ClassLine(point21, point48)
                 line57 = PointsAndLinesClass.ClassLine(point48, point51)
 
+                panel1 = [line5, line6, line7, line8]
+                panel2 = [line9, line10, line11, line12]
+                panel3 = [line13, line14, line15, line16]
+                panel4 = [line17, line18, line19, line20]
+                panel5 = [line21, line22, line23, line24]
+                panel6 = [line25, line26, line27, line28]
+                panel7 = [line29, line30, line31, line32]
+                panel8 = [line33, line34, line35, line36]
+                panel9 = [line38, line39, line40, line41]
+                panel10 = [line42, line43, line44, line45]
+                panel11 = [line46, line47, line48]
+                panel12 = [line49, line50, line51]
+                panel13 = [line52, line53, line54]
+                panel14 = [line55, line56, line57]
+
                 pathLines = [line5, line6, line7, line8,
                              line9, line10, line11, line12,
                              line13, line14, line15, line16,
@@ -1471,6 +1518,21 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                 line55 = PointsAndLinesClass.ClassLine(point48, point21)
                 line56 = PointsAndLinesClass.ClassLine(point51, point48)
 
+                panel1 = [line5, line6, line7]
+                panel2 = [line9, line11, line12]
+                panel3 = [line14, line15, line16]
+                panel4 = [line18, line19, line20]
+                panel5 = [line22, line23, line24]
+                panel6 = [line26, line27, line28]
+                panel7 = [line30, line31, line32]
+                panel8 = [line34, line35, line36]
+                panel9 = [line38, line39, line40]
+                panel10 = [line42, line43, line44]
+                panel11 = [line46, line47]
+                panel12 = [line49, line50]
+                panel13 = [line52, line53]
+                panel14 = [line55, line56]
+
                 pathLines = [line5, line6, line7,
                              line9, line11, line12,
                              line14, line15, line16,
@@ -1486,13 +1548,16 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                              line52, line53,
                              line55, line56]
 
+            panels = [panel1, panel2, panel3, panel4, panel5, panel6, panel7, panel8, panel9, panel10, panel11, panel12,
+                      panel13, panel14]
+
             xGuessPoints = []
             yGuessPoints = []
 
             plotLines = polygonLines.copy()
             plotLines.extend(pathLines)
 
-            CreateCSV(pathLines)
+            CreateCSV(panels)
             # PrintMassOfAllLines(pathLines)
             plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions)
 

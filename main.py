@@ -1,7 +1,4 @@
 # Python script for optimization final project
-# Figures of progression for paper
-# nitinol to jake
-# z cross frame constraints
 
 import OptimizeFlasherPanel
 import PointsAndLinesClass
@@ -9,13 +6,13 @@ import PointsAndLinesClass
 connectToMiddlePoint = True
 zPanel = False
 plotFlasherPanels = True
-plotEntireFlasher = False
+plotEntireFlasher = True
 
-plotPointGuesses = False
-allowModifyPolygon = True
+plotPointGuesses = True
+allowModifyPolygon = False
 tryAnotherPoint = True
 multipleGuesses = False
-allowSelectBeginPoint = False
+allowSelectBeginPoint = True
 
 
 # IF TRIANGULAR PANEL, LEAVE FOURTH POINT EMPTY
