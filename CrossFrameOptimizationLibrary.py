@@ -196,3 +196,20 @@ def GetPointDistanceFromLine(middlePoint, polygonLine):
 
     return np.cross(p2 - p1, p3 - p1) / la.norm(p2 - p1)
 
+
+def CalculateStiffnessOfAllPanels(panels):
+    totalStiffness = 0
+
+    for i in range(len(panels)):
+        totalStiffness += CalculateStiffnessOfPanel(panels[i])
+
+    return totalStiffness
+
+def CalculateStiffnessOfPanel(panel):
+    stiffnessCalc = 0
+
+    #Write code here to calculate stiffness of a panel
+
+
+    return stiffnessCalc
+
