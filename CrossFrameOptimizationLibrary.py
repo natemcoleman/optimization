@@ -205,11 +205,18 @@ def CalculateStiffnessOfAllPanels(panels):
 
     return totalStiffness
 
-def CalculateStiffnessOfPanel(panel):
-    stiffnessCalc = 0
+def CalculateStiffnessOfPanel(panelLines):
+    stiffnessCalcX = 0
+    stiffnessCalcY = 0
 
-    #Write code here to calculate stiffness of a panel
+    for j in range(len(panelLines)):
+        #Stiffness calc for line[j] along axisX
+        newStiffnessCalcX = 1
+        #Stiffness calc for line[j] along axisY
+        newStiffnessCalcY = 1
 
+        stiffnessCalcX += newStiffnessCalcX
+        stiffnessCalcY += newStiffnessCalcY
 
-    return stiffnessCalc
+    return stiffnessCalcX, stiffnessCalcY
 

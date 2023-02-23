@@ -203,7 +203,7 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
                 line8Opt = PointsAndLinesClass.ClassLine(point9New, point5New)
                 pathLinesNew.append(line8Opt)
 
-            return CrossFrameOptimizationLibrary.CalculateStiffnessOfAllPanels(pathLinesNew)
+            return CrossFrameOptimizationLibrary.CalculateStiffnessOfPanels(pathLinesNew)
             # return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
             # return -GetMassOfAllLines(pathLinesNew)
             # return TempStiffnessCalc(pathLinesNew)
