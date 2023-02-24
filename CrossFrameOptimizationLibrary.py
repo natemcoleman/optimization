@@ -206,19 +206,87 @@ def CalculateStiffnessOfAllPanels(panels):
     return totalStiffness
 
 
-def CalculateStiffnessOfPanel(pathLinesNew, listOfCornerPoints): #path lines are the green lines in the output that connect the black points. Corner points are the red points that are the corners of each panel
-    stiffnessCalcX = 0
-    stiffnessCalcY = 0
+def CalculateStiffnessOfPanel(pathLinesNew,
+                              listOfCornerPoints, bMp=None, nbMp=None):  # path lines are the green lines in the output that connect the black points. Corner points are the red points that are the corners of each panel
 
-    print(pathLinesNew.points[0])
+    # define moment vectors
+    bMp[0] = [(listOfCornerPoints.points[2].x - listOfCornerPoints.points[0].x),
+            (listOfCornerPoints.points[2].y - listOfCornerPoints.points[0].y)]
+    nbMp[0] = [(listOfCornerPoints.points[1].x - listOfCornerPoints.points[3].x),
+            (listOfCornerPoints.points[1].y - listOfCornerPoints.points[3].y)]
 
-    for j in range(len(pathLinesNew)):
-        # Stiffness calc for line[j] along axisX
-        newStiffnessCalcX = 1
-        # Stiffness calc for line[j] along axisY
-        newStiffnessCalcY = 1
+    bMp[1] = [(listOfCornerPoints.points[4].x - listOfCornerPoints.points[3].x),
+            (listOfCornerPoints.points[4].y - listOfCornerPoints.points[3].y)]
+    nbMp[1] = [(listOfCornerPoints.points[0].x - listOfCornerPoints.points[6].x),
+            (listOfCornerPoints.points[0].y - listOfCornerPoints.points[6].y)]
 
-        stiffnessCalcX += newStiffnessCalcX
-        stiffnessCalcY += newStiffnessCalcY
+    bMp[2] = [(listOfCornerPoints.points[6].x - listOfCornerPoints.points[5].x),
+            (listOfCornerPoints.points[6].y - listOfCornerPoints.points[5].y)]
+    nbMp[2] = [(listOfCornerPoints.points[4].x - listOfCornerPoints.points[7].x),
+            (listOfCornerPoints.points[4].y - listOfCornerPoints.points[7].y)]
 
-    return stiffnessCalcX, stiffnessCalcY
+    bMp[3] = [(listOfCornerPoints.points[8].x - listOfCornerPoints.points[7].x),
+            (listOfCornerPoints.points[8].y - listOfCornerPoints.points[7].y)]
+    nbMp[3] = [(listOfCornerPoints.points[6].x - listOfCornerPoints.points[9].x),
+            (listOfCornerPoints.points[6].y - listOfCornerPoints.points[9].y)]
+
+    bMp[4] = [(listOfCornerPoints.points[3].x - listOfCornerPoints.points[12].x),
+            (listOfCornerPoints.points[3].y - listOfCornerPoints.points[12].y)]
+    nbMp[4] = [(listOfCornerPoints.points[2].x - listOfCornerPoints.points[13].x),
+            (listOfCornerPoints.points[2].y - listOfCornerPoints.points[13].y)]
+
+    bMp[5] = [(listOfCornerPoints.points[5].x - listOfCornerPoints.points[13].x),
+            (listOfCornerPoints.points[5].y - listOfCornerPoints.points[13].y)]
+    nbMp[5] = [(listOfCornerPoints.points[3].x - listOfCornerPoints.points[14].x),
+            (listOfCornerPoints.points[3].y - listOfCornerPoints.points[14].y)]
+
+    # Note that the bisection lines switch directions
+    bMp[6] = [(listOfCornerPoints.points[13].x - listOfCornerPoints.points[16].x),
+            (listOfCornerPoints.points[13].y - listOfCornerPoints.points[16].y)]
+    nbMp[6] = [(listOfCornerPoints.points[14].x - listOfCornerPoints.points[15].x),
+            (listOfCornerPoints.points[14].y - listOfCornerPoints.points[15].y)]
+
+    bMp[7] = [(listOfCornerPoints.points[15].x - listOfCornerPoints.points[18].x),
+            (listOfCornerPoints.points[15].y - listOfCornerPoints.points[18].y)]
+    nbMp[7] = [(listOfCornerPoints.points[16].x - listOfCornerPoints.points[17].x),
+            (listOfCornerPoints.points[16].y - listOfCornerPoints.points[17].y)]
+
+    bMp[8] = [(listOfCornerPoints.points[16].x - listOfCornerPoints.points[19].x),
+            (listOfCornerPoints.points[16].y - listOfCornerPoints.points[19].y)]
+    nbMp[8] = [(listOfCornerPoints.points[7].x - listOfCornerPoints.points[18].x),
+            (listOfCornerPoints.points[7].y - listOfCornerPoints.points[18].y)]
+
+    bMp[9] = [(listOfCornerPoints.points[7].x - listOfCornerPoints.points[11].x),
+            (listOfCornerPoints.points[7].y - listOfCornerPoints.points[11].y)]
+    nbMp[9] = [(listOfCornerPoints.points[9].x - listOfCornerPoints.points[19].x),
+            (listOfCornerPoints.points[9].y - listOfCornerPoints.points[19].y)]
+
+    # calculate slopes of moment vectors
+    slope_b = np.zeros(len(bMp))
+    slope_nb = np.zeros(len(nbMp))
+    for i in range(len(bMp)):
+        slope_b[i] = bMp[i][1]/bMp[i][0]
+        slope_nb[i] = nbMp[i][1]/nbMp[i][0]
+
+    # slopes of beams
+
+    # find intersection points
+
+    # calculate length of beam (L), intersect distance from end of beam (q)
+
+    # calculate np.cross() of bMp and nbMp with pathLinesNew
+
+    # calculate magnitude of vectors np.la.norm?
+
+    # divide results of cross-product by magnitudes to get sin(theta)
+    # return angle
+
+    # calculate stiffness
+    # NEED E, I
+
+    # kb[i] = 3*E*I*L[i]*angle/(L[i]**2 - 3*L[i]*q[i] + 3*q[i]**2)
+    # knb[i] = 3*E*I*L[i]*angle/(L[i]**2 - 3*L[i]*q[i] + 3*q[i]**2)
+
+    # return kb, knb
+
+

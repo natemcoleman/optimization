@@ -3,7 +3,7 @@
 import OptimizeFlasherPanel
 import PointsAndLinesClass
 
-# HI
+
 connectToMiddlePoint = True
 zPanel = False
 plotFlasherPanels = True
