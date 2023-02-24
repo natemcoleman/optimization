@@ -206,13 +206,13 @@ def CalculateStiffnessOfAllPanels(panels):
     return totalStiffness
 
 
-def CalculateStiffnessOfPanel(panelLines):
+def CalculateStiffnessOfPanel(pathLinesNew, listOfCornerPoints): #path lines are the green lines in the output that connect the black points. Corner points are the red points that are the corners of each panel
     stiffnessCalcX = 0
     stiffnessCalcY = 0
 
-    print(panelLines.points[0])
+    print(pathLinesNew.points[0])
 
-    for j in range(len(panelLines)):
+    for j in range(len(pathLinesNew)):
         # Stiffness calc for line[j] along axisX
         newStiffnessCalcX = 1
         # Stiffness calc for line[j] along axisY
