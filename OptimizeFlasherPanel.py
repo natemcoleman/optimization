@@ -203,8 +203,8 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
                 line8Opt = PointsAndLinesClass.ClassLine(point9New, point5New)
                 pathLinesNew.append(line8Opt)
 
-            return CrossFrameOptimizationLibrary.CalculateStiffnessOfPanels(pathLinesNew, listOfPoints)
-            # return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
+            # return CrossFrameOptimizationLibrary.CalculateStiffnessOfPanels(pathLinesNew, listOfPoints)
+            return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
             # return -GetMassOfAllLines(pathLinesNew)
             # return TempStiffnessCalc(pathLinesNew)
 
@@ -329,6 +329,40 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
 
             plotLines = polygonLines.copy()
             plotLines.extend(pathLines)
+
+            bisectionIntersectionPoints, nonBisectionIntersectionPoints = CrossFrameOptimizationLibrary.\
+                GetPanelBisectionAndPathLineIntersectionPointsForAPanel(listOfPoints, plotLines)
+            ##Temp
+            for p in range(len(polygonLines)):
+                plt.plot(polygonLines[p].points[0].x, polygonLines[p].points[0].y, 'r*')
+                plt.plot(polygonLines[p].points[1].x, polygonLines[p].points[1].y, 'r*')
+                plt.plot([polygonLines[p].points[0].x, polygonLines[p].points[1].x],
+                        [polygonLines[p].points[0].y, polygonLines[p].points[1].y], 'b--')
+            for p in range(len(plotLines)):
+                    plt.plot(plotLines[p].points[0].x, plotLines[p].points[0].y, 'go')
+                    plt.plot(plotLines[p].points[1].x, plotLines[p].points[1].y, 'go')
+                    plt.plot([plotLines[p].points[0].x, plotLines[p].points[1].x],
+                             [plotLines[p].points[0].y, plotLines[p].points[1].y], 'g-')
+
+            plt.plot([polygonLines[0].points[0].x, polygonLines[2].points[0].x],
+                     [polygonLines[0].points[0].y, polygonLines[2].points[0].y], 'c--')
+
+            plt.plot([polygonLines[1].points[0].x, polygonLines[3].points[1].x],
+                     [polygonLines[1].points[0].y, polygonLines[3].points[1].y], 'c--')
+
+            for p in range(len(bisectionIntersectionPoints)):
+                plt.plot(bisectionIntersectionPoints[p][0], bisectionIntersectionPoints[p][1], 'ro')
+            for p in range(len(nonBisectionIntersectionPoints)):
+                plt.plot(nonBisectionIntersectionPoints[p][0], nonBisectionIntersectionPoints[p][1], 'ko')
+
+            ax = plt.gca()
+            ax.set_aspect(1)
+
+            plt.xlabel('Y')
+            plt.ylabel('X')
+            plt.show()
+
+
 
             # PrintMassOfAllLines(pathLines)
             plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions)

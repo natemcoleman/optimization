@@ -114,6 +114,10 @@ def distance(a, b):
     return sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2)
 
 
+def distanceTuple(a, b):
+    return sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
+
+
 def is_between_points(a, b, c):
     return distance(a, c) + distance(c, b) == distance(a, b)
 
@@ -206,8 +210,92 @@ def CalculateStiffnessOfAllPanels(panels):
     return totalStiffness
 
 
-def CalculateStiffnessOfPanel(pathLinesNew,
-                              listOfCornerPoints, bMp=None, nbMp=None):  # path lines are the green lines in the output that connect the black points. Corner points are the red points that are the corners of each panel
+def intersectionOfLines(line1, line2):
+    """
+    Find the intersection point of two lines.
+
+    Each line is defined by two tuples that represent the x,y coordinates of
+    its endpoints.
+
+    Returns the intersection point if one exists, or None if the lines are parallel.
+    """
+    # Unpack the coordinates of the endpoints of the first line
+    x1, y1 = line1[0]
+    x2, y2 = line1[1]
+
+    # Unpack the coordinates of the endpoints of the second line
+    x3, y3 = line2[0]
+    x4, y4 = line2[1]
+
+    # Calculate the slopes and y-intercepts of the two lines
+    slope1 = (y2 - y1) / (x2 - x1) if x2 - x1 != 0 else float('inf')
+    slope2 = (y4 - y3) / (x4 - x3) if x4 - x3 != 0 else float('inf')
+    y_int1 = y1 - slope1 * x1 if slope1 != float('inf') else None
+    y_int2 = y3 - slope2 * x3 if slope2 != float('inf') else None
+
+    # Check if the lines are parallel
+    if slope1 == slope2:
+        return None
+
+    # Calculate the x-coordinate of the intersection point
+    if slope1 == float('inf'):
+        x_int = x1
+    elif slope2 == float('inf'):
+        x_int = x3
+    else:
+        x_int = (y_int2 - y_int1) / (slope1 - slope2)
+
+    # Check if the intersection point is within the range of the first line
+    if x_int < min(x1, x2) or x_int > max(x1, x2):
+        return None
+
+    # Check if the intersection point is within the range of the second line
+    if x_int < min(x3, x4) or x_int > max(x3, x4):
+        return None
+
+    # Check if the intersection point is within the range of the second line
+    if x_int < min(x3, x4) or x_int > max(x3, x4):
+        return None
+
+    # Calculate the y-coordinate of the intersection point
+    if slope1 == float('inf'):
+        y_int = slope2 * x_int + y_int2
+    else:
+        y_int = slope1 * x_int + y_int1
+
+    # Check if the intersection point is the same as any of the line endpoints
+    distanceBuffer = 1e-8
+    if distanceTuple((x_int, y_int), line1[0]) <= distanceBuffer or distanceTuple((x_int, y_int), line1[1]) <= \
+            distanceBuffer or distanceTuple((x_int, y_int), line2[0]) <= distanceBuffer or distanceTuple((x_int, y_int)
+        , line2[1]) <= distanceBuffer:
+        return None
+
+    # Return the intersection point as a tuple
+    return (x_int, y_int)
+
+
+def GetPanelBisectionAndPathLineIntersectionPointsForAPanel(listOfPanelCorners, pathlines):
+    bisectionLine = ((listOfPanelCorners[0].x, listOfPanelCorners[0].y), (listOfPanelCorners[2].x, listOfPanelCorners[2].y))
+    nonBisectionLine = ((listOfPanelCorners[1].x, listOfPanelCorners[1].y), (listOfPanelCorners[3].x, listOfPanelCorners[3].y))
+
+    bisectionIntersectionPoints = []
+    nonBisectionIntersectionPoints = []
+
+    for i in range(len(pathlines)):
+        intersectionPointBisection = intersectionOfLines(bisectionLine, ((pathlines[i].points[0].x, pathlines[i].points[0].y), (pathlines[i].points[1].x, pathlines[i].points[1].y)))
+        intersectionPointNonBisection = intersectionOfLines(nonBisectionLine, ((pathlines[i].points[0].x, pathlines[i].points[0].y), (pathlines[i].points[1].x, pathlines[i].points[1].y)))
+
+        if intersectionPointBisection is not None:
+            bisectionIntersectionPoints.append(intersectionPointBisection)
+        if intersectionPointNonBisection is not None:
+            nonBisectionIntersectionPoints.append(intersectionPointNonBisection)
+
+    return bisectionIntersectionPoints, nonBisectionIntersectionPoints
+
+
+def CalculateStiffnessOfPanel(pathLinesNew, listOfCornerPoints, bMp=None, nbMp=None):
+    # path lines are the green lines in the output that connect the black points. Corner points are the red points
+    # that are the corners of each panel
 
     # define moment vectors
     bMp[0] = [(listOfCornerPoints.points[2].x - listOfCornerPoints.points[0].x),

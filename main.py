@@ -13,7 +13,7 @@ plotPointGuesses = True
 allowModifyPolygon = False
 tryAnotherPoint = True
 multipleGuesses = False
-allowSelectBeginPoint = True
+allowSelectBeginPoint = False
 
 
 # IF TRIANGULAR PANEL, LEAVE FOURTH POINT EMPTY
@@ -139,6 +139,5 @@ if len(fourthPoint) != 0:
     listOfPoints.append(point4)
 
 
-
-# OptimizeFlasherPanel.OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths, material, crossSection)
-OptimizeFlasherPanel.Optimize22Gore(listOfPointsForFlasher, boolOptions, minDistances, crossSectionLengths, material, crossSection)
+OptimizeFlasherPanel.OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths, material, crossSection)
+# OptimizeFlasherPanel.Optimize22Gore(listOfPointsForFlasher, boolOptions, minDistances, crossSectionLengths, material, crossSection)
