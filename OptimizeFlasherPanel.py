@@ -517,6 +517,38 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
             plotLines = polygonLines.copy()
             plotLines.extend(pathLines)
 
+            bisectionIntersectionPoints, nonBisectionIntersectionPoints = CrossFrameOptimizationLibrary. \
+                GetPanelBisectionAndPathLineIntersectionPointsForAPanel(listOfPoints, plotLines)
+            ##Temp
+            for p in range(len(polygonLines)):
+                plt.plot(polygonLines[p].points[0].x, polygonLines[p].points[0].y, 'r*')
+                plt.plot(polygonLines[p].points[1].x, polygonLines[p].points[1].y, 'r*')
+                plt.plot([polygonLines[p].points[0].x, polygonLines[p].points[1].x],
+                         [polygonLines[p].points[0].y, polygonLines[p].points[1].y], 'b--')
+            for p in range(len(plotLines)):
+                plt.plot(plotLines[p].points[0].x, plotLines[p].points[0].y, 'go')
+                plt.plot(plotLines[p].points[1].x, plotLines[p].points[1].y, 'go')
+                plt.plot([plotLines[p].points[0].x, plotLines[p].points[1].x],
+                         [plotLines[p].points[0].y, plotLines[p].points[1].y], 'g-')
+
+            plt.plot([polygonLines[0].points[0].x, polygonLines[2].points[0].x],
+                     [polygonLines[0].points[0].y, polygonLines[2].points[0].y], 'c--')
+
+            plt.plot([polygonLines[1].points[0].x, polygonLines[3].points[1].x],
+                     [polygonLines[1].points[0].y, polygonLines[3].points[1].y], 'c--')
+
+            for p in range(len(bisectionIntersectionPoints)):
+                plt.plot(bisectionIntersectionPoints[p][0], bisectionIntersectionPoints[p][1], 'ro')
+            for p in range(len(nonBisectionIntersectionPoints)):
+                plt.plot(nonBisectionIntersectionPoints[p][0], nonBisectionIntersectionPoints[p][1], 'ko')
+
+            ax = plt.gca()
+            ax.set_aspect(1)
+
+            plt.xlabel('Y')
+            plt.ylabel('X')
+            plt.show()
+
             # PrintMassOfAllLines(pathLines)
             plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions)
 
@@ -535,6 +567,21 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
     shapeBaseLength = crossSectionLengths[0]  # meters, if square or rectangle
     shapeBaseHeight = crossSectionLengths[1]  # meters, if rectangle
     shapeBaseDiameter = crossSectionLengths[2]  # meters, if circle
+
+    panelCorners = [[listOfPoints[0], listOfPoints[1], listOfPoints[2], listOfPoints[3]],
+                    [listOfPoints[4], listOfPoints[5], listOfPoints[6], listOfPoints[7]],
+                    [listOfPoints[8], listOfPoints[9], listOfPoints[10], listOfPoints[11]],
+                    [listOfPoints[12], listOfPoints[13], listOfPoints[14], listOfPoints[15]],
+                    [listOfPoints[16], listOfPoints[17], listOfPoints[18], listOfPoints[19]],
+                    [listOfPoints[20], listOfPoints[21], listOfPoints[22], listOfPoints[23]],
+                    [listOfPoints[24], listOfPoints[25], listOfPoints[26], listOfPoints[27]],
+                    [listOfPoints[28], listOfPoints[29], listOfPoints[30], listOfPoints[31]],
+                    [listOfPoints[32], listOfPoints[33], listOfPoints[34], listOfPoints[35]],
+                    [listOfPoints[36], listOfPoints[37], listOfPoints[38], listOfPoints[39]],
+                    [listOfPoints[40], listOfPoints[41], listOfPoints[42]],
+                    [listOfPoints[43], listOfPoints[44], listOfPoints[45]],
+                    [listOfPoints[46], listOfPoints[47], listOfPoints[48]],
+                    [listOfPoints[49], listOfPoints[50], listOfPoints[51]]]
 
     if connectToMiddlePoint:
         def functionToMinimize(optimalPoints):
@@ -678,6 +725,21 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                             line48Opt, line49Opt, line50Opt,
                             line51Opt, line52Opt, line53Opt,
                             line54Opt, line55Opt, line56Opt]
+
+            panelPathLines = [[line5Opt, line6Opt, line7Opt, line8Opt],
+                            [line9Opt,  line10Opt, line11Opt, line12Opt],
+                            [line13Opt, line14Opt, line15Opt, line16Opt],
+                            [line17Opt, line18Opt, line19Opt, line20Opt],
+                            [line21Opt, line22Opt, line23Opt, line24Opt],
+                            [line25Opt, line26Opt, line27Opt, line28Opt],
+                            [line29Opt, line30Opt, line31Opt, line32Opt],
+                            [line33Opt, line34Opt, line35Opt, line36Opt],
+                            [line37Opt, line38Opt, line39Opt, line40Opt],
+                            [line41Opt, line42Opt, line43Opt, line44Opt],
+                            [line45Opt, line46Opt, line47Opt],
+                            [line48Opt, line49Opt, line50Opt],
+                            [line51Opt, line52Opt, line53Opt],
+                            [line54Opt, line55Opt, line56Opt]]
 
             return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
             # return -CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
@@ -1156,6 +1218,22 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                                 line38Opt, line39Opt, line40Opt, line41Opt, line42Opt, line43Opt, line44Opt, line45Opt,
                                 line46Opt, line47Opt, line48Opt, line49Opt, line50Opt, line51Opt,
                                 line52Opt, line53Opt, line54Opt, line55Opt, line56Opt, line57Opt]
+
+                panelPathLines = [[line5Opt, line6Opt, line7Opt, line8Opt],
+                                [line9Opt, line11Opt, line12Opt, line13Opt],
+                                [line14Opt, line15Opt, line16Opt, line17Opt],
+                                [line18Opt, line19Opt, line20Opt, line21Opt],
+                                [line22Opt, line23Opt, line24Opt, line25Opt],
+                                [line26Opt, line27Opt, line28Opt, line29Opt],
+                                [line30Opt, line31Opt, line32Opt, line33Opt],
+                                [line34Opt, line35Opt, line36Opt, line37Opt],
+                                [line38Opt, line39Opt, line40Opt, line41Opt],
+                                [line42Opt, line43Opt, line44Opt, line45Opt],
+                                [line46Opt, line47Opt, line48Opt],
+                                [line49Opt, line50Opt, line51Opt],
+                                [line52Opt, line53Opt, line54Opt],
+                                [line55Opt, line56Opt, line57Opt]]
+
             else:
                 line5Opt = PointsAndLinesClass.ClassLine(point6New, point7New)
                 line6Opt = PointsAndLinesClass.ClassLine(point9New, point7New)
@@ -1216,6 +1294,21 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                                 line38Opt, line39Opt, line40Opt, line42Opt, line43Opt, line44Opt,
                                 line46Opt, line47Opt, line49Opt, line50Opt,
                                 line52Opt, line53Opt, line55Opt, line56Opt]
+
+                panelPathLines = [[line5Opt, line6Opt, line7Opt],
+                                [line9Opt, line11Opt, line12Opt],
+                                [line14Opt, line15Opt, line16Opt],
+                                [line18Opt, line19Opt, line20Opt],
+                                [line22Opt, line23Opt, line24Opt],
+                                [line26Opt, line27Opt, line28Opt],
+                                [line30Opt, line31Opt, line32Opt],
+                                [line34Opt, line35Opt, line36Opt],
+                                [line38Opt, line39Opt, line40Opt],
+                                [line42Opt, line43Opt, line44Opt],
+                                [line46Opt, line47Opt],
+                                [line49Opt, line50Opt],
+                                [line52Opt, line53Opt],
+                                [line55Opt, line56Opt]]
 
             return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
             # return -GetMassOfAllLines(pathLinesNew)

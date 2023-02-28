@@ -293,7 +293,7 @@ def GetPanelBisectionAndPathLineIntersectionPointsForAPanel(listOfPanelCorners, 
     return bisectionIntersectionPoints, nonBisectionIntersectionPoints
 
 
-def CalculateStiffnessOfPanel(pathLinesNew, listOfCornerPoints, bMp=None, nbMp=None):
+def CalculateStiffnessOfPanel(pathLinesOfEachPanel, listOfCornerPoints, bMp=None, nbMp=None):
     # path lines are the green lines in the output that connect the black points. Corner points are the red points
     # that are the corners of each panel
 

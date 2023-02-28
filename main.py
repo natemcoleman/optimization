@@ -4,13 +4,13 @@ import OptimizeFlasherPanel
 import PointsAndLinesClass
 
 
-connectToMiddlePoint = True
+connectToMiddlePoint = False
 zPanel = False
 plotFlasherPanels = True
 plotEntireFlasher = True
 
 plotPointGuesses = True
-allowModifyPolygon = False
+allowModifyPolygon = True
 tryAnotherPoint = True
 multipleGuesses = False
 allowSelectBeginPoint = False
