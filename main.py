@@ -3,14 +3,14 @@
 import OptimizeFlasherPanel
 import PointsAndLinesClass
 
-
+#Look at if length is linear, squared, cubed, etc. and add into objective function
 connectToMiddlePoint = False
 zPanel = False
 plotFlasherPanels = True
-plotEntireFlasher = True
+plotEntireFlasher = False
 
 plotPointGuesses = True
-allowModifyPolygon = True
+allowModifyPolygon = False
 tryAnotherPoint = True
 multipleGuesses = False
 allowSelectBeginPoint = False

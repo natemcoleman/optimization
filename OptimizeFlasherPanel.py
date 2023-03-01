@@ -63,8 +63,6 @@ def rotate_point_wrt_center(point_to_be_rotated, angle, center_point=(2, 1)):
     return xnew, ynew
 
 def plotShape(linesToPlot, numberOfPolygonLines, xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions):
-    plotEntireFlasher = True
-
     for p in range(len(linesToPlot)):
         if p < numberOfPolygonLines:
             plt.plot(linesToPlot[p].points[0].x, linesToPlot[p].points[0].y, 'r*')
@@ -77,6 +75,11 @@ def plotShape(linesToPlot, numberOfPolygonLines, xGuessPoints, yGuessPoints, axi
             plt.plot(linesToPlot[p].points[1].x, linesToPlot[p].points[1].y, 'go')
             plt.plot([linesToPlot[p].points[0].x, linesToPlot[p].points[1].x], [linesToPlot[p].points[0].y, linesToPlot[p].points[1].y], 'g-')
 
+    plt.plot([linesToPlot[0].points[0].x, linesToPlot[1].points[1].x],
+             [linesToPlot[0].points[0].y, linesToPlot[1].points[1].y], 'c--')
+
+    plt.plot([linesToPlot[1].points[0].x, linesToPlot[3].points[1].x],
+             [linesToPlot[1].points[0].y, linesToPlot[3].points[1].y], 'c--')
 
     if boolOptions[8]:
         for p in range(len(linesToPlot)):
@@ -203,8 +206,10 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
                 line8Opt = PointsAndLinesClass.ClassLine(point9New, point5New)
                 pathLinesNew.append(line8Opt)
 
+
+            return CrossFrameOptimizationLibrary.OptimizeStiffnessOfSinglePanel(pathLinesNew, listOfPoints)
             # return CrossFrameOptimizationLibrary.CalculateStiffnessOfPanels(pathLinesNew, listOfPoints)
-            return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
+            # return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
             # return -GetMassOfAllLines(pathLinesNew)
             # return TempStiffnessCalc(pathLinesNew)
 
@@ -330,37 +335,37 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
             plotLines = polygonLines.copy()
             plotLines.extend(pathLines)
 
-            bisectionIntersectionPoints, nonBisectionIntersectionPoints = CrossFrameOptimizationLibrary.\
-                GetPanelBisectionAndPathLineIntersectionPointsForAPanel(listOfPoints, plotLines)
-            ##Temp
-            for p in range(len(polygonLines)):
-                plt.plot(polygonLines[p].points[0].x, polygonLines[p].points[0].y, 'r*')
-                plt.plot(polygonLines[p].points[1].x, polygonLines[p].points[1].y, 'r*')
-                plt.plot([polygonLines[p].points[0].x, polygonLines[p].points[1].x],
-                        [polygonLines[p].points[0].y, polygonLines[p].points[1].y], 'b--')
-            for p in range(len(plotLines)):
-                    plt.plot(plotLines[p].points[0].x, plotLines[p].points[0].y, 'go')
-                    plt.plot(plotLines[p].points[1].x, plotLines[p].points[1].y, 'go')
-                    plt.plot([plotLines[p].points[0].x, plotLines[p].points[1].x],
-                             [plotLines[p].points[0].y, plotLines[p].points[1].y], 'g-')
-
-            plt.plot([polygonLines[0].points[0].x, polygonLines[2].points[0].x],
-                     [polygonLines[0].points[0].y, polygonLines[2].points[0].y], 'c--')
-
-            plt.plot([polygonLines[1].points[0].x, polygonLines[3].points[1].x],
-                     [polygonLines[1].points[0].y, polygonLines[3].points[1].y], 'c--')
-
-            for p in range(len(bisectionIntersectionPoints)):
-                plt.plot(bisectionIntersectionPoints[p][0], bisectionIntersectionPoints[p][1], 'ro')
-            for p in range(len(nonBisectionIntersectionPoints)):
-                plt.plot(nonBisectionIntersectionPoints[p][0], nonBisectionIntersectionPoints[p][1], 'ko')
-
-            ax = plt.gca()
-            ax.set_aspect(1)
-
-            plt.xlabel('Y')
-            plt.ylabel('X')
-            plt.show()
+            # bisectionIntersectionPoints, nonBisectionIntersectionPoints = CrossFrameOptimizationLibrary.\
+            #     GetPanelBisectionAndPathLineIntersectionPointsForAPanel(listOfPoints, plotLines)
+            # ##Temp
+            # for p in range(len(polygonLines)):
+            #     plt.plot(polygonLines[p].points[0].x, polygonLines[p].points[0].y, 'r*')
+            #     plt.plot(polygonLines[p].points[1].x, polygonLines[p].points[1].y, 'r*')
+            #     plt.plot([polygonLines[p].points[0].x, polygonLines[p].points[1].x],
+            #             [polygonLines[p].points[0].y, polygonLines[p].points[1].y], 'b--')
+            # for p in range(len(plotLines)):
+            #         plt.plot(plotLines[p].points[0].x, plotLines[p].points[0].y, 'go')
+            #         plt.plot(plotLines[p].points[1].x, plotLines[p].points[1].y, 'go')
+            #         plt.plot([plotLines[p].points[0].x, plotLines[p].points[1].x],
+            #                  [plotLines[p].points[0].y, plotLines[p].points[1].y], 'g-')
+            #
+            # plt.plot([polygonLines[0].points[0].x, polygonLines[2].points[0].x],
+            #          [polygonLines[0].points[0].y, polygonLines[2].points[0].y], 'c--')
+            #
+            # plt.plot([polygonLines[1].points[0].x, polygonLines[3].points[1].x],
+            #          [polygonLines[1].points[0].y, polygonLines[3].points[1].y], 'c--')
+            #
+            # for p in range(len(bisectionIntersectionPoints)):
+            #     plt.plot(bisectionIntersectionPoints[p][0], bisectionIntersectionPoints[p][1], 'ro')
+            # for p in range(len(nonBisectionIntersectionPoints)):
+            #     plt.plot(nonBisectionIntersectionPoints[p][0], nonBisectionIntersectionPoints[p][1], 'ko')
+            #
+            # ax = plt.gca()
+            # ax.set_aspect(1)
+            #
+            # plt.xlabel('Y')
+            # plt.ylabel('X')
+            # plt.show()
 
 
 
@@ -414,7 +419,8 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
                     # line7Opt = PointsAndLinesClass.ClassLine(point8New, point6New)
                     pathLinesNew = [line5Opt, line6Opt]
 
-            return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
+            return CrossFrameOptimizationLibrary.OptimizeStiffnessOfSinglePanel(pathLinesNew, listOfPoints)
+            # return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
             # return -GetMassOfAllLines(pathLinesNew)
             # return TempStiffnessCalc(pathLinesNew)
 
@@ -517,37 +523,37 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
             plotLines = polygonLines.copy()
             plotLines.extend(pathLines)
 
-            bisectionIntersectionPoints, nonBisectionIntersectionPoints = CrossFrameOptimizationLibrary. \
-                GetPanelBisectionAndPathLineIntersectionPointsForAPanel(listOfPoints, plotLines)
-            ##Temp
-            for p in range(len(polygonLines)):
-                plt.plot(polygonLines[p].points[0].x, polygonLines[p].points[0].y, 'r*')
-                plt.plot(polygonLines[p].points[1].x, polygonLines[p].points[1].y, 'r*')
-                plt.plot([polygonLines[p].points[0].x, polygonLines[p].points[1].x],
-                         [polygonLines[p].points[0].y, polygonLines[p].points[1].y], 'b--')
-            for p in range(len(plotLines)):
-                plt.plot(plotLines[p].points[0].x, plotLines[p].points[0].y, 'go')
-                plt.plot(plotLines[p].points[1].x, plotLines[p].points[1].y, 'go')
-                plt.plot([plotLines[p].points[0].x, plotLines[p].points[1].x],
-                         [plotLines[p].points[0].y, plotLines[p].points[1].y], 'g-')
-
-            plt.plot([polygonLines[0].points[0].x, polygonLines[2].points[0].x],
-                     [polygonLines[0].points[0].y, polygonLines[2].points[0].y], 'c--')
-
-            plt.plot([polygonLines[1].points[0].x, polygonLines[3].points[1].x],
-                     [polygonLines[1].points[0].y, polygonLines[3].points[1].y], 'c--')
-
-            for p in range(len(bisectionIntersectionPoints)):
-                plt.plot(bisectionIntersectionPoints[p][0], bisectionIntersectionPoints[p][1], 'ro')
-            for p in range(len(nonBisectionIntersectionPoints)):
-                plt.plot(nonBisectionIntersectionPoints[p][0], nonBisectionIntersectionPoints[p][1], 'ko')
-
-            ax = plt.gca()
-            ax.set_aspect(1)
-
-            plt.xlabel('Y')
-            plt.ylabel('X')
-            plt.show()
+            # bisectionIntersectionPoints, nonBisectionIntersectionPoints = CrossFrameOptimizationLibrary. \
+            #     GetPanelBisectionAndPathLineIntersectionPointsForAPanel(listOfPoints, plotLines)
+            # ##Temp
+            # for p in range(len(polygonLines)):
+            #     plt.plot(polygonLines[p].points[0].x, polygonLines[p].points[0].y, 'r*')
+            #     plt.plot(polygonLines[p].points[1].x, polygonLines[p].points[1].y, 'r*')
+            #     plt.plot([polygonLines[p].points[0].x, polygonLines[p].points[1].x],
+            #              [polygonLines[p].points[0].y, polygonLines[p].points[1].y], 'b--')
+            # for p in range(len(plotLines)):
+            #     plt.plot(plotLines[p].points[0].x, plotLines[p].points[0].y, 'go')
+            #     plt.plot(plotLines[p].points[1].x, plotLines[p].points[1].y, 'go')
+            #     plt.plot([plotLines[p].points[0].x, plotLines[p].points[1].x],
+            #              [plotLines[p].points[0].y, plotLines[p].points[1].y], 'g-')
+            #
+            # plt.plot([polygonLines[0].points[0].x, polygonLines[2].points[0].x],
+            #          [polygonLines[0].points[0].y, polygonLines[2].points[0].y], 'c--')
+            #
+            # plt.plot([polygonLines[1].points[0].x, polygonLines[3].points[1].x],
+            #          [polygonLines[1].points[0].y, polygonLines[3].points[1].y], 'c--')
+            #
+            # for p in range(len(bisectionIntersectionPoints)):
+            #     plt.plot(bisectionIntersectionPoints[p][0], bisectionIntersectionPoints[p][1], 'ro')
+            # for p in range(len(nonBisectionIntersectionPoints)):
+            #     plt.plot(nonBisectionIntersectionPoints[p][0], nonBisectionIntersectionPoints[p][1], 'ko')
+            #
+            # ax = plt.gca()
+            # ax.set_aspect(1)
+            #
+            # plt.xlabel('Y')
+            # plt.ylabel('X')
+            # plt.show()
 
             # PrintMassOfAllLines(pathLines)
             plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions)
@@ -568,20 +574,20 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
     shapeBaseHeight = crossSectionLengths[1]  # meters, if rectangle
     shapeBaseDiameter = crossSectionLengths[2]  # meters, if circle
 
-    panelCorners = [[listOfPoints[0], listOfPoints[1], listOfPoints[2], listOfPoints[3]],
-                    [listOfPoints[4], listOfPoints[5], listOfPoints[6], listOfPoints[7]],
-                    [listOfPoints[8], listOfPoints[9], listOfPoints[10], listOfPoints[11]],
-                    [listOfPoints[12], listOfPoints[13], listOfPoints[14], listOfPoints[15]],
-                    [listOfPoints[16], listOfPoints[17], listOfPoints[18], listOfPoints[19]],
-                    [listOfPoints[20], listOfPoints[21], listOfPoints[22], listOfPoints[23]],
-                    [listOfPoints[24], listOfPoints[25], listOfPoints[26], listOfPoints[27]],
-                    [listOfPoints[28], listOfPoints[29], listOfPoints[30], listOfPoints[31]],
-                    [listOfPoints[32], listOfPoints[33], listOfPoints[34], listOfPoints[35]],
-                    [listOfPoints[36], listOfPoints[37], listOfPoints[38], listOfPoints[39]],
-                    [listOfPoints[40], listOfPoints[41], listOfPoints[42]],
-                    [listOfPoints[43], listOfPoints[44], listOfPoints[45]],
-                    [listOfPoints[46], listOfPoints[47], listOfPoints[48]],
-                    [listOfPoints[49], listOfPoints[50], listOfPoints[51]]]
+    # panelCorners = [[listOfPoints[0], listOfPoints[1], listOfPoints[2], listOfPoints[3]],
+    #                 [listOfPoints[4], listOfPoints[5], listOfPoints[6], listOfPoints[7]],
+    #                 [listOfPoints[8], listOfPoints[9], listOfPoints[10], listOfPoints[11]],
+    #                 [listOfPoints[12], listOfPoints[13], listOfPoints[14], listOfPoints[15]],
+    #                 [listOfPoints[16], listOfPoints[17], listOfPoints[18], listOfPoints[19]],
+    #                 [listOfPoints[20], listOfPoints[21], listOfPoints[22], listOfPoints[23]],
+    #                 [listOfPoints[24], listOfPoints[25], listOfPoints[26], listOfPoints[27]],
+    #                 [listOfPoints[28], listOfPoints[29], listOfPoints[30], listOfPoints[31]],
+    #                 [listOfPoints[32], listOfPoints[33], listOfPoints[34], listOfPoints[35]],
+    #                 [listOfPoints[36], listOfPoints[37], listOfPoints[38], listOfPoints[39]],
+    #                 [listOfPoints[40], listOfPoints[41], listOfPoints[42]],
+    #                 [listOfPoints[43], listOfPoints[44], listOfPoints[45]],
+    #                 [listOfPoints[46], listOfPoints[47], listOfPoints[48]],
+    #                 [listOfPoints[49], listOfPoints[50], listOfPoints[51]]]
 
     if connectToMiddlePoint:
         def functionToMinimize(optimalPoints):
