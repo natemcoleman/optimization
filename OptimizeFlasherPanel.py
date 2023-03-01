@@ -7,6 +7,9 @@ import PolyInteractor
 from math import cos, sin, pi
 import numpy as np
 import csv
+import imageio
+import os
+
 
 global coords
 
@@ -61,6 +64,7 @@ def rotate_point_wrt_center(point_to_be_rotated, angle, center_point=(2, 1)):
                 point_to_be_rotated[1] - center_point[1]) + center_point[1]
 
     return xnew, ynew
+
 
 def plotShape(linesToPlot, numberOfPolygonLines, xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions):
     for p in range(len(linesToPlot)):
@@ -145,7 +149,56 @@ def plotShape(linesToPlot, numberOfPolygonLines, xGuessPoints, yGuessPoints, axi
     # plt.xlim([axisLimits[0] - xAxisBuffer, axisLimits[1] + xAxisBuffer])
     # plt.ylim([axisLimits[2] - yAxisBuffer, axisLimits[3] + yAxisBuffer])
 
+    # if boolOptions[9] is False:
     plt.show()
+
+
+def CreateGIF(images, filenames, boolOptions):
+    for filename in filenames:
+        images.append(imageio.imread(filename + ".png"))
+
+    if boolOptions[0]:
+        exportname = "CrossFrameOptimizationProgression.gif"
+    elif boolOptions[6]:
+        exportname = "ZFrameOptimizationProgression.gif"
+    else:
+        exportname = "DiamondFrameOptimizationProgression.gif"
+
+    imageio.mimsave(exportname, images)
+
+    for filename in filenames:
+        os.remove(filename + ".png")
+
+
+def CreateFigure(linesToPlot, numberOfPolygonLines, boolOptions, iterationNum, filenames):
+    plt.figure(iterationNum)
+
+    for p in range(len(linesToPlot)):
+        if p < numberOfPolygonLines:
+            plt.plot(linesToPlot[p].points[0].x, linesToPlot[p].points[0].y, 'r*')
+            plt.plot(linesToPlot[p].points[1].x, linesToPlot[p].points[1].y, 'r*')
+            if boolOptions[7]:
+                plt.plot([linesToPlot[p].points[0].x, linesToPlot[p].points[1].x], [linesToPlot[p].points[0].y, linesToPlot[p].points[1].y], 'b--')
+        else:
+            plt.plot(linesToPlot[p].points[0].x, linesToPlot[p].points[0].y, 'go')
+            plt.plot(linesToPlot[p].points[1].x, linesToPlot[p].points[1].y, 'go')
+            plt.plot([linesToPlot[p].points[0].x, linesToPlot[p].points[1].x], [linesToPlot[p].points[0].y, linesToPlot[p].points[1].y], 'g-')
+
+    plt.plot([linesToPlot[0].points[0].x, linesToPlot[1].points[1].x],
+             [linesToPlot[0].points[0].y, linesToPlot[1].points[1].y], 'c--')
+
+    plt.plot([linesToPlot[1].points[0].x, linesToPlot[3].points[1].x],
+             [linesToPlot[1].points[0].y, linesToPlot[3].points[1].y], 'c--')
+    ax = plt.gca()
+    ax.set_aspect(1)
+
+    plt.xlabel('X')
+    plt.ylabel('Y')
+
+    fileSaveName = 'joemama'+ str(iterationNum)
+    filenames.append(fileSaveName)
+    plt.savefig(fileSaveName)
+    plt.close()
 
 
 def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths, material, crossSection):
@@ -205,7 +258,6 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
             if len(optimalPoints) > 9:
                 line8Opt = PointsAndLinesClass.ClassLine(point9New, point5New)
                 pathLinesNew.append(line8Opt)
-
 
             return CrossFrameOptimizationLibrary.OptimizeStiffnessOfSinglePanel(pathLinesNew, listOfPoints)
             # return CrossFrameOptimizationLibrary.CalculateStiffnessOfPanels(pathLinesNew, listOfPoints)
@@ -294,7 +346,7 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
                     y9GuessPoints = []
 
             isSinglePanel = True
-
+            guessNum = 0
             opt = {'maxiter': 1000}
             result = minimize(functionToMinimize, initialPointsGuesses,
                               constraints=CrossFrameConstraints.GetConstraintsWithMiddle(polygonLines, listOfPoints,
@@ -377,6 +429,8 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
             else:
                 tryAnotherPoint = False
     else:
+        filenames = []
+        images = []
         def functionToMinimize(optimalPoints):
             point6New = PointsAndLinesClass.ClassPoint(optimalPoints[0], optimalPoints[1])
             point7New = PointsAndLinesClass.ClassPoint(optimalPoints[2], optimalPoints[3])
@@ -418,6 +472,12 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
                     line6Opt = PointsAndLinesClass.ClassLine(point7New, point8New)
                     # line7Opt = PointsAndLinesClass.ClassLine(point8New, point6New)
                     pathLinesNew = [line5Opt, line6Opt]
+
+            plotLines = []
+            plotLines = polygonLines + pathLinesNew
+            # print(plotLines)
+            if boolOptions[9]:
+                CreateFigure(plotLines, len(polygonLines), boolOptions, len(x9GuessPoints), filenames)
 
             return CrossFrameOptimizationLibrary.OptimizeStiffnessOfSinglePanel(pathLinesNew, listOfPoints)
             # return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
@@ -556,6 +616,17 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
             # plt.show()
 
             # PrintMassOfAllLines(pathLines)
+
+            # for filename in filenames:
+            #         images.append(imageio.imread(filename+ ".png"))
+            # exportname = "DiamondOptimizationProgression.gif"
+            # imageio.mimsave(exportname, images)
+            #
+            # for filename in filenames:
+            #     os.remove(filename+ ".png")
+
+            CreateGIF(images, filenames, boolOptions)
+
             plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions)
 
             if multipleGuesses:

@@ -8,6 +8,7 @@ connectToMiddlePoint = False
 zPanel = False
 plotFlasherPanels = True
 plotEntireFlasher = False
+createGIF = True
 
 plotPointGuesses = True
 allowModifyPolygon = False
@@ -124,7 +125,7 @@ listOfPointsForFlasher.append(point20)
 
 
 ##ALL PARAMETERS ABOVE THIS LINE## #
-boolOptions = [connectToMiddlePoint, plotPointGuesses, allowModifyPolygon, tryAnotherPoint, multipleGuesses, allowSelectBeginPoint, zPanel, plotFlasherPanels, plotEntireFlasher]
+boolOptions = [connectToMiddlePoint, plotPointGuesses, allowModifyPolygon, tryAnotherPoint, multipleGuesses, allowSelectBeginPoint, zPanel, plotFlasherPanels, plotEntireFlasher, createGIF]
 minDistances = [minDistanceBetweenPathNodes, minDistanceFromCorners, minDistanceFromLine, minEdgePointDistanceFromCorners]
 crossSectionLengths = [shapeBaseLength, shapeBaseHeight, shapeBaseDiameter]
 listOfPoints = []

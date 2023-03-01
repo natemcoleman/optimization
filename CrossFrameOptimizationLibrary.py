@@ -389,7 +389,7 @@ def OptimizeStiffnessOfSinglePanel(pathLines, listOfPoints):
 
     ratiosByPanel = bisectionStiffnessOfPanel / nonBisectionStiffnessOfPanel
 
-    print("stiffness ratio:", ratiosByPanel)
+    # print("stiffness ratio:", ratiosByPanel)
 
     return ratiosByPanel
 
