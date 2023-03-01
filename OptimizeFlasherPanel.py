@@ -38,6 +38,7 @@ def ModifyPolygon(listOfPoints):
 
     return listOfPoints
 
+
 def CreateCSV(panels):
    with open('test.csv', 'w', newline='') as f:
         writer = csv.writer(f)
@@ -178,11 +179,81 @@ def CreateFigure(linesToPlot, numberOfPolygonLines, boolOptions, iterationNum, f
             plt.plot(linesToPlot[p].points[0].x, linesToPlot[p].points[0].y, 'r*')
             plt.plot(linesToPlot[p].points[1].x, linesToPlot[p].points[1].y, 'r*')
             if boolOptions[7]:
-                plt.plot([linesToPlot[p].points[0].x, linesToPlot[p].points[1].x], [linesToPlot[p].points[0].y, linesToPlot[p].points[1].y], 'b--')
+                plt.plot([linesToPlot[p].points[0].x, linesToPlot[p].points[1].x],
+                         [linesToPlot[p].points[0].y, linesToPlot[p].points[1].y], 'b--')
+            # print("")
         else:
             plt.plot(linesToPlot[p].points[0].x, linesToPlot[p].points[0].y, 'go')
             plt.plot(linesToPlot[p].points[1].x, linesToPlot[p].points[1].y, 'go')
-            plt.plot([linesToPlot[p].points[0].x, linesToPlot[p].points[1].x], [linesToPlot[p].points[0].y, linesToPlot[p].points[1].y], 'g-')
+            plt.plot([linesToPlot[p].points[0].x, linesToPlot[p].points[1].x],
+                     [linesToPlot[p].points[0].y, linesToPlot[p].points[1].y], 'g-')
+
+    plt.plot([linesToPlot[0].points[0].x, linesToPlot[1].points[1].x],
+             [linesToPlot[0].points[0].y, linesToPlot[1].points[1].y], 'c--')
+
+    plt.plot([linesToPlot[1].points[0].x, linesToPlot[3].points[1].x],
+             [linesToPlot[1].points[0].y, linesToPlot[3].points[1].y], 'c--')
+
+    if boolOptions[8]:
+        for p in range(len(linesToPlot)):
+            if p < numberOfPolygonLines:
+                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y),
+                                                               90)
+                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y),
+                                                               90)
+                plt.plot(rotatedX1, rotatedY1, 'r*')
+                plt.plot(rotatedX2, rotatedY2, 'r*')
+                if boolOptions[7]:
+                    plt.plot([rotatedX1, rotatedX2], [rotatedY1, rotatedY2], 'b--')
+            else:
+                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y),
+                                                               90)
+                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y),
+                                                               90)
+                plt.plot(rotatedX1, rotatedY1, 'go')
+                plt.plot(rotatedX2, rotatedY2, 'go')
+                plt.plot([rotatedX1, rotatedX2],
+                         [rotatedY1, rotatedY2], 'g-')
+
+        for p in range(len(linesToPlot)):
+            if p < numberOfPolygonLines:
+                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y),
+                                                               180)
+                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y),
+                                                               180)
+                plt.plot(rotatedX1, rotatedY1, 'r*')
+                plt.plot(rotatedX2, rotatedY2, 'r*')
+                if boolOptions[7]:
+                    plt.plot([rotatedX1, rotatedX2], [rotatedY1, rotatedY2], 'b--')
+            else:
+                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y),
+                                                               180)
+                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y),
+                                                               180)
+                plt.plot(rotatedX1, rotatedY1, 'go')
+                plt.plot(rotatedX2, rotatedY2, 'go')
+                plt.plot([rotatedX1, rotatedX2],
+                         [rotatedY1, rotatedY2], 'g-')
+        for p in range(len(linesToPlot)):
+            if p < numberOfPolygonLines:
+                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y),
+                                                               270)
+                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y),
+                                                               270)
+                plt.plot(rotatedX1, rotatedY1, 'r*')
+                plt.plot(rotatedX2, rotatedY2, 'r*')
+                if boolOptions[7]:
+                    plt.plot([rotatedX1, rotatedX2], [rotatedY1, rotatedY2], 'b--')
+            else:
+                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y),
+                                                               270)
+                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y),
+                                                               270)
+                plt.plot(rotatedX1, rotatedY1, 'go')
+                plt.plot(rotatedX2, rotatedY2, 'go')
+                plt.plot([rotatedX1, rotatedX2],
+                         [rotatedY1, rotatedY2], 'g-')
+
 
     plt.plot([linesToPlot[0].points[0].x, linesToPlot[1].points[1].x],
              [linesToPlot[0].points[0].y, linesToPlot[1].points[1].y], 'c--')
