@@ -158,17 +158,31 @@ def CreateGIF(images, filenames, boolOptions):
     for filename in filenames:
         images.append(imageio.imread(filename + ".png"))
 
-    if boolOptions[0]:
-        exportname = "CrossFrameOptimizationProgression.gif"
-    elif boolOptions[6]:
-        exportname = "ZFrameOptimizationProgression.gif"
+    if boolOptions[8]:
+        if boolOptions[0]:
+            exportname = "FullCrossFrameOptimizationProgression.gif"
+        elif boolOptions[6]:
+            exportname = "FullZFrameOptimizationProgression.gif"
+        else:
+            exportname = "FullDiamondFrameOptimizationProgression.gif"
     else:
-        exportname = "DiamondFrameOptimizationProgression.gif"
+        if boolOptions[0]:
+            exportname = "CrossFrameOptimizationProgression.gif"
+        elif boolOptions[6]:
+            exportname = "ZFrameOptimizationProgression.gif"
+        else:
+            exportname = "DiamondFrameOptimizationProgression.gif"
 
-    imageio.mimsave(exportname, images)
+    totalDuration = 1
+    durationPerFrame = totalDuration/len(images)
+
+    # print("duration:", durationPerFrame)
+    kargs = {'duration': durationPerFrame}
+    imageio.mimsave(exportname, images, fps = len(images))
 
     for filename in filenames:
         os.remove(filename + ".png")
+        # print("removing file")
 
 
 def CreateFigure(linesToPlot, numberOfPolygonLines, boolOptions, iterationNum, filenames):
@@ -286,6 +300,9 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
     shapeBaseHeight = crossSectionLengths[1]  # meters, if rectangle
     shapeBaseDiameter = crossSectionLengths[2]  # meters, if circle
 
+    filenames = []
+    images = []
+
     if allowModifyPolygon:
         listOfPoints = ModifyPolygon(listOfPoints)
 
@@ -330,9 +347,13 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
                 line8Opt = PointsAndLinesClass.ClassLine(point9New, point5New)
                 pathLinesNew.append(line8Opt)
 
-            return CrossFrameOptimizationLibrary.OptimizeStiffnessOfSinglePanel(pathLinesNew, listOfPoints)
+            if boolOptions[9]:
+                plotLines = polygonLines + pathLinesNew
+                CreateFigure(plotLines, len(polygonLines), boolOptions, len(x9GuessPoints), filenames)
+
+            # return CrossFrameOptimizationLibrary.OptimizeStiffnessOfSinglePanel(pathLinesNew, listOfPoints)
             # return CrossFrameOptimizationLibrary.CalculateStiffnessOfPanels(pathLinesNew, listOfPoints)
-            # return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
+            return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
             # return -GetMassOfAllLines(pathLinesNew)
             # return TempStiffnessCalc(pathLinesNew)
 
@@ -422,10 +443,11 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
             result = minimize(functionToMinimize, initialPointsGuesses,
                               constraints=CrossFrameConstraints.GetConstraintsWithMiddle(polygonLines, listOfPoints,
                                                                                          minDistances, isSinglePanel), options=opt)
-            print("message:", result.message)
-            print("success:", result.success)
-            print("iterations:", result.nit)
-            print("fun:", result.fun)
+            print(result)
+            # print("message:", result.message)
+            # print("success:", result.success)
+            # print("iterations:", result.nit)
+            # print("fun:", result.fun)
 
             point5 = PointsAndLinesClass.ClassPoint(result.x[0], result.x[1])
             point6 = PointsAndLinesClass.ClassPoint(result.x[2], result.x[3])
@@ -490,7 +512,8 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
             # plt.ylabel('X')
             # plt.show()
 
-
+            if boolOptions[9]:
+                CreateGIF(images, filenames, boolOptions)
 
             # PrintMassOfAllLines(pathLines)
             plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions)
@@ -500,8 +523,6 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
             else:
                 tryAnotherPoint = False
     else:
-        filenames = []
-        images = []
         def functionToMinimize(optimalPoints):
             point6New = PointsAndLinesClass.ClassPoint(optimalPoints[0], optimalPoints[1])
             point7New = PointsAndLinesClass.ClassPoint(optimalPoints[2], optimalPoints[3])
@@ -544,10 +565,9 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
                     # line7Opt = PointsAndLinesClass.ClassLine(point8New, point6New)
                     pathLinesNew = [line5Opt, line6Opt]
 
-            plotLines = []
-            plotLines = polygonLines + pathLinesNew
-            # print(plotLines)
             if boolOptions[9]:
+                plotLines = []
+                plotLines = polygonLines + pathLinesNew
                 CreateFigure(plotLines, len(polygonLines), boolOptions, len(x9GuessPoints), filenames)
 
             return CrossFrameOptimizationLibrary.OptimizeStiffnessOfSinglePanel(pathLinesNew, listOfPoints)
@@ -695,8 +715,8 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
             #
             # for filename in filenames:
             #     os.remove(filename+ ".png")
-
-            CreateGIF(images, filenames, boolOptions)
+            if boolOptions[9]:
+                CreateGIF(images, filenames, boolOptions)
 
             plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions)
 
@@ -715,6 +735,9 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
     shapeBaseLength = crossSectionLengths[0]  # meters, if square or rectangle
     shapeBaseHeight = crossSectionLengths[1]  # meters, if rectangle
     shapeBaseDiameter = crossSectionLengths[2]  # meters, if circle
+
+    filenames = []
+    images = []
 
     # panelCorners = [[listOfPoints[0], listOfPoints[1], listOfPoints[2], listOfPoints[3]],
     #                 [listOfPoints[4], listOfPoints[5], listOfPoints[6], listOfPoints[7]],
@@ -859,6 +882,8 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
             line55Opt = PointsAndLinesClass.ClassLine(point21New, point50New)
             line56Opt = PointsAndLinesClass.ClassLine(point48New, point50New)
 
+            numberOfIterations.append(point18New)
+
             pathLinesNew = [line5Opt, line6Opt, line7Opt, line8Opt,
                             line9Opt, line10Opt, line11Opt, line12Opt,
                             line13Opt, line14Opt, line15Opt, line16Opt,
@@ -888,6 +913,11 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                             [line48Opt, line49Opt, line50Opt],
                             [line51Opt, line52Opt, line53Opt],
                             [line54Opt, line55Opt, line56Opt]]
+
+            if boolOptions[9]:
+                plotLines = polygonLines + pathLinesNew
+                CreateFigure(plotLines, len(polygonLines), boolOptions, len(numberOfIterations), filenames)
+
 
             return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
             # return -CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
@@ -1070,6 +1100,7 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
 
         while tryAnotherPoint:
             isSinglePanel = False
+            numberOfIterations = []
 
             opt = {'maxiter': 1000}
             result = minimize(functionToMinimize, initialPointsGuesses,
@@ -1237,6 +1268,8 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
             plotLines = polygonLines.copy()
             plotLines.extend(pathLines)
 
+            if boolOptions[9]:
+                CreateGIF(images, filenames, boolOptions)
 
             CreateCSV(panels)
             # PrintMassOfAllLines(pathLines)
@@ -1458,6 +1491,12 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                                 [line52Opt, line53Opt],
                                 [line55Opt, line56Opt]]
 
+            if boolOptions[9]:
+                numberOfIterations.append(point25New)
+                plotLines = polygonLines + pathLinesNew
+                CreateFigure(plotLines, len(polygonLines), boolOptions, len(numberOfIterations), filenames)
+
+
             return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
             # return -GetMassOfAllLines(pathLinesNew)
             # return TempStiffnessCalc(pathLinesNew)
@@ -1589,6 +1628,7 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
         rho, E, Sy, Su = CrossFrameOptimizationLibrary.GetMaterialProperties(material)
 
         while tryAnotherPoint:
+            numberOfIterations = []
             isSinglePanel = False
 
             opt = {'maxiter': 1000}
@@ -1596,11 +1636,11 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                               constraints=CrossFrameConstraints.GetConstraintsNoMiddle(polygonLines, listOfPoints,
                                                                                          minDistances, isSinglePanel),
                               options=opt)
-            # print(result)
-            print("message:", result.message)
-            print("success:", result.success)
-            print("iterations:", result.nit)
-            print("fun:", result.fun)
+            print(result)
+            # print("message:", result.message)
+            # print("success:", result.success)
+            # print("iterations:", result.nit)
+            # print("fun:", result.fun)
 
 
             point6 = PointsAndLinesClass.ClassPoint(result.x[0], result.x[1])
@@ -1832,6 +1872,9 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
 
             plotLines = polygonLines.copy()
             plotLines.extend(pathLines)
+
+            if boolOptions[9]:
+                CreateGIF(images, filenames, boolOptions)
 
             CreateCSV(panels)
             # PrintMassOfAllLines(pathLines)

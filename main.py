@@ -5,7 +5,7 @@ import PointsAndLinesClass
 
 #Look at if length is linear, squared, cubed, etc. and add into objective function
 connectToMiddlePoint = False
-zPanel = False
+zPanel = True
 plotFlasherPanels = True
 plotEntireFlasher = False
 createGIF = True
