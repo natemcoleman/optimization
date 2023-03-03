@@ -55,8 +55,6 @@ def CreateCSV(panels):
 def rotate_point_wrt_center(point_to_be_rotated, angle, center_point=(2, 1)):
     angle = np.deg2rad(angle)
 
-    # print("point to be rotated:", point_to_be_rotated)
-
     xnew = cos(angle) * (point_to_be_rotated[0] - center_point[0]) - sin(angle) * (
             point_to_be_rotated[1] - center_point[1]) + center_point[0]
 
@@ -75,18 +73,11 @@ def plotShape(linesToPlot, numberOfPolygonLines, xGuessPoints, yGuessPoints, axi
             if boolOptions[7]:
                 plt.plot([linesToPlot[p].points[0].x, linesToPlot[p].points[1].x],
                          [linesToPlot[p].points[0].y, linesToPlot[p].points[1].y], 'b--')
-            # print("")
         else:
             plt.plot(linesToPlot[p].points[0].x, linesToPlot[p].points[0].y, 'go')
             plt.plot(linesToPlot[p].points[1].x, linesToPlot[p].points[1].y, 'go')
             plt.plot([linesToPlot[p].points[0].x, linesToPlot[p].points[1].x],
                      [linesToPlot[p].points[0].y, linesToPlot[p].points[1].y], 'g-')
-
-    # plt.plot([linesToPlot[0].points[0].x, linesToPlot[1].points[1].x],
-    #          [linesToPlot[0].points[0].y, linesToPlot[1].points[1].y], 'c--')
-    #
-    # plt.plot([linesToPlot[1].points[0].x, linesToPlot[3].points[1].x],
-    #          [linesToPlot[1].points[0].y, linesToPlot[3].points[1].y], 'c--')
 
     if boolOptions[8]:
         for p in range(len(linesToPlot)):
@@ -211,6 +202,7 @@ def CreateGIF(images, filenames, boolOptions):
 def CreateFigure(linesToPlot, numberOfPolygonLines, boolOptions, iterationNum, filenames):
     plt.figure(iterationNum)
 
+    # <editor-fold desc="Plot Flasher Gore">
     for p in range(len(linesToPlot)):
         if p < numberOfPolygonLines:
             plt.plot(linesToPlot[p].points[0].x, linesToPlot[p].points[0].y, 'r*')
@@ -223,7 +215,9 @@ def CreateFigure(linesToPlot, numberOfPolygonLines, boolOptions, iterationNum, f
             plt.plot(linesToPlot[p].points[1].x, linesToPlot[p].points[1].y, 'go')
             plt.plot([linesToPlot[p].points[0].x, linesToPlot[p].points[1].x],
                      [linesToPlot[p].points[0].y, linesToPlot[p].points[1].y], 'g-')
+    # </editor-fold>
 
+    # <editor-fold desc="Plot Full Flasher">
     if boolOptions[8]:
         for p in range(len(linesToPlot)):
             if p < numberOfPolygonLines:
@@ -283,6 +277,7 @@ def CreateFigure(linesToPlot, numberOfPolygonLines, boolOptions, iterationNum, f
                 plt.plot(rotatedX2, rotatedY2, 'go')
                 plt.plot([rotatedX1, rotatedX2],
                          [rotatedY1, rotatedY2], 'g-')
+    # </editor-fold>
 
     ax = plt.gca()
     ax.set_aspect(1)
@@ -316,6 +311,7 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
     if allowModifyPolygon:
         listOfPoints = ModifyPolygon(listOfPoints)
 
+    # <editor-fold desc="Allow Initial Guess">
     def onclick(event):
         global ix, iy
         ix, iy = event.xdata, event.ydata
@@ -326,6 +322,7 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
             fig.canvas.mpl_disconnect(cid)
             plt.close(1)
         return
+    # </editor-fold>
 
     if connectToMiddlePoint:
         def functionToMinimize(optimalPoints):
@@ -335,6 +332,7 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
             point8New = PointsAndLinesClass.ClassPoint(optimalPoints[6], optimalPoints[7])
             if len(optimalPoints) > 9:
                 point9New = PointsAndLinesClass.ClassPoint(optimalPoints[8], optimalPoints[9])
+            # <editor-fold desc="Add Guess Points">
             if plotPointGuesses:
                 x5GuessPoints.append(optimalPoints[0])
                 y5GuessPoints.append(optimalPoints[1])
@@ -347,7 +345,9 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
                 if len(optimalPoints) > 9:
                     x9GuessPoints.append(optimalPoints[8])
                     y9GuessPoints.append(optimalPoints[9])
+            # </editor-fold>
 
+            # <editor-fold desc="Create path lines">
             line5Opt = PointsAndLinesClass.ClassLine(point6New, point5New)
             line6Opt = PointsAndLinesClass.ClassLine(point7New, point5New)
             line7Opt = PointsAndLinesClass.ClassLine(point8New, point5New)
@@ -356,7 +356,9 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
             if len(optimalPoints) > 9:
                 line8Opt = PointsAndLinesClass.ClassLine(point9New, point5New)
                 pathLinesNew.append(line8Opt)
+            # </editor-fold>
 
+            # <editor-fold desc="Create New Figure">
             tolerance = 1e-6
             sumOfOptimalPoints = sum(optimalPoints)
 
@@ -365,13 +367,11 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
                 plotLines = polygonLines + pathLinesNew
                 CreateFigure(plotLines, len(polygonLines), boolOptions, len(iterationNum), filenames)
             previousSum[0] = sumOfOptimalPoints
+            # </editor-fold>
 
-            # return CrossFrameOptimizationLibrary.OptimizeStiffnessOfSinglePanel(pathLinesNew, listOfPoints)
-            # return CrossFrameOptimizationLibrary.CalculateStiffnessOfPanels(pathLinesNew, listOfPoints)
             return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
-            # return -GetMassOfAllLines(pathLinesNew)
-            # return TempStiffnessCalc(pathLinesNew)
 
+        # <editor-fold desc="Create Polygon Lines">
         line1 = PointsAndLinesClass.ClassLine(listOfPoints[0], listOfPoints[1])
         line2 = PointsAndLinesClass.ClassLine(listOfPoints[1], listOfPoints[2])
 
@@ -385,7 +385,9 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
         else:
             line3 = PointsAndLinesClass.ClassLine(listOfPoints[2], listOfPoints[0])
             polygonLines = [line1, line2, line3]
+        # </editor-fold>
 
+        # <editor-fold desc="Create Initial Guesses">
         minX, maxX, minY, maxY = CrossFrameOptimizationLibrary.FindAxisLimits(listOfPoints)
         axisLimits = [minX, maxX, minY, maxY]
 
@@ -397,6 +399,7 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
                                                                           shapeBaseHeight, shapeBaseDiameter)
 
         rho, E, Sy, Su = CrossFrameOptimizationLibrary.GetMaterialProperties(material)
+        # </editor-fold>
 
         while tryAnotherPoint:
             if allowSelectBeginPoint:
@@ -1334,11 +1337,6 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
 
             if boolOptions[10]:
                 CreateCSV(panels)
-
-            # ratiosByPanel = CrossFrameOptimizationLibrary.CalculateStiffnessRatiosForEachPanel(pathLinesByPanel, listOfPoints)
-            # print("\n")
-            # for i in range(len(ratiosByPanel)):
-            #     print("Panel ", i, " stiffness ratio:", 1 / ratiosByPanel[i])
 
             plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses,
                       boolOptions, listOfPoints)
