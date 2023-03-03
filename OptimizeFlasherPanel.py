@@ -4,14 +4,14 @@ import CrossFrameOptimizationLibrary
 import CrossFrameConstraints
 import PointsAndLinesClass
 import PolyInteractor
-from math import cos, sin, pi
+from math import cos, sin, pi, ceil
 import numpy as np
 import csv
 import imageio
 import os
 
-
 global coords
+
 
 def ModifyPolygon(listOfPoints):
     newPoints = PolyInteractor.CreatePolygon(listOfPoints)
@@ -40,7 +40,7 @@ def ModifyPolygon(listOfPoints):
 
 
 def CreateCSV(panels):
-   with open('test.csv', 'w', newline='') as f:
+    with open('test.csv', 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["Panel", "X1", "Y1", "X2", "Y2"])
         for i in range(len(panels)):
@@ -49,55 +49,61 @@ def CreateCSV(panels):
                 yvals1 = panels[i][j].points[0].y
                 xvals2 = panels[i][j].points[1].x
                 yvals2 = panels[i][j].points[1].y
-                writer.writerow([i+1, xvals1, yvals1, xvals2, yvals2])
+                writer.writerow([i + 1, xvals1, yvals1, xvals2, yvals2])
 
 
 def rotate_point_wrt_center(point_to_be_rotated, angle, center_point=(2, 1)):
-
     angle = np.deg2rad(angle)
 
     # print("point to be rotated:", point_to_be_rotated)
 
     xnew = cos(angle) * (point_to_be_rotated[0] - center_point[0]) - sin(angle) * (
-                point_to_be_rotated[1] - center_point[1]) + center_point[0]
+            point_to_be_rotated[1] - center_point[1]) + center_point[0]
 
     ynew = sin(angle) * (point_to_be_rotated[0] - center_point[0]) + cos(angle) * (
-                point_to_be_rotated[1] - center_point[1]) + center_point[1]
+            point_to_be_rotated[1] - center_point[1]) + center_point[1]
 
     return xnew, ynew
 
 
-def plotShape(linesToPlot, numberOfPolygonLines, xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions):
+def plotShape(linesToPlot, numberOfPolygonLines, xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions,
+              listOfPoints):
     for p in range(len(linesToPlot)):
         if p < numberOfPolygonLines:
             plt.plot(linesToPlot[p].points[0].x, linesToPlot[p].points[0].y, 'r*')
             plt.plot(linesToPlot[p].points[1].x, linesToPlot[p].points[1].y, 'r*')
             if boolOptions[7]:
-                plt.plot([linesToPlot[p].points[0].x, linesToPlot[p].points[1].x], [linesToPlot[p].points[0].y, linesToPlot[p].points[1].y], 'b--')
+                plt.plot([linesToPlot[p].points[0].x, linesToPlot[p].points[1].x],
+                         [linesToPlot[p].points[0].y, linesToPlot[p].points[1].y], 'b--')
             # print("")
         else:
             plt.plot(linesToPlot[p].points[0].x, linesToPlot[p].points[0].y, 'go')
             plt.plot(linesToPlot[p].points[1].x, linesToPlot[p].points[1].y, 'go')
-            plt.plot([linesToPlot[p].points[0].x, linesToPlot[p].points[1].x], [linesToPlot[p].points[0].y, linesToPlot[p].points[1].y], 'g-')
+            plt.plot([linesToPlot[p].points[0].x, linesToPlot[p].points[1].x],
+                     [linesToPlot[p].points[0].y, linesToPlot[p].points[1].y], 'g-')
 
-    plt.plot([linesToPlot[0].points[0].x, linesToPlot[1].points[1].x],
-             [linesToPlot[0].points[0].y, linesToPlot[1].points[1].y], 'c--')
-
-    plt.plot([linesToPlot[1].points[0].x, linesToPlot[3].points[1].x],
-             [linesToPlot[1].points[0].y, linesToPlot[3].points[1].y], 'c--')
+    # plt.plot([linesToPlot[0].points[0].x, linesToPlot[1].points[1].x],
+    #          [linesToPlot[0].points[0].y, linesToPlot[1].points[1].y], 'c--')
+    #
+    # plt.plot([linesToPlot[1].points[0].x, linesToPlot[3].points[1].x],
+    #          [linesToPlot[1].points[0].y, linesToPlot[3].points[1].y], 'c--')
 
     if boolOptions[8]:
         for p in range(len(linesToPlot)):
             if p < numberOfPolygonLines:
-                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y), 90)
-                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y), 90)
+                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y),
+                                                               90)
+                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y),
+                                                               90)
                 plt.plot(rotatedX1, rotatedY1, 'r*')
                 plt.plot(rotatedX2, rotatedY2, 'r*')
                 if boolOptions[7]:
                     plt.plot([rotatedX1, rotatedX2], [rotatedY1, rotatedY2], 'b--')
             else:
-                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y), 90)
-                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y), 90)
+                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y),
+                                                               90)
+                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y),
+                                                               90)
                 plt.plot(rotatedX1, rotatedY1, 'go')
                 plt.plot(rotatedX2, rotatedY2, 'go')
                 plt.plot([rotatedX1, rotatedX2],
@@ -105,39 +111,55 @@ def plotShape(linesToPlot, numberOfPolygonLines, xGuessPoints, yGuessPoints, axi
 
         for p in range(len(linesToPlot)):
             if p < numberOfPolygonLines:
-                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y), 180)
-                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y), 180)
+                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y),
+                                                               180)
+                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y),
+                                                               180)
                 plt.plot(rotatedX1, rotatedY1, 'r*')
                 plt.plot(rotatedX2, rotatedY2, 'r*')
                 if boolOptions[7]:
                     plt.plot([rotatedX1, rotatedX2], [rotatedY1, rotatedY2], 'b--')
             else:
-                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y), 180)
-                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y), 180)
+                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y),
+                                                               180)
+                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y),
+                                                               180)
                 plt.plot(rotatedX1, rotatedY1, 'go')
                 plt.plot(rotatedX2, rotatedY2, 'go')
                 plt.plot([rotatedX1, rotatedX2],
                          [rotatedY1, rotatedY2], 'g-')
         for p in range(len(linesToPlot)):
             if p < numberOfPolygonLines:
-                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y), 270)
-                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y), 270)
+                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y),
+                                                               270)
+                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y),
+                                                               270)
                 plt.plot(rotatedX1, rotatedY1, 'r*')
                 plt.plot(rotatedX2, rotatedY2, 'r*')
                 if boolOptions[7]:
                     plt.plot([rotatedX1, rotatedX2], [rotatedY1, rotatedY2], 'b--')
             else:
-                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y), 270)
-                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y), 270)
+                rotatedX1, rotatedY1 = rotate_point_wrt_center((linesToPlot[p].points[0].x, linesToPlot[p].points[0].y),
+                                                               270)
+                rotatedX2, rotatedY2 = rotate_point_wrt_center((linesToPlot[p].points[1].x, linesToPlot[p].points[1].y),
+                                                               270)
                 plt.plot(rotatedX1, rotatedY1, 'go')
                 plt.plot(rotatedX2, rotatedY2, 'go')
                 plt.plot([rotatedX1, rotatedX2],
                          [rotatedY1, rotatedY2], 'g-')
-
 
     if plotPointGuesses:
         for plotLength in range(len(xGuessPoints)):
             plt.plot(xGuessPoints[plotLength], yGuessPoints[plotLength], 'r.')
+
+    if boolOptions[11]:
+        bisectionLines, nonBisectionLines = CrossFrameOptimizationLibrary.ReturnPanelBisectionLines(listOfPoints)
+        for i in range(len(bisectionLines)):
+            plt.plot([bisectionLines[i][0].x, bisectionLines[i][1].x],
+                     [bisectionLines[i][0].y, bisectionLines[i][1].y], 'm--')
+        for i in range(len(nonBisectionLines)):
+            plt.plot([nonBisectionLines[i][0].x, nonBisectionLines[i][1].x],
+                     [nonBisectionLines[i][0].y, nonBisectionLines[i][1].y], 'c--')
 
     ax = plt.gca()
     ax.set_aspect(1)
@@ -173,16 +195,17 @@ def CreateGIF(images, filenames, boolOptions):
         else:
             exportname = "DiamondFrameOptimizationProgression.gif"
 
-    totalDuration = 1
-    durationPerFrame = totalDuration/len(images)
+    imagesInitialLength = len(images)
+    extraDurationTime = 0.5 #seconds
+    for i in range(ceil(len(images)*extraDurationTime)):
+        images.append(images[len(images)-1])
 
-    # print("duration:", durationPerFrame)
-    kargs = {'duration': durationPerFrame}
-    imageio.mimsave(exportname, images, fps = len(images))
+    imageio.mimsave(exportname, images, fps=imagesInitialLength)
+
+    print(len(filenames), "images")
 
     for filename in filenames:
         os.remove(filename + ".png")
-        # print("removing file")
 
 
 def CreateFigure(linesToPlot, numberOfPolygonLines, boolOptions, iterationNum, filenames):
@@ -195,18 +218,11 @@ def CreateFigure(linesToPlot, numberOfPolygonLines, boolOptions, iterationNum, f
             if boolOptions[7]:
                 plt.plot([linesToPlot[p].points[0].x, linesToPlot[p].points[1].x],
                          [linesToPlot[p].points[0].y, linesToPlot[p].points[1].y], 'b--')
-            # print("")
         else:
             plt.plot(linesToPlot[p].points[0].x, linesToPlot[p].points[0].y, 'go')
             plt.plot(linesToPlot[p].points[1].x, linesToPlot[p].points[1].y, 'go')
             plt.plot([linesToPlot[p].points[0].x, linesToPlot[p].points[1].x],
                      [linesToPlot[p].points[0].y, linesToPlot[p].points[1].y], 'g-')
-
-    plt.plot([linesToPlot[0].points[0].x, linesToPlot[1].points[1].x],
-             [linesToPlot[0].points[0].y, linesToPlot[1].points[1].y], 'c--')
-
-    plt.plot([linesToPlot[1].points[0].x, linesToPlot[3].points[1].x],
-             [linesToPlot[1].points[0].y, linesToPlot[3].points[1].y], 'c--')
 
     if boolOptions[8]:
         for p in range(len(linesToPlot)):
@@ -268,19 +284,13 @@ def CreateFigure(linesToPlot, numberOfPolygonLines, boolOptions, iterationNum, f
                 plt.plot([rotatedX1, rotatedX2],
                          [rotatedY1, rotatedY2], 'g-')
 
-
-    plt.plot([linesToPlot[0].points[0].x, linesToPlot[1].points[1].x],
-             [linesToPlot[0].points[0].y, linesToPlot[1].points[1].y], 'c--')
-
-    plt.plot([linesToPlot[1].points[0].x, linesToPlot[3].points[1].x],
-             [linesToPlot[1].points[0].y, linesToPlot[3].points[1].y], 'c--')
     ax = plt.gca()
     ax.set_aspect(1)
 
     plt.xlabel('X')
     plt.ylabel('Y')
 
-    fileSaveName = 'joemama'+ str(iterationNum)
+    fileSaveName = 'joemama' + str(iterationNum)
     filenames.append(fileSaveName)
     plt.savefig(fileSaveName)
     plt.close()
@@ -347,16 +357,20 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
                 line8Opt = PointsAndLinesClass.ClassLine(point9New, point5New)
                 pathLinesNew.append(line8Opt)
 
-            if boolOptions[9]:
+            tolerance = 1e-6
+            sumOfOptimalPoints = sum(optimalPoints)
+
+            if boolOptions[9] and abs(sumOfOptimalPoints - previousSum[0]) > tolerance:
+                plotLines = []
                 plotLines = polygonLines + pathLinesNew
-                CreateFigure(plotLines, len(polygonLines), boolOptions, len(x9GuessPoints), filenames)
+                CreateFigure(plotLines, len(polygonLines), boolOptions, len(iterationNum), filenames)
+            previousSum[0] = sumOfOptimalPoints
 
             # return CrossFrameOptimizationLibrary.OptimizeStiffnessOfSinglePanel(pathLinesNew, listOfPoints)
             # return CrossFrameOptimizationLibrary.CalculateStiffnessOfPanels(pathLinesNew, listOfPoints)
             return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
             # return -GetMassOfAllLines(pathLinesNew)
             # return TempStiffnessCalc(pathLinesNew)
-
 
         line1 = PointsAndLinesClass.ClassLine(listOfPoints[0], listOfPoints[1])
         line2 = PointsAndLinesClass.ClassLine(listOfPoints[1], listOfPoints[2])
@@ -439,10 +453,12 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
 
             isSinglePanel = True
             guessNum = 0
+            previousSum = [0]
             opt = {'maxiter': 1000}
             result = minimize(functionToMinimize, initialPointsGuesses,
                               constraints=CrossFrameConstraints.GetConstraintsWithMiddle(polygonLines, listOfPoints,
-                                                                                         minDistances, isSinglePanel), options=opt)
+                                                                                         minDistances, isSinglePanel),
+                              options=opt)
             print(result)
             # print("message:", result.message)
             # print("success:", result.success)
@@ -516,7 +532,8 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
                 CreateGIF(images, filenames, boolOptions)
 
             # PrintMassOfAllLines(pathLines)
-            plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions)
+            plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses,
+                      boolOptions, listOfPoints)
 
             if multipleGuesses:
                 tryAnotherPoint = True
@@ -564,17 +581,23 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
                     line6Opt = PointsAndLinesClass.ClassLine(point7New, point8New)
                     # line7Opt = PointsAndLinesClass.ClassLine(point8New, point6New)
                     pathLinesNew = [line5Opt, line6Opt]
+            iterationNum.append(1)
 
-            if boolOptions[9]:
+            tolerance = 1e-6
+            sumOfOptimalPoints = sum(optimalPoints)
+
+            if boolOptions[9] and abs(sumOfOptimalPoints - previousSum[0]) > tolerance:
                 plotLines = []
                 plotLines = polygonLines + pathLinesNew
-                CreateFigure(plotLines, len(polygonLines), boolOptions, len(x9GuessPoints), filenames)
+                CreateFigure(plotLines, len(polygonLines), boolOptions, len(iterationNum), filenames)
+            previousSum[0] = sumOfOptimalPoints
 
             return CrossFrameOptimizationLibrary.OptimizeStiffnessOfSinglePanel(pathLinesNew, listOfPoints)
             # return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
             # return -GetMassOfAllLines(pathLinesNew)
             # return TempStiffnessCalc(pathLinesNew)
 
+        # <editor-fold desc="Create Polygon Lines">
         line1 = PointsAndLinesClass.ClassLine(listOfPoints[0], listOfPoints[1])
         line2 = PointsAndLinesClass.ClassLine(listOfPoints[1], listOfPoints[2])
 
@@ -588,7 +611,9 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
         else:
             line3 = PointsAndLinesClass.ClassLine(listOfPoints[2], listOfPoints[0])
             polygonLines = [line1, line2, line3]
+        # </editor-fold>
 
+        # <editor-fold desc="Create Initial Guesses">
         minX, maxX, minY, maxY = CrossFrameOptimizationLibrary.FindAxisLimits(listOfPoints)
         axisLimits = [minX, maxX, minY, maxY]
 
@@ -601,8 +626,10 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
                                                                           shapeBaseDiameter)
 
         rho, E, Sy, Su = CrossFrameOptimizationLibrary.GetMaterialProperties(material)
+        # </editor-fold>
 
         while tryAnotherPoint:
+            # <editor-fold desc="Initial Points and Guess Points">
             if len(listOfPoints) > 3:
                 initialPointsGuesses = [point6InitialGuess, point7InitialGuess, point8InitialGuess,
                                         point9InitialGuess]
@@ -619,9 +646,11 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
                 if len(listOfPoints) > 3:
                     x9GuessPoints = []
                     y9GuessPoints = []
-
+            # </editor-fold>
+            iterationNum = []
             isSinglePanel = True
-
+            plotLines = []
+            previousSum = [0]
             opt = {'maxiter': 1000}
             result = minimize(functionToMinimize, initialPointsGuesses,
                               constraints=CrossFrameConstraints.GetConstraintsNoMiddle(polygonLines, listOfPoints,
@@ -718,7 +747,8 @@ def OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths
             if boolOptions[9]:
                 CreateGIF(images, filenames, boolOptions)
 
-            plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions)
+            plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses,
+                      boolOptions, listOfPoints)
 
             if multipleGuesses:
                 tryAnotherPoint = True
@@ -730,7 +760,7 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
     connectToMiddlePoint = boolOptions[0]
     plotPointGuesses = boolOptions[1]
     tryAnotherPoint = boolOptions[3]
-    multipleGuesses = boolOptions[4]
+    # multipleGuesses = boolOptions[4]
 
     shapeBaseLength = crossSectionLengths[0]  # meters, if square or rectangle
     shapeBaseHeight = crossSectionLengths[1]  # meters, if rectangle
@@ -740,22 +770,23 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
     images = []
 
     # panelCorners = [[listOfPoints[0], listOfPoints[1], listOfPoints[2], listOfPoints[3]],
-    #                 [listOfPoints[4], listOfPoints[5], listOfPoints[6], listOfPoints[7]],
-    #                 [listOfPoints[8], listOfPoints[9], listOfPoints[10], listOfPoints[11]],
-    #                 [listOfPoints[12], listOfPoints[13], listOfPoints[14], listOfPoints[15]],
-    #                 [listOfPoints[16], listOfPoints[17], listOfPoints[18], listOfPoints[19]],
-    #                 [listOfPoints[20], listOfPoints[21], listOfPoints[22], listOfPoints[23]],
-    #                 [listOfPoints[24], listOfPoints[25], listOfPoints[26], listOfPoints[27]],
-    #                 [listOfPoints[28], listOfPoints[29], listOfPoints[30], listOfPoints[31]],
-    #                 [listOfPoints[32], listOfPoints[33], listOfPoints[34], listOfPoints[35]],
-    #                 [listOfPoints[36], listOfPoints[37], listOfPoints[38], listOfPoints[39]],
-    #                 [listOfPoints[40], listOfPoints[41], listOfPoints[42]],
-    #                 [listOfPoints[43], listOfPoints[44], listOfPoints[45]],
-    #                 [listOfPoints[46], listOfPoints[47], listOfPoints[48]],
-    #                 [listOfPoints[49], listOfPoints[50], listOfPoints[51]]]
+    #                 [listOfPoints[4], listOfPoints[0], listOfPoints[3], listOfPoints[5]],
+    #                 [listOfPoints[6], listOfPoints[4], listOfPoints[5], listOfPoints[7]],
+    #                 [listOfPoints[8], listOfPoints[6], listOfPoints[7], listOfPoints[9]],
+    #                 [listOfPoints[3], listOfPoints[2], listOfPoints[12], listOfPoints[13]],
+    #                 [listOfPoints[5], listOfPoints[3], listOfPoints[13], listOfPoints[14]],
+    #                 [listOfPoints[16], listOfPoints[14], listOfPoints[13], listOfPoints[15]],
+    #                 [listOfPoints[18], listOfPoints[16], listOfPoints[15], listOfPoints[17]],
+    #                 [listOfPoints[19], listOfPoints[7], listOfPoints[16], listOfPoints[18]],
+    #                 [listOfPoints[11], listOfPoints[9], listOfPoints[7], listOfPoints[19]],
+    #                 [listOfPoints[5], listOfPoints[14], listOfPoints[7]],
+    #                 [listOfPoints[7], listOfPoints[14], listOfPoints[16]],
+    #                 [listOfPoints[10], listOfPoints[9], listOfPoints[11]],
+    #                 [listOfPoints[8], listOfPoints[9], listOfPoints[10]]]
 
     if connectToMiddlePoint:
         def functionToMinimize(optimalPoints):
+            # <editor-fold desc="Extract Optimal Points">
             point5New = PointsAndLinesClass.ClassPoint(optimalPoints[0], optimalPoints[1])
             point6New = PointsAndLinesClass.ClassPoint(optimalPoints[2], optimalPoints[3])
             point7New = PointsAndLinesClass.ClassPoint(optimalPoints[4], optimalPoints[5])
@@ -815,7 +846,9 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
 
             point50New = PointsAndLinesClass.ClassPoint(optimalPoints[90], optimalPoints[91])
             point51New = PointsAndLinesClass.ClassPoint(optimalPoints[92], optimalPoints[93])
+            # </editor-fold>
 
+            # <editor-fold desc="Create Current Optimal Lines">
             line5Opt = PointsAndLinesClass.ClassLine(point6New, point5New)
             line6Opt = PointsAndLinesClass.ClassLine(point7New, point5New)
             line7Opt = PointsAndLinesClass.ClassLine(point8New, point5New)
@@ -899,30 +932,37 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                             line51Opt, line52Opt, line53Opt,
                             line54Opt, line55Opt, line56Opt]
 
-            panelPathLines = [[line5Opt, line6Opt, line7Opt, line8Opt],
-                            [line9Opt,  line10Opt, line11Opt, line12Opt],
-                            [line13Opt, line14Opt, line15Opt, line16Opt],
-                            [line17Opt, line18Opt, line19Opt, line20Opt],
-                            [line21Opt, line22Opt, line23Opt, line24Opt],
-                            [line25Opt, line26Opt, line27Opt, line28Opt],
-                            [line29Opt, line30Opt, line31Opt, line32Opt],
-                            [line33Opt, line34Opt, line35Opt, line36Opt],
-                            [line37Opt, line38Opt, line39Opt, line40Opt],
-                            [line41Opt, line42Opt, line43Opt, line44Opt],
-                            [line45Opt, line46Opt, line47Opt],
-                            [line48Opt, line49Opt, line50Opt],
-                            [line51Opt, line52Opt, line53Opt],
-                            [line54Opt, line55Opt, line56Opt]]
+            # panelPathLines = [[line5Opt, line6Opt, line7Opt, line8Opt],
+            #                   [line9Opt, line10Opt, line11Opt, line12Opt],
+            #                   [line13Opt, line14Opt, line15Opt, line16Opt],
+            #                   [line17Opt, line18Opt, line19Opt, line20Opt],
+            #                   [line21Opt, line22Opt, line23Opt, line24Opt],
+            #                   [line25Opt, line26Opt, line27Opt, line28Opt],
+            #                   [line29Opt, line30Opt, line31Opt, line32Opt],
+            #                   [line33Opt, line34Opt, line35Opt, line36Opt],
+            #                   [line37Opt, line38Opt, line39Opt, line40Opt],
+            #                   [line41Opt, line42Opt, line43Opt, line44Opt],
+            #                   [line45Opt, line46Opt, line47Opt],
+            #                   [line48Opt, line49Opt, line50Opt],
+            #                   [line51Opt, line52Opt, line53Opt],
+            #                   [line54Opt, line55Opt, line56Opt]]
+            # </editor-fold>
 
-            if boolOptions[9]:
+            tolerance = 1e-6
+            sumOfOptimalPoints = sum(optimalPoints)
+            numberOfIterations.append(1)
+
+            if boolOptions[9] and abs(sumOfOptimalPoints - previousSum[0]) > tolerance:
+                plotLines = []
                 plotLines = polygonLines + pathLinesNew
                 CreateFigure(plotLines, len(polygonLines), boolOptions, len(numberOfIterations), filenames)
+            previousSum[0] = sumOfOptimalPoints
 
-
+            # return CrossFrameOptimizationLibrary.OptimizeStiffnessOfGore(panelPathLines, listOfPoints)
             return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
-            # return -CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
-            # return TempStiffnessCalc(pathLinesNew)
+            # return CrossFrameOptimizationLibrary.GetLengthOfAllLines(pathLinesNew)
 
+        # <editor-fold desc="Create Polygon Lines">
         line1 = PointsAndLinesClass.ClassLine(listOfPoints[0], listOfPoints[1])
         line2 = PointsAndLinesClass.ClassLine(listOfPoints[1], listOfPoints[2])
         line3 = PointsAndLinesClass.ClassLine(listOfPoints[2], listOfPoints[3])
@@ -998,8 +1038,9 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
         panel12 = [line34, line23, line30]
         panel13 = [line40, line41, line37]
         panel14 = [line42, line40, line16]
+        # </editor-fold>
 
-
+        # <editor-fold desc="Create Initial Guesses">
         minX1, maxX1, minY1, maxY1 = CrossFrameOptimizationLibrary.FindAxisLimitsOfLines(panel1)
         minX2, maxX2, minY2, maxY2 = CrossFrameOptimizationLibrary.FindAxisLimitsOfLines(panel2)
         minX3, maxX3, minY3, maxY3 = CrossFrameOptimizationLibrary.FindAxisLimitsOfLines(panel3)
@@ -1079,7 +1120,8 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
         point49InitialGuess = [((minX13 + maxX13) / 2, (minY13 + maxY13) / 2)]  # First guess is in middle of bounds
         point50InitialGuess = [((minX14 + maxX14) / 2, (minY14 + maxY14) / 2)]  # First guess is in middle of bounds
 
-        initialPointsGuesses = [point5InitialGuess, point6InitialGuess, point7InitialGuess, point8InitialGuess, point9InitialGuess,
+        initialPointsGuesses = [point5InitialGuess, point6InitialGuess, point7InitialGuess, point8InitialGuess,
+                                point9InitialGuess,
                                 point10InitialGuess, point11InitialGuess, point12InitialGuess, point13InitialGuess,
                                 point14InitialGuess, point15InitialGuess, point16InitialGuess, point17InitialGuess,
                                 point18InitialGuess, point19InitialGuess, point20InitialGuess, point21InitialGuess,
@@ -1092,6 +1134,7 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                                 point44InitialGuess, point45InitialGuess, point46InitialGuess,
                                 point47InitialGuess, point48InitialGuess, point49InitialGuess,
                                 point50InitialGuess, point51InitialGuess]
+        # </editor-fold>
 
         A, Ix, Iy = CrossFrameOptimizationLibrary.GetPropertiesOfSections(crossSection, shapeBaseLength,
                                                                           shapeBaseHeight, shapeBaseDiameter)
@@ -1101,17 +1144,15 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
         while tryAnotherPoint:
             isSinglePanel = False
             numberOfIterations = []
-
+            previousSum = [0]
             opt = {'maxiter': 1000}
             result = minimize(functionToMinimize, initialPointsGuesses,
                               constraints=CrossFrameConstraints.GetConstraintsWithMiddle(polygonLines, listOfPoints,
-                                                                                         minDistances, isSinglePanel), options=opt)
-            # print(result)
-            print("message:", result.message)
-            print("success:", result.success)
-            print("iterations:", result.nit)
-            print("fun:", result.fun)
+                                                                                         minDistances, isSinglePanel),
+                              options=opt)
+            print(result)
 
+            # <editor-fold desc="Get Optimal Points">
             point5 = PointsAndLinesClass.ClassPoint(result.x[0], result.x[1])
             point6 = PointsAndLinesClass.ClassPoint(result.x[2], result.x[3])
             point7 = PointsAndLinesClass.ClassPoint(result.x[4], result.x[5])
@@ -1171,7 +1212,9 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
 
             point50 = PointsAndLinesClass.ClassPoint(result.x[90], result.x[91])
             point51 = PointsAndLinesClass.ClassPoint(result.x[92], result.x[93])
+            # </editor-fold>
 
+            # <editor-fold desc="Get Optimal Path Lines">
             line5 = PointsAndLinesClass.ClassLine(point6, point5)
             line6 = PointsAndLinesClass.ClassLine(point7, point5)
             line7 = PointsAndLinesClass.ClassLine(point8, point5)
@@ -1244,6 +1287,23 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                          line41, line42, line43, line44, line45, line46, line47, line48,
                          line49, line50, line51, line52, line53, line54, line55, line56]
 
+            pathLinesByPanel = [[line5, line6, line7, line8],
+                                [line9, line10, line11, line12],
+                                [line13, line14, line15, line16],
+                                [line17, line18, line19, line20],
+                                [line21, line22, line23, line24],
+                                [line25, line26, line27, line28],
+                                [line29, line30, line31, line32],
+                                [line33, line34, line35, line36],
+                                [line37, line38, line39, line40],
+                                [line41, line42, line43, line44],
+                                [line45, line46, line47],
+                                [line48, line49, line50],
+                                [line51, line52, line53],
+                                [line54, line55, line56]]
+            # </editor-fold>
+
+            # <editor-fold desc="Get optimal lines by panel">
             panel1 = [line5, line6, line7, line8]
             panel2 = [line9, line10, line11, line12]
             panel3 = [line13, line14, line15, line16]
@@ -1261,6 +1321,7 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
 
             panels = [panel1, panel2, panel3, panel4, panel5, panel6, panel7, panel8, panel9, panel10, panel11, panel12,
                       panel13, panel14]
+            # </editor-fold>
 
             xGuessPoints = []
             yGuessPoints = []
@@ -1271,14 +1332,22 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
             if boolOptions[9]:
                 CreateGIF(images, filenames, boolOptions)
 
-            CreateCSV(panels)
-            # PrintMassOfAllLines(pathLines)
-            plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions)
+            if boolOptions[10]:
+                CreateCSV(panels)
+
+            # ratiosByPanel = CrossFrameOptimizationLibrary.CalculateStiffnessRatiosForEachPanel(pathLinesByPanel, listOfPoints)
+            # print("\n")
+            # for i in range(len(ratiosByPanel)):
+            #     print("Panel ", i, " stiffness ratio:", 1 / ratiosByPanel[i])
+
+            plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses,
+                      boolOptions, listOfPoints)
 
             tryAnotherPoint = False
 
     else:
         def functionToMinimize(optimalPoints):
+            # <editor-fold desc="Extract Optimal Points">
             point6New = PointsAndLinesClass.ClassPoint(optimalPoints[0], optimalPoints[1])
             point7New = PointsAndLinesClass.ClassPoint(optimalPoints[2], optimalPoints[3])
             point8New = PointsAndLinesClass.ClassPoint(optimalPoints[4], optimalPoints[5])
@@ -1324,8 +1393,10 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
             point48New = PointsAndLinesClass.ClassPoint(optimalPoints[62], optimalPoints[63])
 
             point51New = PointsAndLinesClass.ClassPoint(optimalPoints[64], optimalPoints[65])
+            # </editor-fold>
 
             if boolOptions[6] is False:
+                # <editor-fold desc="Create Current Optimal Path Lines - Diamond">
                 line5Opt = PointsAndLinesClass.ClassLine(point6New, point7New)
                 line6Opt = PointsAndLinesClass.ClassLine(point7New, point8New)
                 line7Opt = PointsAndLinesClass.ClassLine(point8New, point9New)
@@ -1401,21 +1472,23 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                                 line52Opt, line53Opt, line54Opt, line55Opt, line56Opt, line57Opt]
 
                 panelPathLines = [[line5Opt, line6Opt, line7Opt, line8Opt],
-                                [line9Opt, line11Opt, line12Opt, line13Opt],
-                                [line14Opt, line15Opt, line16Opt, line17Opt],
-                                [line18Opt, line19Opt, line20Opt, line21Opt],
-                                [line22Opt, line23Opt, line24Opt, line25Opt],
-                                [line26Opt, line27Opt, line28Opt, line29Opt],
-                                [line30Opt, line31Opt, line32Opt, line33Opt],
-                                [line34Opt, line35Opt, line36Opt, line37Opt],
-                                [line38Opt, line39Opt, line40Opt, line41Opt],
-                                [line42Opt, line43Opt, line44Opt, line45Opt],
-                                [line46Opt, line47Opt, line48Opt],
-                                [line49Opt, line50Opt, line51Opt],
-                                [line52Opt, line53Opt, line54Opt],
-                                [line55Opt, line56Opt, line57Opt]]
+                                  [line9Opt, line11Opt, line12Opt, line13Opt],
+                                  [line14Opt, line15Opt, line16Opt, line17Opt],
+                                  [line18Opt, line19Opt, line20Opt, line21Opt],
+                                  [line22Opt, line23Opt, line24Opt, line25Opt],
+                                  [line26Opt, line27Opt, line28Opt, line29Opt],
+                                  [line30Opt, line31Opt, line32Opt, line33Opt],
+                                  [line34Opt, line35Opt, line36Opt, line37Opt],
+                                  [line38Opt, line39Opt, line40Opt, line41Opt],
+                                  [line42Opt, line43Opt, line44Opt, line45Opt],
+                                  [line46Opt, line47Opt, line48Opt],
+                                  [line49Opt, line50Opt, line51Opt],
+                                  [line52Opt, line53Opt, line54Opt],
+                                  [line55Opt, line56Opt, line57Opt]]
+                # </editor-fold>
 
             else:
+                # <editor-fold desc="Create Current Optimal Path Lines - Z Frame">
                 line5Opt = PointsAndLinesClass.ClassLine(point6New, point7New)
                 line6Opt = PointsAndLinesClass.ClassLine(point9New, point7New)
                 line7Opt = PointsAndLinesClass.ClassLine(point8New, point9New)
@@ -1477,30 +1550,35 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                                 line52Opt, line53Opt, line55Opt, line56Opt]
 
                 panelPathLines = [[line5Opt, line6Opt, line7Opt],
-                                [line9Opt, line11Opt, line12Opt],
-                                [line14Opt, line15Opt, line16Opt],
-                                [line18Opt, line19Opt, line20Opt],
-                                [line22Opt, line23Opt, line24Opt],
-                                [line26Opt, line27Opt, line28Opt],
-                                [line30Opt, line31Opt, line32Opt],
-                                [line34Opt, line35Opt, line36Opt],
-                                [line38Opt, line39Opt, line40Opt],
-                                [line42Opt, line43Opt, line44Opt],
-                                [line46Opt, line47Opt],
-                                [line49Opt, line50Opt],
-                                [line52Opt, line53Opt],
-                                [line55Opt, line56Opt]]
+                                  [line9Opt, line11Opt, line12Opt],
+                                  [line14Opt, line15Opt, line16Opt],
+                                  [line18Opt, line19Opt, line20Opt],
+                                  [line22Opt, line23Opt, line24Opt],
+                                  [line26Opt, line27Opt, line28Opt],
+                                  [line30Opt, line31Opt, line32Opt],
+                                  [line34Opt, line35Opt, line36Opt],
+                                  [line38Opt, line39Opt, line40Opt],
+                                  [line42Opt, line43Opt, line44Opt],
+                                  [line46Opt, line47Opt],
+                                  [line49Opt, line50Opt],
+                                  [line52Opt, line53Opt],
+                                  [line55Opt, line56Opt]]
+                # </editor-fold>
 
-            if boolOptions[9]:
-                numberOfIterations.append(point25New)
+            tolerance = 1e-6
+            sumOfOptimalPoints = sum(optimalPoints)
+            numberOfIterations.append(1)
+
+            if boolOptions[9] and abs(sumOfOptimalPoints - previousSum[0]) > tolerance:
+                plotLines = []
                 plotLines = polygonLines + pathLinesNew
                 CreateFigure(plotLines, len(polygonLines), boolOptions, len(numberOfIterations), filenames)
+            previousSum[0] = sumOfOptimalPoints
 
+            return CrossFrameOptimizationLibrary.OptimizeStiffnessOfGore(panelPathLines, listOfPoints)
+            # return CrossFrameOptimizationLibrary.GetLengthOfAllLines(pathLinesNew)
 
-            return CrossFrameOptimizationLibrary.GetMassOfAllLines(pathLinesNew, A, rho)
-            # return -GetMassOfAllLines(pathLinesNew)
-            # return TempStiffnessCalc(pathLinesNew)
-
+        # <editor-fold desc="Create Polygon Lines">
         line1 = PointsAndLinesClass.ClassLine(listOfPoints[0], listOfPoints[1])
         line2 = PointsAndLinesClass.ClassLine(listOfPoints[1], listOfPoints[2])
         line3 = PointsAndLinesClass.ClassLine(listOfPoints[2], listOfPoints[3])
@@ -1561,10 +1639,12 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                         line13, line14, line15, line16, line17, line18, line19, line20, line21, line22,
                         line23, line24, line25, line26, line27, line28, line29, line30, line31, line32, line33,
                         line34, line35, line36, line37, line38, line39, line40, line41, line42]
+        # </editor-fold>
 
         minX, maxX, minY, maxY = CrossFrameOptimizationLibrary.FindAxisLimits(listOfPoints)
         axisLimits = [minX, maxX, minY, maxY]
 
+        # <editor-fold desc="Create Initial Guesses">
         point6InitialGuess = CrossFrameOptimizationLibrary.GetMidpointOfLine(line1)
         point7InitialGuess = CrossFrameOptimizationLibrary.GetMidpointOfLine(line2)
         point8InitialGuess = CrossFrameOptimizationLibrary.GetMidpointOfLine(line3)
@@ -1608,7 +1688,6 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
 
         point51InitialGuess = CrossFrameOptimizationLibrary.GetMidpointOfLine(line42)
 
-
         initialPointsGuesses = [point6InitialGuess, point7InitialGuess, point8InitialGuess, point9InitialGuess,
                                 point11InitialGuess, point12InitialGuess, point13InitialGuess,
                                 point15InitialGuess, point16InitialGuess, point17InitialGuess,
@@ -1621,28 +1700,21 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                                 point42InitialGuess, point43InitialGuess,
                                 point44InitialGuess, point47InitialGuess, point48InitialGuess,
                                 point51InitialGuess]
-
-        A, Ix, Iy = CrossFrameOptimizationLibrary.GetPropertiesOfSections(crossSection, shapeBaseLength,
-                                                                          shapeBaseHeight, shapeBaseDiameter)
-
-        rho, E, Sy, Su = CrossFrameOptimizationLibrary.GetMaterialProperties(material)
+        # </editor-fold>
 
         while tryAnotherPoint:
             numberOfIterations = []
             isSinglePanel = False
+            previousSum = [0]
 
             opt = {'maxiter': 1000}
             result = minimize(functionToMinimize, initialPointsGuesses,
                               constraints=CrossFrameConstraints.GetConstraintsNoMiddle(polygonLines, listOfPoints,
-                                                                                         minDistances, isSinglePanel),
+                                                                                       minDistances, isSinglePanel),
                               options=opt)
             print(result)
-            # print("message:", result.message)
-            # print("success:", result.success)
-            # print("iterations:", result.nit)
-            # print("fun:", result.fun)
 
-
+            # <editor-fold desc="Create Final Optimal Points">
             point6 = PointsAndLinesClass.ClassPoint(result.x[0], result.x[1])
             point7 = PointsAndLinesClass.ClassPoint(result.x[2], result.x[3])
             point8 = PointsAndLinesClass.ClassPoint(result.x[4], result.x[5])
@@ -1685,8 +1757,10 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
             point48 = PointsAndLinesClass.ClassPoint(result.x[62], result.x[63])
 
             point51 = PointsAndLinesClass.ClassPoint(result.x[64], result.x[65])
+            # </editor-fold>
 
             if boolOptions[6] is False:
+                # <editor-fold desc="Create Final Optimal Path Lines - Diamond">
                 line5 = PointsAndLinesClass.ClassLine(point6, point7)
                 line6 = PointsAndLinesClass.ClassLine(point7, point8)
                 line7 = PointsAndLinesClass.ClassLine(point8, point9)
@@ -1778,10 +1852,28 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                              line33, line34, line35, line36,
                              line38, line39, line40, line41,
                              line42, line43, line44, line45,
-                             line46, line47, line48, line49, line50, line51,
+                             line46, line47, line48,
+                             line49, line50, line51,
                              line52, line53, line54,
                              line55, line56, line57]
+                pathLinesByPanel = [[line5, line6, line7, line8],
+                                    [line9, line10, line11, line12],
+                                    [line13, line14, line15, line16],
+                                    [line17, line18, line19, line20],
+                                    [line21, line22, line23, line24],
+                                    [line25, line26, line27, line28],
+                                    [line29, line30, line31, line32],
+                                    [line33, line34, line35, line36],
+                                    [line38, line39, line40, line41],
+                                    [line42, line43, line44, line45],
+                                    [line46, line47, line48],
+                                    [line49, line50, line51],
+                                    [line52, line53, line54],
+                                    [line55, line56, line57]]
+                # </editor-fold>
+
             else:
+                # <editor-fold desc="Create Final Optimal Path Lines - Z Frame">
                 line5 = PointsAndLinesClass.ClassLine(point6, point7)
                 line6 = PointsAndLinesClass.ClassLine(point9, point7)
                 line7 = PointsAndLinesClass.ClassLine(point8, point9)
@@ -1863,6 +1955,21 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
                              line49, line50,
                              line52, line53,
                              line55, line56]
+                pathLinesByPanel = [[line5, line6, line7],
+                                    [line9, line11, line12],
+                                    [line14, line15, line16],
+                                    [line18, line19, line20],
+                                    [line22, line23, line24],
+                                    [line26, line27, line28],
+                                    [line30, line31, line32],
+                                    [line34, line35, line36],
+                                    [line38, line39, line40],
+                                    [line42, line43, line44],
+                                    [line46, line47],
+                                    [line49, line50],
+                                    [line52, line53],
+                                    [line55, line56]]
+                # </editor-fold>
 
             panels = [panel1, panel2, panel3, panel4, panel5, panel6, panel7, panel8, panel9, panel10, panel11, panel12,
                       panel13, panel14]
@@ -1876,8 +1983,16 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
             if boolOptions[9]:
                 CreateGIF(images, filenames, boolOptions)
 
-            CreateCSV(panels)
-            # PrintMassOfAllLines(pathLines)
-            plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses, boolOptions)
+            if boolOptions[10]:
+                CreateCSV(panels)
+
+            ratiosByPanel = CrossFrameOptimizationLibrary.CalculateStiffnessRatiosForEachPanel(pathLinesByPanel,
+                                                                                               listOfPoints)
+            print("\n")
+            for i in range(len(ratiosByPanel)-4):
+                print("Panel", i+1, "stiffness ratio:", 1 / ratiosByPanel[i])
+
+            plotShape(plotLines, len(polygonLines), xGuessPoints, yGuessPoints, axisLimits, plotPointGuesses,
+                      boolOptions, listOfPoints)
 
             tryAnotherPoint = False

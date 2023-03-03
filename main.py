@@ -3,14 +3,15 @@
 import OptimizeFlasherPanel
 import PointsAndLinesClass
 
-#Look at if length is linear, squared, cubed, etc. and add into objective function
 connectToMiddlePoint = False
-zPanel = True
+zPanel = False
 plotFlasherPanels = True
 plotEntireFlasher = False
 createGIF = True
+createCSV = False
+plotBisectionLines = False
 
-plotPointGuesses = True
+plotPointGuesses = False
 allowModifyPolygon = False
 tryAnotherPoint = True
 multipleGuesses = False
@@ -125,7 +126,9 @@ listOfPointsForFlasher.append(point20)
 
 
 ##ALL PARAMETERS ABOVE THIS LINE## #
-boolOptions = [connectToMiddlePoint, plotPointGuesses, allowModifyPolygon, tryAnotherPoint, multipleGuesses, allowSelectBeginPoint, zPanel, plotFlasherPanels, plotEntireFlasher, createGIF]
+boolOptions = [connectToMiddlePoint, plotPointGuesses, allowModifyPolygon, tryAnotherPoint, multipleGuesses,
+               allowSelectBeginPoint, zPanel, plotFlasherPanels, plotEntireFlasher, createGIF, createCSV,
+               plotBisectionLines]
 minDistances = [minDistanceBetweenPathNodes, minDistanceFromCorners, minDistanceFromLine, minEdgePointDistanceFromCorners]
 crossSectionLengths = [shapeBaseLength, shapeBaseHeight, shapeBaseDiameter]
 listOfPoints = []
@@ -140,5 +143,5 @@ if len(fourthPoint) != 0:
     listOfPoints.append(point4)
 
 
-OptimizeFlasherPanel.OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths, material, crossSection)
-# OptimizeFlasherPanel.Optimize22Gore(listOfPointsForFlasher, boolOptions, minDistances, crossSectionLengths, material, crossSection)
+# OptimizeFlasherPanel.OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths, material, crossSection)
+OptimizeFlasherPanel.Optimize22Gore(listOfPointsForFlasher, boolOptions, minDistances, crossSectionLengths, material, crossSection)

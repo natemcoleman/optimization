@@ -66,6 +66,12 @@ def GetLengthOfLine(lineToGetLength):
     return sqrt(distance(lineToGetLength.points[0], lineToGetLength.points[1]))
 
 
+def GetLengthOfAllLines(linesToGetMass):
+    totalLength = 0
+    for m in range(len(linesToGetMass)):
+        totalLength += GetLengthOfLine(linesToGetMass[m])
+    return totalLength
+
 def GetMassOfLine(lineToCalcMass, A, rho):
     massOfLine = GetLengthOfLine(lineToCalcMass) * A * rho  # mass in kilograms
 
@@ -299,25 +305,17 @@ def ReturnAngleAndLengthOfOverlapOfLines(line1, line2):
     and returns the angle between the two lines and the amount of the first line on each
     side of the second line if they intersect.
     """
-    # print("line1:", line1)
-    # print("line1Type:", type(line1))
-    # print("line2:", line2)
-    # print("line2Type:", type(line2))
     # Extract the coordinates of the endpoints of the first line
     x1 = line1.points[0].x
     y1 = line1.points[0].y
     x2 = line1.points[1].x
     y2 = line1.points[1].y
-    # x1, y1 = line1
-    # x2, y2 = line1
 
     # Extract the coordinates of the endpoints of the second line
     x3 = line2[0].x
     y3 = line2[0].y
     x4 = line2[1].x
     y4 = line2[1].y
-    # x3, y3 = line2
-    # x4, y4 = line2
 
     # Calculate the slopes of the lines
     m1 = (y2 - y1) / (x2 - x1)
@@ -375,9 +373,6 @@ def OptimizeStiffnessOfSinglePanel(pathLines, listOfPoints):
 
             if nonBisectionReturnVal is not None:
                 currNonBisectionPanelAnglesAndRatios.append(nonBisectionReturnVal)
-        else:
-            currBisectionPanelAnglesAndRatios.append([pi, 0, GetLengthOfLine(pathLines[j])])  # One of these needs to be 1, such that L is minimized
-            currNonBisectionPanelAnglesAndRatios.append([pi / 2, 0, GetLengthOfLine(pathLines[j])])
 
     bisectionStiffnessOfPanel = 0
     nonBisectionStiffnessOfPanel = 0
@@ -394,107 +389,212 @@ def OptimizeStiffnessOfSinglePanel(pathLines, listOfPoints):
     return ratiosByPanel
 
 
-def OptimizeStiffnessOfGore(pathLinesByPanel, listOfCornerPoints):
+def CalculateStiffnessRatiosForEachPanel(pathLinesByPanel, listOfCornerPoints):
+    numberOfQuadrilateralPanels = 10
     bMp, nbMp = ReturnPanelBisectionLines(listOfCornerPoints)
 
-    bisectionAnglesAndRatiosByPanel = np.zeros(len(pathLinesByPanel))
-    nonBisectionAnglesAndRatiosByPanel = np.zeros(len(pathLinesByPanel))
+    bisectionAnglesAndRatiosByPanel = []
+    nonBisectionAnglesAndRatiosByPanel = []
 
-    for i in range(len(pathLinesByPanel)):
+    for i in range(numberOfQuadrilateralPanels):
         currBisectionPanelAnglesAndRatios = []
         currNonBisectionPanelAnglesAndRatios = []
         panelPathLines = pathLinesByPanel[i]
         panelBisectionLine = bMp[i]
         panelNonBisectionLine = nbMp[i]
         for j in range(len(panelPathLines)):
-            if i < 10:
-                bisectionReturnVal = ReturnAngleAndLengthOfOverlapOfLines(panelPathLines[j], panelBisectionLine)
-                nonBisectionReturnVal = ReturnAngleAndLengthOfOverlapOfLines(panelPathLines[j], panelNonBisectionLine)
+            bisectionReturnVal = ReturnAngleAndLengthOfOverlapOfLines(panelPathLines[j], panelBisectionLine)
+            nonBisectionReturnVal = ReturnAngleAndLengthOfOverlapOfLines(panelPathLines[j], panelNonBisectionLine)
 
-                if bisectionReturnVal is not None:
-                    currBisectionPanelAnglesAndRatios.append(bisectionReturnVal)
+            if bisectionReturnVal is not None:
+                currBisectionPanelAnglesAndRatios.append(bisectionReturnVal)
 
-                if nonBisectionReturnVal is not None:
-                    currNonBisectionPanelAnglesAndRatios.append(nonBisectionReturnVal)
-            else:
-                currBisectionPanelAnglesAndRatios.append(1) #One of these needs to be 1, such that L is minimized
-                currNonBisectionPanelAnglesAndRatios.append((pi/2, 0, GetLengthOfLine(panelPathLines[j])))
+            if nonBisectionReturnVal is not None:
+                currNonBisectionPanelAnglesAndRatios.append(nonBisectionReturnVal)
 
-        bisectionAnglesAndRatiosByPanel[i] = currBisectionPanelAnglesAndRatios
-        nonBisectionAnglesAndRatiosByPanel[i] = currNonBisectionPanelAnglesAndRatios
+        bisectionAnglesAndRatiosByPanel.append(currBisectionPanelAnglesAndRatios)
+        nonBisectionAnglesAndRatiosByPanel.append(currNonBisectionPanelAnglesAndRatios)
 
-    bisectionStiffnessByPanel = np.zeros(len(pathLinesByPanel))
-    nonBisectionStiffnessByPanel = np.zeros(len(pathLinesByPanel))
-    for i in range(len(bisectionAnglesAndRatiosByPanel)):
-        bisectionStiffnessByPanel[i] = CalculateStiffnessByAngleAndLengthRatios(bisectionStiffnessByPanel[i])
+    bisectionStiffnessByPanel = []
+    nonBisectionStiffnessByPanel = []
+    for i in range(len(pathLinesByPanel)):
+        if i < numberOfQuadrilateralPanels:
+            bisectionStiffnessOfPanel = 0
+            for j in range(len(bisectionAnglesAndRatiosByPanel[i])):
+                bisectionStiffnessOfPanel += CalculateStiffnessByAngleAndLengthRatios(
+                    bisectionAnglesAndRatiosByPanel[i][j])
+            bisectionStiffnessByPanel.append(
+                bisectionStiffnessOfPanel)
+        else:
+            panelPathLengths = 0
+            for j in range(len(pathLinesByPanel[i])):
+                panelPathLengths += (GetLengthOfLine(pathLinesByPanel[i][j]))
+            bisectionStiffnessByPanel.append(panelPathLengths)
 
-    for i in range(len(nonBisectionStiffnessByPanel)):
-        nonBisectionStiffnessByPanel[i] = CalculateStiffnessByAngleAndLengthRatios(nonBisectionStiffnessByPanel[i])
+    for i in range(len(pathLinesByPanel)):
+        if i < numberOfQuadrilateralPanels:
+            nonBisectionStiffnessOfPanel = 0
+            for j in range(len(nonBisectionAnglesAndRatiosByPanel[i])):
+                nonBisectionStiffnessOfPanel += CalculateStiffnessByAngleAndLengthRatios(
+                    nonBisectionAnglesAndRatiosByPanel[i][j])
+            nonBisectionStiffnessByPanel.append(
+                nonBisectionStiffnessOfPanel)
+        else:
+            nonBisectionStiffnessByPanel.append(1e3) #Weight triangular panels length less than other ratios, while still minimizing
 
     ratiosByPanel = np.divide(bisectionStiffnessByPanel, nonBisectionStiffnessByPanel)
+
+    return ratiosByPanel
+
+
+def OptimizeStiffnessOfGore(pathLinesByPanel, listOfCornerPoints):
+    # numberOfQuadrilateralPanels = 10
+    # bMp, nbMp = ReturnPanelBisectionLines(listOfCornerPoints)
+    #
+    # bisectionAnglesAndRatiosByPanel = []
+    # nonBisectionAnglesAndRatiosByPanel = []
+    #
+    # for i in range(numberOfQuadrilateralPanels):
+    #     currBisectionPanelAnglesAndRatios = []
+    #     currNonBisectionPanelAnglesAndRatios = []
+    #     panelPathLines = pathLinesByPanel[i]
+    #     panelBisectionLine = bMp[i]
+    #     panelNonBisectionLine = nbMp[i]
+    #     for j in range(len(panelPathLines)):
+    #         bisectionReturnVal = ReturnAngleAndLengthOfOverlapOfLines(panelPathLines[j], panelBisectionLine)
+    #         nonBisectionReturnVal = ReturnAngleAndLengthOfOverlapOfLines(panelPathLines[j], panelNonBisectionLine)
+    #
+    #         if bisectionReturnVal is not None:
+    #             currBisectionPanelAnglesAndRatios.append(bisectionReturnVal)
+    #
+    #         if nonBisectionReturnVal is not None:
+    #             currNonBisectionPanelAnglesAndRatios.append(nonBisectionReturnVal)
+    #
+    #     bisectionAnglesAndRatiosByPanel.append(currBisectionPanelAnglesAndRatios)
+    #     nonBisectionAnglesAndRatiosByPanel.append(currNonBisectionPanelAnglesAndRatios)
+    #
+    # bisectionStiffnessByPanel = []
+    # nonBisectionStiffnessByPanel = []
+    # for i in range(len(bisectionAnglesAndRatiosByPanel)):
+    #     if i < numberOfQuadrilateralPanels:
+    #         bisectionStiffnessOfPanel = 0
+    #         for j in range(len(bisectionAnglesAndRatiosByPanel[i])):
+    #             bisectionStiffnessOfPanel += CalculateStiffnessByAngleAndLengthRatios(bisectionAnglesAndRatiosByPanel[i][j])
+    #         bisectionStiffnessByPanel.append(bisectionStiffnessOfPanel)#CalStiff returns a scalar, need to add up bisection by panel and nonbisection by panel
+    #     else:
+    #         panelPathLengths = 0
+    #         for j in range(len(pathLinesByPanel[i])):
+    #             panelPathLengths += (GetLengthOfLine(pathLinesByPanel[i][j]))
+    #         bisectionStiffnessByPanel.append(panelPathLengths)
+    #
+    # for i in range(len(nonBisectionAnglesAndRatiosByPanel)):
+    #     if i < numberOfQuadrilateralPanels:
+    #         nonBisectionStiffnessOfPanel = 0
+    #         for j in range(len(nonBisectionAnglesAndRatiosByPanel[i])):
+    #             nonBisectionStiffnessOfPanel += CalculateStiffnessByAngleAndLengthRatios(nonBisectionAnglesAndRatiosByPanel[i][j])
+    #         nonBisectionStiffnessByPanel.append(nonBisectionStiffnessOfPanel)#CalStiff returns a scalar, need to add up bisection by panel and nonbisection by panel
+    #     else:
+    #         nonBisectionStiffnessByPanel.append(0.0001)
+    #
+    # ratiosByPanel = np.divide(bisectionStiffnessByPanel, nonBisectionStiffnessByPanel)
+    ratiosByPanel = CalculateStiffnessRatiosForEachPanel(pathLinesByPanel, listOfCornerPoints)
+    # print("\n")
+    # for ratio in ratiosByPanel:
+    #     print(1/ratio)
     sumOfRatios = sum(ratiosByPanel)
 
     return sumOfRatios
 
 
 def ReturnPanelBisectionLines(listOfCornerPoints):
-    bMp = np.zeros(14)
-    nbMp = bMp
+    # bMp = np.zeros((2,10))
+    # nbMp = bMp
+    bMp = []
+    nbMp = []
 
-    bMp[0] = [(listOfCornerPoints.points[2].x - listOfCornerPoints.points[0].x),
-              (listOfCornerPoints.points[2].y - listOfCornerPoints.points[0].y)]
-    nbMp[0] = [(listOfCornerPoints.points[1].x - listOfCornerPoints.points[3].x),
-               (listOfCornerPoints.points[1].y - listOfCornerPoints.points[3].y)]
+    bMp.append([listOfCornerPoints[0], listOfCornerPoints[2]])
+    nbMp.append([listOfCornerPoints[1], listOfCornerPoints[3]])
 
-    bMp[1] = [(listOfCornerPoints.points[4].x - listOfCornerPoints.points[3].x),
-              (listOfCornerPoints.points[4].y - listOfCornerPoints.points[3].y)]
-    nbMp[1] = [(listOfCornerPoints.points[0].x - listOfCornerPoints.points[6].x),
-               (listOfCornerPoints.points[0].y - listOfCornerPoints.points[6].y)]
+    bMp.append([listOfCornerPoints[4], listOfCornerPoints[3]])
+    nbMp.append([listOfCornerPoints[0], listOfCornerPoints[5]])
 
-    bMp[2] = [(listOfCornerPoints.points[6].x - listOfCornerPoints.points[5].x),
-              (listOfCornerPoints.points[6].y - listOfCornerPoints.points[5].y)]
-    nbMp[2] = [(listOfCornerPoints.points[4].x - listOfCornerPoints.points[7].x),
-               (listOfCornerPoints.points[4].y - listOfCornerPoints.points[7].y)]
+    bMp.append([listOfCornerPoints[6], listOfCornerPoints[5]])
+    nbMp.append([listOfCornerPoints[4], listOfCornerPoints[7]])
 
-    bMp[3] = [(listOfCornerPoints.points[8].x - listOfCornerPoints.points[7].x),
-              (listOfCornerPoints.points[8].y - listOfCornerPoints.points[7].y)]
-    nbMp[3] = [(listOfCornerPoints.points[6].x - listOfCornerPoints.points[9].x),
-               (listOfCornerPoints.points[6].y - listOfCornerPoints.points[9].y)]
+    bMp.append([listOfCornerPoints[8], listOfCornerPoints[7]])
+    nbMp.append([listOfCornerPoints[6], listOfCornerPoints[9]])
 
-    bMp[4] = [(listOfCornerPoints.points[3].x - listOfCornerPoints.points[12].x),
-              (listOfCornerPoints.points[3].y - listOfCornerPoints.points[12].y)]
-    nbMp[4] = [(listOfCornerPoints.points[2].x - listOfCornerPoints.points[13].x),
-               (listOfCornerPoints.points[2].y - listOfCornerPoints.points[13].y)]
+    bMp.append([listOfCornerPoints[3], listOfCornerPoints[12]])
+    nbMp.append([listOfCornerPoints[2], listOfCornerPoints[13]])
 
-    bMp[5] = [(listOfCornerPoints.points[5].x - listOfCornerPoints.points[13].x),
-              (listOfCornerPoints.points[5].y - listOfCornerPoints.points[13].y)]
-    nbMp[5] = [(listOfCornerPoints.points[3].x - listOfCornerPoints.points[14].x),
-               (listOfCornerPoints.points[3].y - listOfCornerPoints.points[14].y)]
+    bMp.append([listOfCornerPoints[5], listOfCornerPoints[13]])
+    nbMp.append([listOfCornerPoints[3], listOfCornerPoints[14]])
 
-    # Note that the bisection lines switch directions
-    bMp[6] = [(listOfCornerPoints.points[13].x - listOfCornerPoints.points[16].x),
-              (listOfCornerPoints.points[13].y - listOfCornerPoints.points[16].y)]
-    nbMp[6] = [(listOfCornerPoints.points[14].x - listOfCornerPoints.points[15].x),
-               (listOfCornerPoints.points[14].y - listOfCornerPoints.points[15].y)]
+    bMp.append([listOfCornerPoints[13], listOfCornerPoints[16]])
+    nbMp.append([listOfCornerPoints[14], listOfCornerPoints[15]])
 
-    bMp[7] = [(listOfCornerPoints.points[15].x - listOfCornerPoints.points[18].x),
-              (listOfCornerPoints.points[15].y - listOfCornerPoints.points[18].y)]
-    nbMp[7] = [(listOfCornerPoints.points[16].x - listOfCornerPoints.points[17].x),
-               (listOfCornerPoints.points[16].y - listOfCornerPoints.points[17].y)]
+    bMp.append([listOfCornerPoints[15], listOfCornerPoints[18]])
+    nbMp.append([listOfCornerPoints[16], listOfCornerPoints[17]])
 
-    bMp[8] = [(listOfCornerPoints.points[16].x - listOfCornerPoints.points[19].x),
-              (listOfCornerPoints.points[16].y - listOfCornerPoints.points[19].y)]
-    nbMp[8] = [(listOfCornerPoints.points[7].x - listOfCornerPoints.points[18].x),
-               (listOfCornerPoints.points[7].y - listOfCornerPoints.points[18].y)]
+    bMp.append([listOfCornerPoints[19], listOfCornerPoints[16]])
+    nbMp.append([listOfCornerPoints[7], listOfCornerPoints[18]])
 
-    bMp[9] = [(listOfCornerPoints.points[7].x - listOfCornerPoints.points[11].x),
-              (listOfCornerPoints.points[7].y - listOfCornerPoints.points[11].y)]
-    nbMp[9] = [(listOfCornerPoints.points[9].x - listOfCornerPoints.points[19].x),
-               (listOfCornerPoints.points[9].y - listOfCornerPoints.points[19].y)]
+    bMp.append([listOfCornerPoints[11], listOfCornerPoints[7]])
+    nbMp.append([listOfCornerPoints[9], listOfCornerPoints[19]])
+
+    # bMp[0] = [(listOfCornerPoints.points[2].x - listOfCornerPoints.points[0].x),
+    #           (listOfCornerPoints.points[2].y - listOfCornerPoints.points[0].y)]
+    # nbMp[0] = [(listOfCornerPoints.points[1].x - listOfCornerPoints.points[3].x),
+    #            (listOfCornerPoints.points[1].y - listOfCornerPoints.points[3].y)]
+    #
+    # bMp[1] = [(listOfCornerPoints.points[4].x - listOfCornerPoints.points[3].x),
+    #           (listOfCornerPoints.points[4].y - listOfCornerPoints.points[3].y)]
+    # nbMp[1] = [(listOfCornerPoints.points[0].x - listOfCornerPoints.points[6].x),
+    #            (listOfCornerPoints.points[0].y - listOfCornerPoints.points[6].y)]
+    #
+    # bMp[2] = [(listOfCornerPoints.points[6].x - listOfCornerPoints.points[5].x),
+    #           (listOfCornerPoints.points[6].y - listOfCornerPoints.points[5].y)]
+    # nbMp[2] = [(listOfCornerPoints.points[4].x - listOfCornerPoints.points[7].x),
+    #            (listOfCornerPoints.points[4].y - listOfCornerPoints.points[7].y)]
+    #
+    # bMp[3] = [(listOfCornerPoints.points[8].x - listOfCornerPoints.points[7].x),
+    #           (listOfCornerPoints.points[8].y - listOfCornerPoints.points[7].y)]
+    # nbMp[3] = [(listOfCornerPoints.points[6].x - listOfCornerPoints.points[9].x),
+    #            (listOfCornerPoints.points[6].y - listOfCornerPoints.points[9].y)]
+    #
+    # bMp[4] = [(listOfCornerPoints.points[3].x - listOfCornerPoints.points[12].x),
+    #           (listOfCornerPoints.points[3].y - listOfCornerPoints.points[12].y)]
+    # nbMp[4] = [(listOfCornerPoints.points[2].x - listOfCornerPoints.points[13].x),
+    #            (listOfCornerPoints.points[2].y - listOfCornerPoints.points[13].y)]
+    #
+    # bMp[5] = [(listOfCornerPoints.points[5].x - listOfCornerPoints.points[13].x),
+    #           (listOfCornerPoints.points[5].y - listOfCornerPoints.points[13].y)]
+    # nbMp[5] = [(listOfCornerPoints.points[3].x - listOfCornerPoints.points[14].x),
+    #            (listOfCornerPoints.points[3].y - listOfCornerPoints.points[14].y)]
+    #
+    # # Note that the bisection lines switch directions
+    # bMp[6] = [(listOfCornerPoints.points[13].x - listOfCornerPoints.points[16].x),
+    #           (listOfCornerPoints.points[13].y - listOfCornerPoints.points[16].y)]
+    # nbMp[6] = [(listOfCornerPoints.points[14].x - listOfCornerPoints.points[15].x),
+    #            (listOfCornerPoints.points[14].y - listOfCornerPoints.points[15].y)]
+    #
+    # bMp[7] = [(listOfCornerPoints.points[15].x - listOfCornerPoints.points[18].x),
+    #           (listOfCornerPoints.points[15].y - listOfCornerPoints.points[18].y)]
+    # nbMp[7] = [(listOfCornerPoints.points[16].x - listOfCornerPoints.points[17].x),
+    #            (listOfCornerPoints.points[16].y - listOfCornerPoints.points[17].y)]
+    #
+    # bMp[8] = [(listOfCornerPoints.points[16].x - listOfCornerPoints.points[19].x),
+    #           (listOfCornerPoints.points[16].y - listOfCornerPoints.points[19].y)]
+    # nbMp[8] = [(listOfCornerPoints.points[7].x - listOfCornerPoints.points[18].x),
+    #            (listOfCornerPoints.points[7].y - listOfCornerPoints.points[18].y)]
+    #
+    # bMp[9] = [(listOfCornerPoints.points[7].x - listOfCornerPoints.points[11].x),
+    #           (listOfCornerPoints.points[7].y - listOfCornerPoints.points[11].y)]
+    # nbMp[9] = [(listOfCornerPoints.points[9].x - listOfCornerPoints.points[19].x),
+    #            (listOfCornerPoints.points[9].y - listOfCornerPoints.points[19].y)]
 
     return bMp, nbMp
 
-# def CalculateStiffnessOfPanel(pathLinesOfEachPanel, listOfCornerPoints, bMp=None, nbMp=None):
 def CalculateStiffnessOfPanel(pathLinesByPanel, listOfCornerPoints):
     # path lines are the green lines in the output that connect the black points. Corner points are the red points
     # that are the corners of each panel
@@ -519,8 +619,6 @@ def CalculateStiffnessOfPanel(pathLinesByPanel, listOfCornerPoints):
         allBisectionIntersectionPoints.append(returnBisectionIntersectionPoints)
         allNonBisectionIntersectionPoints.append(returnNonBisectionIntersectionPoints)
 
-
-    print("allBisectionIntersectionPoints:", allBisectionIntersectionPoints)
     # calculate length of beam (L), intersect distance from end of beam (q)
 
     # calculate np.cross() of bMp and nbMp with pathLinesNew
