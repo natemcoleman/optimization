@@ -148,15 +148,17 @@ def plotShape(linesToPlot, numberOfPolygonLines, xGuessPoints, yGuessPoints, axi
         for i in range(len(bisectionLines)):
             plt.plot([bisectionLines[i][0].x, bisectionLines[i][1].x],
                      [bisectionLines[i][0].y, bisectionLines[i][1].y], 'm--')
-        for i in range(len(nonBisectionLines)):
-            plt.plot([nonBisectionLines[i][0].x, nonBisectionLines[i][1].x],
-                     [nonBisectionLines[i][0].y, nonBisectionLines[i][1].y], 'c--')
+        # for i in range(len(nonBisectionLines)):
+        #     plt.plot([nonBisectionLines[i][0].x, nonBisectionLines[i][1].x],
+        #              [nonBisectionLines[i][0].y, nonBisectionLines[i][1].y], 'c--')
 
     ax = plt.gca()
     ax.set_aspect(1)
 
-    plt.xlabel('Y')
-    plt.ylabel('X')
+    ax.axis('off')
+
+    # plt.xlabel('Y')
+    # plt.ylabel('X')
     xAxisBuffer = abs(axisLimits[1] - axisLimits[0]) * 0.05
     yAxisBuffer = abs(axisLimits[3] - axisLimits[2]) * 0.05
 
@@ -191,7 +193,7 @@ def CreateGIF(images, filenames, boolOptions):
     for i in range(ceil(len(images)*extraDurationTime)):
         images.append(images[len(images)-1])
 
-    imageio.mimsave(exportname, images, fps=imagesInitialLength)
+    imageio.mimsave(exportname, images, fps=imagesInitialLength/2)
 
     print(len(filenames), "images")
 
@@ -282,8 +284,10 @@ def CreateFigure(linesToPlot, numberOfPolygonLines, boolOptions, iterationNum, f
     ax = plt.gca()
     ax.set_aspect(1)
 
-    plt.xlabel('X')
-    plt.ylabel('Y')
+    ax.axis('off')
+
+    # plt.xlabel('X')
+    # plt.ylabel('Y')
 
     fileSaveName = 'joemama' + str(iterationNum)
     filenames.append(fileSaveName)
@@ -763,7 +767,6 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
     connectToMiddlePoint = boolOptions[0]
     plotPointGuesses = boolOptions[1]
     tryAnotherPoint = boolOptions[3]
-    # multipleGuesses = boolOptions[4]
 
     shapeBaseLength = crossSectionLengths[0]  # meters, if square or rectangle
     shapeBaseHeight = crossSectionLengths[1]  # meters, if rectangle
@@ -1122,6 +1125,11 @@ def Optimize22Gore(listOfPoints, boolOptions, minDistances, crossSectionLengths,
         point46InitialGuess = [((minX12 + maxX12) / 2, (minY12 + maxY12) / 2)]  # First guess is in middle of bounds
         point49InitialGuess = [((minX13 + maxX13) / 2, (minY13 + maxY13) / 2)]  # First guess is in middle of bounds
         point50InitialGuess = [((minX14 + maxX14) / 2, (minY14 + maxY14) / 2)]  # First guess is in middle of bounds
+
+        print("minX11:", minX11)
+        print("maxX11:", maxX11)
+        print("minY11:", minY11)
+        print("maxY11:", maxY11)
 
         initialPointsGuesses = [point5InitialGuess, point6InitialGuess, point7InitialGuess, point8InitialGuess,
                                 point9InitialGuess,

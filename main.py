@@ -2,12 +2,13 @@
 
 import OptimizeFlasherPanel
 import PointsAndLinesClass
+# import OptimizeM2R2H2FlasherLibrary
 
-connectToMiddlePoint = False
-zPanel = False
+connectToMiddlePoint = True
+zPanel = True
 plotFlasherPanels = True
 plotEntireFlasher = False
-createGIF = True
+createGIF = False
 createCSV = False
 plotBisectionLines = False
 
@@ -16,7 +17,6 @@ allowModifyPolygon = False
 tryAnotherPoint = True
 multipleGuesses = False
 allowSelectBeginPoint = False
-
 
 # IF TRIANGULAR PANEL, LEAVE FOURTH POINT EMPTY
 firstPoint = (0.3125, 0.497)
@@ -39,7 +39,7 @@ crossSectionShapes = ["Square", "Round", "Rectangle", "I-Beam"]
 material = materials[0]
 crossSection = crossSectionShapes[0]
 
-
+# <editor-fold desc="Create Flasher Points">
 flasherPoint1 = (1.5556, 6.2593)
 flasherPoint2 = (.55556, 8.9259)
 flasherPoint3 = (3.3333, 10.074)
@@ -123,6 +123,7 @@ listOfPointsForFlasher.append(point18)
 listOfPointsForFlasher.append(point19)
 
 listOfPointsForFlasher.append(point20)
+# </editor-fold>
 
 
 ##ALL PARAMETERS ABOVE THIS LINE## #
@@ -143,5 +144,5 @@ if len(fourthPoint) != 0:
     listOfPoints.append(point4)
 
 
-# OptimizeFlasherPanel.OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths, material, crossSection)
-OptimizeFlasherPanel.Optimize22Gore(listOfPointsForFlasher, boolOptions, minDistances, crossSectionLengths, material, crossSection)
+OptimizeFlasherPanel.OptimizePolygon(listOfPoints, boolOptions, minDistances, crossSectionLengths, material, crossSection)
+# OptimizeFlasherPanel.Optimize22Gore(listOfPointsForFlasher, boolOptions, minDistances, crossSectionLengths, material, crossSection)
